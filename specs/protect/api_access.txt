@@ -1,0 +1,13 @@
+import webapp2
+
+ALLOWED_APP_IDS = ('cp-thre-pio', 'r-two-deetu')
+
+class AssertIDHandler(webapp2.RequestHandler):
+    def dispatch(self):
+        app_id = self.request.headers.get('X-Appengine-Inbound-Appid', None)
+
+        if app_id in ALLOWED_APP_IDS:
+            # do something ...
+        else:
+            self.abort(403)
+

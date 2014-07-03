@@ -1,8 +1,25 @@
+GET /main
+===============
+Список всех доступных ресурсов API
+{
+"auth":"/auth",
+"password_tools":"/password/tools",
+"password_request":"/password/request",
+}
+
+
 POST /auth 
 ===============
-PARAM {"login":"Toto", "password":"test"}
+sample:
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"toto", "device_id":"123"}' http://localhost:8080/api/auth
+
+
+PARAM {"login":"Toto", "password":"test", "device_id":"id", "device_token":"token"}
 login - required
 password - optional
+primary_device_id - required
+device_token - optional
+
 Response:
  OK case: 
 - status code 200 
@@ -11,7 +28,8 @@ Response:
   1. Если первый логин, то особой инфы не будет, только логин:
    {"user":{"login":"Toto"}}
   2. Если повторный, то все поля заполнены:
-//TODO
+   {"user":{"login":"Toto", "email":"test@test.com", "phone":"12321", "gender":false,"userpic":"https://www.facebook.com/photo.php?fbid=719668528066557&set=a.204239416276140.50907.100000702482882&type=1&theater", "region":"Nsk"}}    
+    
 
  Error cases:
  Common format: {"error_message":"error text", "error_code": 100500}
@@ -28,16 +46,16 @@ Response:
 Важно про cookie: она периодически протухает, в этом случае с девайса надо молча перелогиниться. Если, внезапно, попытка "перелогина" не прошла то разбираем ситуацию:
 1. Нет интернета: даем юзеру пользоваться своим аккаунтом до появления интернета. Пока не оч понятно как это делать, но делать надо.
 2. Интернет есть, но возвращается ошибка (100500,100501,100502) - переадресовываем пользователя на экран логина и говорим, что возможно ваш логин взломан или вы запросили сброс пароля с другого девайса. 
-	Если первое - пиши в техподдержку (она сделает set_user_password) (открываем message composer)
+	Если первое - пиши в техподдержку (она сделает password/set) (открываем message composer)
 	Если второе - вбейте, пожалуйста, смененный пароль или запросите его снова (push или email: password_tools -> request_password -> если опять никак письмо в техподдержку)
 
-GET /password_tools
+GET /password/tools
 ==============================
 OK case: 
 - status code 200 
-{"tools":{"email","push"}}. 
+{"tools":{"email","push":("22/09/2014", "02/10/2014")}}. 
 Показать пользователю, какими способами он может получить пароль. 
-Варианты tool: email, push, в дальнейшем добавится sms
+Варианты tool: email, push, в дальнейшем добавится sms. Если девайсов зарегано несколько, можно предложить выбрать на какой послать по дате регистрации.
 
 Error cases: 
 Common format: {"error_message":"error text", "error_code": 100600}
@@ -46,7 +64,7 @@ Common format: {"error_message":"error text", "error_code": 100600}
 	Шлем юзера в баню. Пусть достает primary device, вбивает там email, разрешает пуши и т.д.
 	Если primary device уже ушел, предлагаем написать письмо в тех поддержку, мол, "это я, я - Вася Пупкин! Помнишь давал тебе Infinity-board затестить? А теперь твое приложение меня с нового iPhone не пускает..." Если тех.поддержка не пропила остатки памяти и вспомнила тот случай, то временно задизаблит пользователя методом установит 
 
-POST /request_password 
+POST /password/request 
 ==============================
 PARAM {"tool":"email"}
 Варианты tool: email, push, в дальнейшем добавится sms
@@ -64,7 +82,7 @@ Common format: {"error_message":"error text", "error_code": 100700}
 
 
 
-POST /set_user_password
+POST /password/set
 ==============================
 Важно: вызов только из под супер-пупер админа
 PARAM {"login":"pupkin", "email":"pupkin@mail.ru", "password":"193rfhwiHSD"}

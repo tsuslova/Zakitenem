@@ -16,7 +16,7 @@
 #
 import webapp2
 from errors_handlers import handle_404
-import authorization
+from request_handlers import user_management
 from tools import update_schema 
 from google.appengine.ext import deferred
 
@@ -31,7 +31,7 @@ class UpdateHandler(webapp2.RequestHandler):
         
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/api/auth', authorization.AuthHandler),
+    ('/api/auth', user_management.AuthHandler),
     ('/api/update_schema', UpdateHandler),
 ], debug=True)
 

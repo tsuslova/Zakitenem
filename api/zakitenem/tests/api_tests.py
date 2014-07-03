@@ -7,7 +7,6 @@ import main
 import json
 import constants
 import error_definitions
-import model
 import sys
 import time
 

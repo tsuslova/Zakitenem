@@ -1,5 +1,4 @@
-import error_definitions
-import constants
+from constants import constants, error_definitions
 import logging
 import json
 

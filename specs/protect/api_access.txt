@@ -11,3 +11,41 @@ class AssertIDHandler(webapp2.RequestHandler):
         else:
             self.abort(403)
 
+
+
+appstats
+http://stackoverflow.com/questions/12939376/google-app-engine-too-many-datastore-read-operations
+
+Кеширование в памяти: https://developers.google.com/appengine/docs/python/memcache/usingmemcache
+Читать по-странично (типо по 10 штук),
+
+
+Блокирование по IP Google App Engine и защита от DOS и DDOS
+http://habrahabr.ru/post/88432/
+
+Именно то, что нужно, но для endpoints/Java
+http://stackoverflow.com/questions/16890175/how-do-i-protect-my-api-that-was-built-using-google-cloud-endpoints
+
+
+
+
+Велосипединг
+http://stackoverflow.com/questions/3963877/creating-an-api-for-mobile-applications-authentication-and-authorization
+
+
+
+
+Несуществующие запросы - ничего не едят (почти).
+Существующие одинаковые - не будут ничего есть, т.к. кеш.
+Разные существующие? Сколько их нагенерят? Каких? 
+
+
+
+
+Авторизованный юзер (с кукой) шлет запросы чаще, чем положено (например, 30 за 5 сек? 100 за 20 сек?) - по прошествии этих 30 запросов они начинают реджектиться, выполняясь максимум 2 в секунду (по куке)
+
+Запрос авторизации занимает время в зависимости от попытки с одного device UDID+IP. Первый запрос проходит сразу, второй - секунда, третий - 2, четвертый 2^2 и т.д. Ибо нефиг.
+
+
+http://security.stackexchange.com/questions/16126/securing-an-api-for-mobile-access
+

@@ -13,3 +13,7 @@ msg_wrong_password = "Wrong password"
 
 code_frequent_request = 100502
 msg_frequent_request = "Too frequent request"
+
+code_wrong_param = 100503
+msg_wrong_login = "Wrong login"
+msg_wrong_device_id = "Wrong device_id"

@@ -12,18 +12,19 @@ class AuthHandler(webapp2.RequestHandler):
         
     def set_cookie(self):
         import os
-        logger.warning("HERE")
+        logger.info("HERE")
         cookie = os.urandom(64).encode('base-64')
         #TODO check cookie generation
-        logger.warning("%s"%cookie) 
+        logger.info("%s"%cookie) 
         #TODO: normal date
-        self.response.set_cookie("session_id", cookie, expires=datetime.datetime(2030, 11, 10)) 
+        self.response.set_cookie("session_id", cookie, expires=datetime.datetime(2030, 11, 10))
         self.response.set_status(200)
+        logger.info("Cookie is set")
         return cookie
 
     def post(self, *args):
         try:
-            logger.warning("Authentication request")
+            logger.info("Authentication request")
             login_info = user_model.login_info_from_data(self.request.body) #
             self.response.set_status(200)
             if len(login_info.login) < 3: 
@@ -53,7 +54,7 @@ class AuthHandler(webapp2.RequestHandler):
                         request_utils.out_error(self.response, error_definitions.msg_wrong_password,
                                                 error_definitions.code_wrong_password)
             else:
-                logger.warning("Going to create a user")
+                logger.info("Going to create a user")
                 user = user_model.create_user_from_login_info(login_info, self.set_cookie())
                 self.response.out.write(user.resp())
         except Exception, err:

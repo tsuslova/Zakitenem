@@ -1,3 +1,4 @@
+import logging
 import unittest
 # from google.appengine.api import memcache
 # from google.appengine.ext import db
@@ -10,6 +11,8 @@ from constants import error_definitions
 import sys
 import time
 from model import user_model
+
+logging.basicConfig()
 
 class Error404TestCase(unittest.TestCase):
 
@@ -25,7 +28,7 @@ class Error404TestCase(unittest.TestCase):
             def write(self, s):
                 pass
         sys.stderr = NullWriter()
-        
+         
         request = webapp2.Request.blank('/page404_which_was_never_created')
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
@@ -39,40 +42,49 @@ class AuthHandlerTestCase(unittest.TestCase):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub(True)
     
     def tearDown(self):
         self.testbed.deactivate()
+        
         
     def test_error_auth_get(self):
         request = webapp2.Request.blank('/api/auth')
         request.method = 'GET'
         response = request.get_response(main.app)
         self.assertEqual(response.status_int, 405)
-        
+         
     def test_new_user_auth_ok(self):
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         login = "Toto"
-        login_info = user_model.login_info(login, "398dnjfkeH3")
+        password = "398dnjfkeH3"
+        login_info = user_model.login_info(login, password)
         request.body = login_info.data()
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
         self.assertEqual(login, response_dict[constants.login_key], 
                          "Requested login differs from response")
-#         login_info = json.loads(self.request.body)
+        login_info = json.loads(self.request.body)
             
-    def test_auth_no_pass(self):
-        # TODO check that the account is created after previous test
+    def test_auth_existing_no_pass(self):
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login = "Toto"
-        login_info = {constants.login_key:login}
-        request.body = json.dumps(login_info)
+        login = "Toto4"
+        device_id = "dsfbg4i"
+        login_info = user_model.login_info(login, device_id, "", "")
+        request.body = login_info.data()
+        request.get_response(main.app)
+        
+        #Login the same time with the existing account 
+        login_info = user_model.login_info(login, device_id, "", "")
+        request.body = login_info.data()
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
-        self.assertNotEqual(response_dict[constants.error_key], None, 
+        
+        self.assertNotEqual(response_dict.get(constants.error_key), None, 
             "Existing account authorization without password should return an error")
-        self.assertEqual(response_dict[constants.error_code_key], 
+        self.assertEqual(int(response_dict.get(constants.error_code_key)), 
                          error_definitions.code_account_used)
         self.assertEqual(response_dict[constants.error_key], error_definitions.msg_account_used)
         

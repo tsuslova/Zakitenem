@@ -4,8 +4,8 @@ import logging
 import datetime
 import time
 import json
-from hashlib import sha256
-from random import random
+import hashlib, binascii
+
 from math import trunc
 from constants import constants
  
@@ -82,7 +82,7 @@ class AppInstallation(ndb.Model):
     timestamp = ndb.IntegerProperty() 
 
     def __init__(self, *args, **kwargs):
-        super(ndb.Model, self).__init__(*args, **kwargs)
+        super(AppInstallation, self).__init__(*args, **kwargs)
         self.timestamp = trunc(time.time())
     
 class UserItem(ndb.Model):
@@ -110,18 +110,18 @@ class UserItem(ndb.Model):
         user_data[constants.gender_key] = self.gender
         user_data[constants.userpic_key] = self.userpic
         user_data[constants.region_key] = self.region
-        return json.dump(user_data)
+        return json.dumps(user_data)
         
     
 def ssshh(p, param):
     test = "DFSzF3q3Q34OIq7QRGWNERLWIU4aIQ3"
-    result = sha256('%s%s%s'%(test, p, param))
+    result = hashlib.sha256('%s%s%s'%(test, p, param)).hexdigest()
     return result
 
 def user_by_login(login):
     query = UserItem.query(UserItem.login == login)
     user = query.fetch(1)
-    logger.warning("user %s for login %s"%(user,login))
+    logger.info("user %s for login %s"%(user,login))
     return user
 
 def validate_password(password):
@@ -133,13 +133,17 @@ def create_installation(device_id, device_token, cookie):
     pass
 
 def create_user_from_login_info(login_info, cookie):
-    pass_not_empty = login_info.password and len(login_info.password) > 0
+    pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
-    logger.warning("password %s (%@)"%(login_info.password, password_hash))
-    user = UserItem(login=login_info.login, password=password_hash)
-    app_install = AppInstallation(device_id=login_info.device_id, 
-                                  device_token=login_info.device_token, cookie=cookie)
+    logger.info("password  (%s)"%(password_hash))
+    user = UserItem()
+    user.login = login_info.login
+    user.password = password_hash
+    app_install = AppInstallation()
+    app_install.device_id = login_info.device_id
+    app_install.device_token=login_info.device_token
+    app_install.cookie = cookie
     user.app_installations = [app_install]
     user.put()
-    logger.warning("user %s created"%(user))
+    logger.info("user %s created"%(user))
     return user

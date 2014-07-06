@@ -7,4 +7,12 @@ password_key = "password"
 device_id_key = "device_id"
 device_token_key = "device_token"
 
+user_key = "user"
+
+email_key = "email"
+phone_key = "phone"
+gender_key = "gender"
+userpic_key = "userpic"
+region_key = "region"
+
 SECS_BETWEEN_REQUESTS = 2.0

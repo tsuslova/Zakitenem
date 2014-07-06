@@ -5,10 +5,11 @@ from google.appengine.ext import testbed
 import webapp2
 import main
 import json
-import constants
-import error_definitions
+from constants import constants
+from constants import error_definitions
 import sys
 import time
+from model import user_model
 
 class Error404TestCase(unittest.TestCase):
 
@@ -16,6 +17,9 @@ class Error404TestCase(unittest.TestCase):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         
+    def tearDown(self):
+        self.testbed.deactivate()
+    
     def test_error_format(self):
         class NullWriter:
             def write(self, s):
@@ -27,7 +31,6 @@ class Error404TestCase(unittest.TestCase):
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict, None)
         self.assertEqual(response_dict[constants.error_key], u"No such page")
-        
 
 
 class AuthHandlerTestCase(unittest.TestCase):
@@ -36,7 +39,6 @@ class AuthHandlerTestCase(unittest.TestCase):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
-        
     
     def tearDown(self):
         self.testbed.deactivate()
@@ -51,8 +53,8 @@ class AuthHandlerTestCase(unittest.TestCase):
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         login = "Toto"
-        login_info = {constants.login_key:login}
-        request.body = json.dumps(login_info)
+        login_info = user_model.login_info(login, "398dnjfkeH3")
+        request.body = login_info.data()
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
         self.assertEqual(login, response_dict[constants.login_key], 
@@ -79,8 +81,8 @@ class AuthHandlerTestCase(unittest.TestCase):
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         login = "Toto1"
-        login_info = {constants.login_key:login, constants.password_key:"test"}
-        request.body = json.dumps(login_info)
+        login_info = user_model.login_info(login, "123", "", "test")
+        request.body = login_info.data()
         # Create a user:
         request.get_response(main.app)
         # sleep after creation to avoid "too frequent request" error
@@ -88,10 +90,12 @@ class AuthHandlerTestCase(unittest.TestCase):
         # try login with created user with a password:
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
+        print response_dict
         self.assertEqual(login, response_dict[constants.login_key], 
                          "Requested login differs from response")
         
         
-        
+if __name__ == "__main__":
+    unittest.main()
         
         

@@ -13,6 +13,8 @@ import time
 from model import user_model
 
 logging.basicConfig()
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 class Error404TestCase(unittest.TestCase):
 
@@ -23,17 +25,17 @@ class Error404TestCase(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
     
-    def test_error_format(self):
-        class NullWriter:
-            def write(self, s):
-                pass
-        sys.stderr = NullWriter()
-         
-        request = webapp2.Request.blank('/page404_which_was_never_created')
-        response = request.get_response(main.app)
-        response_dict = json.loads(response.body)
-        self.assertNotEqual(response_dict, None)
-        self.assertEqual(response_dict[constants.error_key], u"No such page")
+#     def test_error_format(self):
+#         class NullWriter:
+#             def write(self, s):
+#                 pass
+#         sys.stderr = NullWriter()
+#         
+#         request = webapp2.Request.blank('/page404_which_was_never_created')
+#         response = request.get_response(main.app)
+#         response_dict = json.loads(response.body)
+#         self.assertNotEqual(response_dict, None)
+#         self.assertEqual(response_dict[constants.error_key], u"No such page")
 
 
 class AuthHandlerTestCase(unittest.TestCase):
@@ -47,49 +49,79 @@ class AuthHandlerTestCase(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
         
+    #Test-data helpers
+    def login_info_pass(self):
+        login = "Toto4"
+        device_id = "dsfbg4i"
+        password = "4dssfgsf3"
+        return user_model.login_info(login, device_id, "", password)
         
+    def login_info_no_pass(self):
+        login = "Toto4"
+        device_id = "dsfbg4i"
+        return user_model.login_info(login, device_id, "", "")
+    
+    # Tests:
     def test_error_auth_get(self):
+        logger.info("test_error_auth_get")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'GET'
         response = request.get_response(main.app)
         self.assertEqual(response.status_int, 405)
-         
+        
     def test_new_user_auth_ok(self):
+        logger.info("test_new_user_auth_ok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login = "Toto"
-        password = "398dnjfkeH3"
-        login_info = user_model.login_info(login, password)
+        login_info = self.login_info_no_pass()
         request.body = login_info.data()
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
-        self.assertEqual(login, response_dict[constants.login_key], 
+        user_dict = response_dict.get(constants.user_key)
+        self.assertNotEqual(user_dict, None, 
+                            "Login should return a user dictionary (got: %s)" % user_dict)
+        self.assertEqual(login_info.login, user_dict[constants.login_key], 
                          "Requested login differs from response")
-        login_info = json.loads(self.request.body)
             
-    def test_auth_existing_no_pass(self):
+    def test_auth_existing_no_pass_nok(self):
+        logger.info("test_auth_existing_no_pass_nok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login = "Toto4"
-        device_id = "dsfbg4i"
-        login_info = user_model.login_info(login, device_id, "", "")
+        login_info = self.login_info_no_pass()
         request.body = login_info.data()
         request.get_response(main.app)
-        
+          
         #Login the same time with the existing account 
-        login_info = user_model.login_info(login, device_id, "", "")
         request.body = login_info.data()
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
-        
+          
         self.assertNotEqual(response_dict.get(constants.error_key), None, 
             "Existing account authorization without password should return an error")
         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
                          error_definitions.code_account_used)
         self.assertEqual(response_dict[constants.error_key], error_definitions.msg_account_used)
-        
+    
+    def test_auth_existing_with_pass_ok(self):
+        logger.info("test_auth_existing_with_pass_ok")
+        login_info = self.login_info_pass()
+        user_model.create_user_from_login_info(login_info, "123")
+         
+        request = webapp2.Request.blank('/api/auth')
+        request.method = 'POST'
+        request.body = login_info.data()
+        response = request.get_response(main.app)
+         
+        response_dict = json.loads(response.body)
+         
+        self.assertEqual(response_dict.get(constants.error_key), None, 
+            "Auth with existing account with correct password should not return an error")
+        self.assertEqual(login_info.login, response_dict[constants.login_key], 
+                        "Requested login differs from response")
+        # TODO: check that a new AppInstallation was created for the account
         
     def test_auth_with_pass_ok(self):
+        logger.info("test_auth_with_pass_ok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         login = "Toto1"
@@ -102,7 +134,6 @@ class AuthHandlerTestCase(unittest.TestCase):
         # try login with created user with a password:
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
-        print response_dict
         self.assertEqual(login, response_dict[constants.login_key], 
                          "Requested login differs from response")
         

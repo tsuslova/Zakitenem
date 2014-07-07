@@ -110,8 +110,17 @@ class UserItem(ndb.Model):
         user_data[constants.gender_key] = self.gender
         user_data[constants.userpic_key] = self.userpic
         user_data[constants.region_key] = self.region
-        return json.dumps(user_data)
-        
+        resp = {constants.user_key:user_data}
+        logger.info("Resp %s"%resp)
+        return json.dumps(resp)
+    
+    def validate_password(self, password):
+        #TODO check the password
+        return True
+    
+    def create_installation(self, device_id, device_token, cookie):
+        #TODO add (or update?) installation for the existing user
+        pass
     
 def ssshh(p, param):
     test = "DFSzF3q3Q34OIq7QRGWNERLWIU4aIQ3"
@@ -120,17 +129,9 @@ def ssshh(p, param):
 
 def user_by_login(login):
     query = UserItem.query(UserItem.login == login)
-    user = query.fetch(1)
-    logger.info("user %s for login %s"%(user,login))
-    return user
-
-def validate_password(password):
-    #TODO check the password
-    return True
-
-def create_installation(device_id, device_token, cookie):
-    #TODO add (or update?) installation for the existing user
-    pass
+    users = query.fetch(1)
+    logger.info("user %s for login %s"%(users,login))
+    return users[0] if users and len(users) > 0 else None 
 
 def create_user_from_login_info(login_info, cookie):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0

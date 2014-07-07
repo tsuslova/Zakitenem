@@ -9,3 +9,5 @@ def out_error(response, error, status_code, http_code=0):
     response.headers.add_header("Content-Type", "application/json")
     response.out.write('{"error_message":"%s", "error_code":"%s"}' % (error, status_code))
     response.set_status(http_code)
+
+    

@@ -65,7 +65,7 @@ def login_info_from_data(data):
     login_info.device_token = login_info_json.get(constants.device_token_key)
     return login_info
 
-def login_info(login, device_id, device_token="", password=""):
+def create_login_info(login, device_id, device_token="", password=""):
     if len(login) == 0 or len(device_id) == 0:
         logger.warning("Required params not filled: %s(login) %s(device_id)"%(login, device_id))
     login_info = LoginInfo()
@@ -82,7 +82,7 @@ class AppInstallation(ndb.Model):
     timestamp = ndb.IntegerProperty(indexed=False) 
 
 
-def app_installation(device_id, device_token, cookie):
+def create_app_installation(device_id, device_token, cookie):
     app_install = AppInstallation(device_id=device_id,device_token=device_token,
                                           cookie=cookie)
     app_install.timestamp = trunc(time.time())
@@ -96,6 +96,7 @@ class UserItem(ndb.Model):
     
     gender = ndb.BooleanProperty()
     password = ndb.StringProperty(indexed=False)
+    some_data = ndb.StringProperty(indexed=False)
     
     #TODO need store userpic as a link 
     userpic = ndb.StringProperty(indexed=False)
@@ -117,11 +118,19 @@ class UserItem(ndb.Model):
         return json.dumps(resp)
     
     def validate_password(self, password):
-        #TODO check the password
-        return True
+        pass_empty = self.password == None or len(self.password) == 0
+        if pass_empty:
+            logger.info("User has empty password - no way to login with password")
+            return False
+        if password == None or len(password) == 0:
+            logger.info("Password is empty")
+            return False
+        password_hash = ssshh(password, self.some_data)
+        if password_hash == self.password: 
+            return True
+        return False
     
     def create_installation(self, device_id, device_token, cookie):
-        #TODO add (or update?) installation for the existing user
         app_install = None
         for each in self.app_installations:
             if each.device_id == device_id:
@@ -129,7 +138,7 @@ class UserItem(ndb.Model):
                 break
         if app_install == None:
             logger.info("Create a new AppInstallation")
-            app_install = app_installation(device_id=device_id,device_token=device_token,
+            app_install = create_app_installation(device_id=device_id,device_token=device_token,
                                           cookie=cookie)
             self.app_installations.append(app_install)
         else:
@@ -157,6 +166,7 @@ def create_user_from_login_info(login_info, cookie):
     user = UserItem()
     user.login = login_info.login
     user.password = password_hash
+    user.some_data = login_info.device_id
     user.create_installation(login_info.device_id, login_info.device_token, cookie)
     # put would be called from create_installation. it is not necessary here.  
     #user.put()

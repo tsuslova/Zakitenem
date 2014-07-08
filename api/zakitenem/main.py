@@ -22,7 +22,15 @@ from google.appengine.ext import deferred
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        hostname = self.request.headers.get('host')
+        self.response.headers.add_header("Content-Type", "application/json")
+        self.response.out.write("""
+              {
+                  "auth": "http://%s/api/auth",
+                  "logout": "http://%s/api/logout", 
+                  "password_tools": "http://%s/api/password/tools", 
+                  "password_request": "http://%s/api/password/request"
+              }""" % (hostname, hostname, hostname, hostname))
 
 class UpdateHandler(webapp2.RequestHandler):
     def get(self):
@@ -30,7 +38,7 @@ class UpdateHandler(webapp2.RequestHandler):
         self.response.out.write('Schema migration successfully initiated.')
         
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
+    ('/api/main', MainHandler),
     ('/api/auth', user_management.AuthHandler),
     ('/api/update_schema', UpdateHandler),
 ], debug=True)

@@ -1,5 +1,6 @@
 GET /main
 ===============
+curl -v http://localhost:8080/api/main
 Список всех доступных ресурсов API
 {
 "auth":"/auth",

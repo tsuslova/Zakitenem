@@ -139,6 +139,25 @@ class AuthHandlerTestCase(unittest.TestCase):
         self.assertEqual(login, user_dict[constants.login_key], 
                          "Requested login differs from response")
         
+
+class MainHandlerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub(True)
+    
+    def tearDown(self):
+        self.testbed.deactivate()
+        
+    def test_main(self):
+        logger.info("test_auth_with_pass_ok")
+        request = webapp2.Request.blank('/api/main')
+        response = request.get_response(main.app)
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict, None, "Main returns not json (%s)"%response)
+        
         
 if __name__ == "__main__":
     unittest.main()

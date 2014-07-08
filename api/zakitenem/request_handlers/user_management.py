@@ -17,7 +17,8 @@ class AuthHandler(webapp2.RequestHandler):
         #TODO check cookie generation
         logger.info("%s"%cookie) 
         #TODO: normal date
-        self.response.set_cookie("session_id", cookie, expires=datetime.datetime(2030, 11, 10))
+        expires = datetime.datetime.utcnow() + datetime.timedelta(days=30) # expires in 30 days
+        self.response.set_cookie("session_id", cookie, expires=expires)
         logger.info("Cookie is set")
         return cookie
     

@@ -22,7 +22,11 @@ class AuthHandler(webapp2.RequestHandler):
         logger.info("Cookie is set")
         return cookie
     
-
+    def write_user_2_resp(self, user):
+        self.response.headers.add_header("Content-Type", "application/json")
+        self.response.out.write(user.resp())
+        self.response.set_status(200)
+        
     def post(self, *args):
         try:
             logger.info("Authentication request")
@@ -48,9 +52,7 @@ class AuthHandler(webapp2.RequestHandler):
                 if user.validate_password(login_info.password):
                     user.create_installation(login_info.device_id, login_info.device_token, 
                                              self.set_cookie())
-                    #TODO: create app installation
-                    # a) if exists with the device_id - update cookie etc
-                    # b) else create the installation
+                    self.write_user_2_resp(user)
                 else:
                     request_utils.out_error(self.response, error_definitions.msg_wrong_password,
                                             error_definitions.code_wrong_password)
@@ -58,10 +60,7 @@ class AuthHandler(webapp2.RequestHandler):
                 logger.info("Going to create a user")
                 user = user_model.create_user_from_login_info(login_info, self.set_cookie())
                 
-                self.response.headers.add_header("Content-Type", "application/json")
-                self.response.out.write(user.resp())
-                
-                self.response.set_status(200)
+                self.write_user_2_resp(user)
         except Exception, err:
             request_utils.out_error(self.response, err, 400, 400)
 

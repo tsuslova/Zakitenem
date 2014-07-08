@@ -16,7 +16,6 @@ class AuthHandler(webapp2.RequestHandler):
         cookie = os.urandom(64).encode('base-64')
         #TODO check cookie generation
         logger.info("%s"%cookie) 
-        #TODO: normal date
         expires = datetime.datetime.utcnow() + datetime.timedelta(days=30) # expires in 30 days
         self.response.set_cookie("session_id", cookie, expires=expires)
         logger.info("Cookie is set")

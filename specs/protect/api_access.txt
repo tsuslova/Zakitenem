@@ -1,3 +1,13 @@
+Все картинки, CSS, Javascript лучше залить на Google Code и отдавать пользователям непосредственно с него. От нашего приложения пользователи будут получать только закешированный html, а все остальное запросы уже не будут нагружать его. Этим мы закрываем вторую и третью слабую сторону.
+http://code.google.com/p/app-engine-site-creator/source/browse/trunk/static/css/default.css
+
+Справа есть ссылка View raw file которая ведет на http://app-engine-site-creator.googlecode.com/svn/trunk/static/css/default.css
+
+Еще пример 
+исходник code.google.com/p/megascrum/source/browse/css/main.css
+raw megascrum.googlecode.com/hg/css/main.css
+
+
 import webapp2
 
 ALLOWED_APP_IDS = ('cp-thre-pio', 'r-two-deetu')

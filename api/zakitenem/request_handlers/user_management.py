@@ -38,7 +38,6 @@ class AuthHandler(webapp2.RequestHandler):
                 return
             
             user = user_model.user_by_login(login_info.login)
-                
             if (user):
                 if not login_info.password:
                     request_utils.out_error(self.response, error_definitions.msg_account_used, 

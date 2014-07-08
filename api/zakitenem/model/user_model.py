@@ -76,14 +76,17 @@ def login_info(login, device_id, device_token="", password=""):
     return login_info 
 
 class AppInstallation(ndb.Model):
-    device_id = ndb.StringProperty(indexed=False)
+    device_id = ndb.StringProperty()
     device_token = ndb.StringProperty(indexed=False)
     cookie = ndb.StringProperty()
-    timestamp = ndb.IntegerProperty() 
+    timestamp = ndb.IntegerProperty(indexed=False) 
 
-    def __init__(self, *args, **kwargs):
-        super(AppInstallation, self).__init__(*args, **kwargs)
-        self.timestamp = trunc(time.time())
+
+def app_installation(device_id, device_token, cookie):
+    app_install = AppInstallation(device_id=device_id,device_token=device_token,
+                                          cookie=cookie)
+    app_install.timestamp = trunc(time.time())
+    return app_install
     
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
@@ -92,7 +95,6 @@ class UserItem(ndb.Model):
     phone = ndb.StringProperty(indexed=False)
     
     gender = ndb.BooleanProperty()
-    #TODO! store password hash - not a password
     password = ndb.StringProperty(indexed=False)
     
     #TODO need store userpic as a link 
@@ -120,7 +122,21 @@ class UserItem(ndb.Model):
     
     def create_installation(self, device_id, device_token, cookie):
         #TODO add (or update?) installation for the existing user
-        pass
+        app_install = None
+        for each in self.app_installations:
+            if each.device_id == device_id:
+                app_install = each
+                break
+        if app_install == None:
+            logger.info("Create a new AppInstallation")
+            app_install = app_installation(device_id=device_id,device_token=device_token,
+                                          cookie=cookie)
+            self.app_installations.append(app_install)
+        else:
+            logger.info("app_install would be updated  (%s)"%(app_install))
+            app_install.populate(device_token=device_token, cookie=cookie)
+             
+        self.put()
     
 def ssshh(p, param):
     test = "DFSzF3q3Q34OIq7QRGWNERLWIU4aIQ3"
@@ -133,6 +149,7 @@ def user_by_login(login):
     logger.info("user %s for login %s"%(users,login))
     return users[0] if users and len(users) > 0 else None 
 
+@ndb.transactional
 def create_user_from_login_info(login_info, cookie):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
@@ -140,11 +157,8 @@ def create_user_from_login_info(login_info, cookie):
     user = UserItem()
     user.login = login_info.login
     user.password = password_hash
-    app_install = AppInstallation()
-    app_install.device_id = login_info.device_id
-    app_install.device_token=login_info.device_token
-    app_install.cookie = cookie
-    user.app_installations = [app_install]
-    user.put()
+    user.create_installation(login_info.device_id, login_info.device_token, cookie)
+    # put would be called from create_installation. it is not necessary here.  
+    #user.put()
     logger.info("user %s created"%(user))
     return user

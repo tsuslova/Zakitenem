@@ -16,7 +16,7 @@ class AuthHandler(webapp2.RequestHandler):
         cookie = os.urandom(64).encode('base-64')
         #TODO check cookie generation
         logger.info("%s"%cookie) 
-        expires = datetime.datetime.utcnow() + datetime.timedelta(days=30) # expires in 30 days
+        expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
         self.response.set_cookie("session_id", cookie, expires=expires)
         logger.info("Cookie is set")
         return cookie
@@ -43,18 +43,13 @@ class AuthHandler(webapp2.RequestHandler):
             
             user = user_model.user_by_login(login_info.login)
             if (user):
-                if not login_info.password:
-                    request_utils.out_error(self.response, error_definitions.msg_account_used, 
-                                            error_definitions.code_account_used)
-                    return
-                    
-                if user.validate_password(login_info.password):
+                (error_text, error_code) = user.validate_password(login_info.password) 
+                if error_text or error_code:
+                    request_utils.out_error(self.response, error_text, error_code)
+                else:
                     user.create_installation(login_info.device_id, login_info.device_token, 
                                              self.set_cookie())
                     self.write_user_2_resp(user)
-                else:
-                    request_utils.out_error(self.response, error_definitions.msg_wrong_password,
-                                            error_definitions.code_wrong_password)
             else:
                 logger.info("Going to create a user")
                 user = user_model.create_user_from_login_info(login_info, self.set_cookie())
@@ -64,3 +59,36 @@ class AuthHandler(webapp2.RequestHandler):
             request_utils.out_error(self.response, err, 400, 400)
 
 
+class LogoutHandler(webapp2.RequestHandler):
+    
+    def post(self, *args):
+        try:
+            logger.info("Authentication request")
+            login_info = user_model.login_info_from_data(self.request.body) #
+            logger.info("login_info %s"%login_info)
+            
+            if len(login_info.login) < 3: 
+                request_utils.out_error(self.response, error_definitions.msg_wrong_login, 
+                                        error_definitions.code_wrong_param)
+                return
+            if len(login_info.device_id) == 0:
+                request_utils.out_error(self.response, error_definitions.msg_wrong_device_id, 
+                                        error_definitions.code_wrong_param)
+                return
+            
+            user = user_model.user_by_login(login_info.login)
+            if (user):
+                (error_text, error_code) = user.validate_password(login_info.password) 
+                if error_code != 0:
+                    request_utils.out_error(self.response, error_text, error_code)
+                else:
+                    user.create_installation(login_info.device_id, login_info.device_token, 
+                                             self.set_cookie())
+                    self.write_user_2_resp(user)
+            else:
+                logger.info("Going to create a user")
+                user = user_model.create_user_from_login_info(login_info, self.set_cookie())
+                
+                self.write_user_2_resp(user)
+        except Exception, err:
+            request_utils.out_error(self.response, err, 400, 400)

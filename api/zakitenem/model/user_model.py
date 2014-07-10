@@ -8,7 +8,7 @@ import hashlib, binascii
 
 from math import trunc
 from constants import constants
- 
+from constants import error_definitions
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
@@ -44,7 +44,7 @@ class LoginInfo(ndb.Model):
     # required:
     login = ndb.StringProperty()
     device_id = ndb.StringProperty()
-    #optional
+    # optional
     password = ndb.StringProperty()
     device_token = ndb.StringProperty()
     
@@ -67,7 +67,7 @@ def login_info_from_data(data):
 
 def create_login_info(login, device_id, device_token="", password=""):
     if len(login) == 0 or len(device_id) == 0:
-        logger.warning("Required params not filled: %s(login) %s(device_id)"%(login, device_id))
+        logger.warning("Required params not filled: %s(login) %s(device_id)" % (login, device_id))
     login_info = LoginInfo()
     login_info.login = login
     login_info.password = password
@@ -79,14 +79,7 @@ class AppInstallation(ndb.Model):
     device_id = ndb.StringProperty()
     device_token = ndb.StringProperty(indexed=False)
     cookie = ndb.StringProperty()
-    timestamp = ndb.IntegerProperty(indexed=False) 
-
-
-def create_app_installation(device_id, device_token, cookie):
-    app_install = AppInstallation(device_id=device_id,device_token=device_token,
-                                          cookie=cookie)
-    app_install.timestamp = trunc(time.time())
-    return app_install
+    date = ndb.DateTimeProperty(auto_now_add=True)     
     
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
@@ -98,9 +91,9 @@ class UserItem(ndb.Model):
     password = ndb.StringProperty(indexed=False)
     some_data = ndb.StringProperty(indexed=False)
     
-    #TODO need store userpic as a link 
+    # TODO need store userpic as a link 
     userpic = ndb.StringProperty(indexed=False)
-    #TODO: how to store user region?
+    # TODO: how to store user region?
     region = ndb.StringProperty()
     
     app_installations = ndb.StructuredProperty(AppInstallation, repeated=True)
@@ -114,21 +107,22 @@ class UserItem(ndb.Model):
         user_data[constants.userpic_key] = self.userpic
         user_data[constants.region_key] = self.region
         resp = {constants.user_key:user_data}
-        logger.info("Resp %s"%resp)
+        logger.info("Resp %s" % resp)
         return json.dumps(resp)
     
     def validate_password(self, password):
         pass_empty = self.password == None or len(self.password) == 0
         if pass_empty:
             logger.info("User has empty password - no way to login with password")
-            return False
+            return error_definitions.msg_account_used, error_definitions.code_account_used
         if password == None or len(password) == 0:
             logger.info("Password is empty")
-            return False
+            return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
+        
         password_hash = ssshh(password, self.some_data)
         if password_hash == self.password: 
-            return True
-        return False
+            return None, 0
+        return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
     
     def create_installation(self, device_id, device_token, cookie):
         app_install = None
@@ -137,38 +131,47 @@ class UserItem(ndb.Model):
                 app_install = each
                 break
         if app_install == None:
-            logger.info("Create a new AppInstallation")
-            app_install = create_app_installation(device_id=device_id,device_token=device_token,
-                                          cookie=cookie)
+            logger.info("Create a new AppInstallation (parent %s)"%self.key)
+            app_install = AppInstallation(device_id=device_id, device_token=device_token,
+                                              cookie=cookie, parent=self.key)
             self.app_installations.append(app_install)
         else:
-            logger.info("app_install would be updated  (%s)"%(app_install))
+            logger.info("app_install would be updated  (%s)" % (app_install))
             app_install.populate(device_token=device_token, cookie=cookie)
-             
-        self.put()
+        
+        user_by_cookie = UserByCookieItem(cookie=cookie, user=self.key, parent=self.key)
+        ndb.put_multi([user_by_cookie,self])
+    
+class UserByCookieItem(ndb.Model):
+    cookie = ndb.StringProperty()
+    user = ndb.KeyProperty(UserItem)
     
 def ssshh(p, param):
     test = "DFSzF3q3Q34OIq7QRGWNERLWIU4aIQ3"
-    result = hashlib.sha256('%s%s%s'%(test, p, param)).hexdigest()
+    result = hashlib.sha256('%s%s%s' % (test, p, param)).hexdigest()
     return result
 
+def users():
+    query = UserItem.query()
+    print query.fetch(10)
+    
 def user_by_login(login):
     query = UserItem.query(UserItem.login == login)
     users = query.fetch(1)
-    logger.info("user %s for login %s"%(users,login))
+    logger.info("user %s for login %s" % (users, login))
     return users[0] if users and len(users) > 0 else None 
 
-@ndb.transactional
+@ndb.transactional()
 def create_user_from_login_info(login_info, cookie):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
-    logger.info("password  (%s)"%(password_hash))
-    user = UserItem()
+    logger.info("password  (%s)" % (password_hash))
+    user = UserItem(id=login_info.login)
     user.login = login_info.login
     user.password = password_hash
     user.some_data = login_info.device_id
     user.create_installation(login_info.device_id, login_info.device_token, cookie)
     # put would be called from create_installation. it is not necessary here.  
-    #user.put()
-    logger.info("user %s created"%(user))
+    user.put()
+    logger.info("user %s created" % (user))
     return user

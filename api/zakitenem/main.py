@@ -19,6 +19,7 @@ from errors_handlers import handle_404
 from request_handlers import user_management
 from tools import update_schema 
 from google.appengine.ext import deferred
+import run_unit_tests
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -40,6 +41,9 @@ class UpdateHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/api/main', MainHandler),
     ('/api/auth', user_management.AuthHandler),
+    ('/api/logout', user_management.LogoutHandler),
+    
+    ('/unit_tests', run_unit_tests.RunUnitTests),
     ('/api/update_schema', UpdateHandler),
 ], debug=True)
 

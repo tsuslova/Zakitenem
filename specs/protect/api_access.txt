@@ -1,3 +1,17 @@
+ммм...) Разжевано:)
+http://www.brankovukelic.com/2014/03/google-appengine-high-replication.html
+
+Вот все про доступ к API только из приложения:
+Переключем дефолтную версию на mobile и идем конфигурить ее сюда:
+https://zakitenem.appspot.com/admin/configure.jsp
+Здесь описание как создавать для всего этого дела openid:
+https://developers.google.com/appengine/docs/java/endpoints/auth#creating-ios-client-id
+
+
+http://googleappengine.ru/docs/datastore/overview.html - GAE на русском
+http://zakitenem.appspot.com/api/main
+webapp2 routing No handlers matched this URL.
+
 Все картинки, CSS, Javascript лучше залить на Google Code и отдавать пользователям непосредственно с него. От нашего приложения пользователи будут получать только закешированный html, а все остальное запросы уже не будут нагружать его. Этим мы закрываем вторую и третью слабую сторону.
 http://code.google.com/p/app-engine-site-creator/source/browse/trunk/static/css/default.css
 

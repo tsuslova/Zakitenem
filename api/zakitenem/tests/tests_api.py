@@ -30,7 +30,7 @@ class Error404TestCase(unittest.TestCase):
             def write(self, s):
                 pass
         sys.stderr = NullWriter()
-         
+          
         request = webapp2.Request.blank('/page404_which_was_never_created')
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
@@ -41,11 +41,16 @@ class Error404TestCase(unittest.TestCase):
 class AuthHandlerTestCase(unittest.TestCase):
 
     def setUp(self):
+        from google.appengine.datastore import datastore_stub_util
         self.testbed = testbed.Testbed()
         self.testbed.activate()
-        self.testbed.init_datastore_v3_stub()
+        
+        # Create a consistency policy that will simulate the High Replication consistency model.
+        self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
+        
+        self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
         self.testbed.init_memcache_stub(True)
-    
+        
     def tearDown(self):
         self.testbed.deactivate()
         
@@ -68,7 +73,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         request.method = 'GET'
         response = request.get_response(main.app)
         self.assertEqual(response.status_int, 405)
-        
+         
     def test_new_user_auth_ok(self):
         logger.info("test_new_user_auth_ok")
         request = webapp2.Request.blank('/api/auth')
@@ -82,20 +87,21 @@ class AuthHandlerTestCase(unittest.TestCase):
                             "Login should return a user dictionary (got: %s)" % user_dict)
         self.assertEqual(login_info.login, user_dict[constants.login_key], 
                          "Requested login differs from response")
-            
+
     def test_auth_existing_no_pass_nok(self):
         logger.info("test_auth_existing_no_pass_nok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         login_info = self.login_info_no_pass()
+        #
+        user_model.create_user_from_login_info(login_info,"testcookie")
+        
         request.body = login_info.data()
-        request.get_response(main.app)
-          
-        #Login the same time with the existing account 
-        request.body = login_info.data()
+        user_model.users()
+        
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
-          
+        
         self.assertNotEqual(response_dict.get(constants.error_key), None, 
             "Existing account authorization without password should return an error")
         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
@@ -106,21 +112,21 @@ class AuthHandlerTestCase(unittest.TestCase):
         logger.info("test_auth_existing_with_pass_ok")
         login_info = self.login_info_pass()
         user_model.create_user_from_login_info(login_info, "123")
-         
+          
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         request.body = login_info.data()
         response = request.get_response(main.app)
-         
+          
         response_dict = json.loads(response.body)
-        
+         
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth with existing account with correct password should not return an error")
         user_dict = response_dict.get(constants.user_key)
         self.assertEqual(login_info.login, user_dict[constants.login_key], 
                         "Requested login differs from response")
         # TODO: check that a new AppInstallation was created for the account
-        
+         
     def test_auth_with_pass_ok(self):
         logger.info("test_auth_with_pass_ok")
         request = webapp2.Request.blank('/api/auth')
@@ -150,16 +156,14 @@ class MainHandlerTestCase(unittest.TestCase):
     
     def tearDown(self):
         self.testbed.deactivate()
-        
+         
     def test_main(self):
         logger.info("test_auth_with_pass_ok")
         request = webapp2.Request.blank('/api/main')
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict, None, "Main returns not json (%s)"%response)
-        
-        
+
 if __name__ == "__main__":
     unittest.main()
-        
-        
+

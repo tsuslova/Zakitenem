@@ -90,14 +90,14 @@ class AuthHandlerTestCase(unittest.TestCase):
 
     def test_auth_existing_no_pass_nok(self):
         logger.info("test_auth_existing_no_pass_nok")
-        request = webapp2.Request.blank('/api/auth')
-        request.method = 'POST'
         login_info = self.login_info_no_pass()
         #
         user_model.create_user_from_login_info(login_info,"testcookie")
         
+        request = webapp2.Request.blank('/api/auth')
+        request.method = 'POST'
         request.body = login_info.data()
-        user_model.users()
+        user_model.debug_print_users()
         
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)

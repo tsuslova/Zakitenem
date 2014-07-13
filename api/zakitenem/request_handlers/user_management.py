@@ -63,7 +63,7 @@ class LogoutHandler(webapp2.RequestHandler):
     
     def post(self, *args):
         try:
-            logger.info("Authentication request")
+            logger.info("Logout request")
             login_info = user_model.login_info_from_data(self.request.body) #
             logger.info("login_info %s"%login_info)
             

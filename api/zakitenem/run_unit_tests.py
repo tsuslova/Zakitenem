@@ -31,11 +31,11 @@ class RunUnitTests(webapp2.RequestHandler):
  
     def _findTestCases(self):
         import inspect, sys
-        from tests import tests_api
+        from test import test_api
         testCases = []
-        for class_name, obj in inspect.getmembers(tests_api):
+        for class_name, obj in inspect.getmembers(test_api):
             if inspect.isclass(obj):
-                testCases.append(getattr(tests_api, class_name))
+                testCases.append(getattr(test_api, class_name))
  
         return testCases        
  

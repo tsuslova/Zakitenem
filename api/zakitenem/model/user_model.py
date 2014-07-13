@@ -151,21 +151,24 @@ def ssshh(p, param):
     result = hashlib.sha256('%s%s%s' % (test, p, param)).hexdigest()
     return result
 
-def users():
+def debug_print_users():
     query = UserItem.query()
     print query.fetch(10)
     
 def user_by_login(login):
-    query = UserItem.query(UserItem.login == login)
-    users = query.fetch(1)
-    logger.info("user %s for login %s" % (users, login))
-    return users[0] if users and len(users) > 0 else None 
+    user = UserItem.get_by_id(id=login)
+    logger.info("user %s for login %s" % (user, login))
+    return user 
 
 @ndb.transactional()
 def create_user_from_login_info(login_info, cookie):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
     logger.info("password  (%s)" % (password_hash))
+    user = UserItem.get_by_id(id=login_info.login)
+    if user:
+        logger.critical("user %s is already created" % (user))
+        return None
     user = UserItem(id=login_info.login)
     user.login = login_info.login
     user.password = password_hash
@@ -175,3 +178,9 @@ def create_user_from_login_info(login_info, cookie):
     user.put()
     logger.info("user %s created" % (user))
     return user
+    
+        
+        
+        
+        
+        

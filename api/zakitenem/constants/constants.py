@@ -2,6 +2,8 @@ error_key = "error_message"
 error_code_key = "error_code"
 
 # Authorisation
+cookie_key = "session_id"
+
 login_key = "login"
 password_key = "password"
 device_id_key = "device_id"

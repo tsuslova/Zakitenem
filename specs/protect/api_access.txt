@@ -1,3 +1,5 @@
+@webapp2.cached_property
+
 ммм...) Разжевано:)
 http://www.brankovukelic.com/2014/03/google-appengine-high-replication.html
 

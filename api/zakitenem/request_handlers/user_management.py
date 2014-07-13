@@ -2,7 +2,7 @@ import webapp2
 import logging
 import request_utils
 from model import user_model
-from constants import error_definitions
+from constants import error_definitions, constants
 import datetime
 
 #TODO remove global loggers?
@@ -17,7 +17,7 @@ class AuthHandler(webapp2.RequestHandler):
         #TODO check cookie generation
         logger.info("%s"%cookie) 
         expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
-        self.response.set_cookie("session_id", cookie, expires=expires)
+        self.response.set_cookie(constants.cookie_key, cookie, expires=expires)
         logger.info("Cookie is set")
         return cookie
     
@@ -64,31 +64,17 @@ class LogoutHandler(webapp2.RequestHandler):
     def post(self, *args):
         try:
             logger.info("Logout request")
-            login_info = user_model.login_info_from_data(self.request.body) #
-            logger.info("login_info %s"%login_info)
-            
-            if len(login_info.login) < 3: 
-                request_utils.out_error(self.response, error_definitions.msg_wrong_login, 
-                                        error_definitions.code_wrong_param)
-                return
-            if len(login_info.device_id) == 0:
-                request_utils.out_error(self.response, error_definitions.msg_wrong_device_id, 
-                                        error_definitions.code_wrong_param)
-                return
-            
-            user = user_model.user_by_login(login_info.login)
-            if (user):
-                (error_text, error_code) = user.validate_password(login_info.password) 
-                if error_code != 0:
-                    request_utils.out_error(self.response, error_text, error_code)
-                else:
-                    user.create_installation(login_info.device_id, login_info.device_token, 
-                                             self.set_cookie())
-                    self.write_user_2_resp(user)
-            else:
-                logger.info("Going to create a user")
-                user = user_model.create_user_from_login_info(login_info, self.set_cookie())
-                
-                self.write_user_2_resp(user)
+            cookie = self.request.cookies.get(constants.cookie_key)
+            logger.info("cookie = %s"%cookie)
+            self.response.delete_cookie(constants.cookie_key)
         except Exception, err:
             request_utils.out_error(self.response, err, 400, 400)
+            
+
+
+
+
+
+
+
+

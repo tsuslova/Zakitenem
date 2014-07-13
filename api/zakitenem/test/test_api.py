@@ -131,8 +131,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         logger.info("test_auth_with_pass_ok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login = "Toto1"
-        login_info = user_model.create_login_info(login, "123", "", "test")
+        login_info = self.login_info_pass()
         request.body = login_info.data()
         # Create a user:
         request.get_response(main.app)
@@ -142,10 +141,10 @@ class AuthHandlerTestCase(unittest.TestCase):
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
         user_dict = response_dict.get(constants.user_key)
-        self.assertEqual(login, user_dict[constants.login_key], 
+        self.assertEqual(login_info.login, user_dict[constants.login_key], 
                          "Requested login differs from response")
         
-
+        
 class MainHandlerTestCase(unittest.TestCase):
 
     def setUp(self):

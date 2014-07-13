@@ -13,8 +13,8 @@ curl -v http://localhost:8080/api/main
 POST /auth 
 ===============
 sample:
-curl -v -b cookies.txt -c cookies.txt -d '{"login":"todtcdocdcd4", "device_id":"2123", "password":"234"}' http://localhost:8080/api/auth
-curl -v -b cookies.txt -c cookies.txt -d '{"login":"todtcdocdcd4", "device_id":"2123"}' http://localhost:8080/api/auth
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"sldifs", "device_id":"2123", "password":"234"}' http://localhost:8080/api/auth
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"dfgvjnv", "device_id":"2123"}' http://localhost:8080/api/auth
 
 PARAM {"login":"Toto", "password":"test", "device_id":"id", "device_token":"token"}
 login - required
@@ -89,5 +89,11 @@ POST /password/set
 Важно: вызов только из под супер-пупер админа
 PARAM {"login":"pupkin", "email":"pupkin@mail.ru", "password":"193rfhwiHSD"}
 Генерит пароль, устанавливает его по логину "login", оправляет его на переданный "email". Обязательно: unset_cookie для юзера
+
+
+POST /logout
+==============================
+curl -v -b cookies.txt -c cookies.txt -H "Content-length:0" -X POST http://localhost:8080/api/logout
+Выход из аккаунта по куке. В приложении также нужно очищать сохраненные данные.
 
 

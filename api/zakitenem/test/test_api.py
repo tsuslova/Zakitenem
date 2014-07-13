@@ -144,6 +144,22 @@ class AuthHandlerTestCase(unittest.TestCase):
         self.assertEqual(login_info.login, user_dict[constants.login_key], 
                          "Requested login differs from response")
         
+    def test_logout(self):
+        logger.info("test_logout")
+        request = webapp2.Request.blank('/api/auth')
+        request.method = 'POST'
+        login_info = self.login_info_pass()
+        request.body = login_info.data()
+        request.get_response(main.app)
+        
+        logout_request = webapp2.Request.blank('/api/logout')
+        logout_request.method = 'POST'
+        logout_request.get_response(main.app)
+        
+        response = request.get_response(main.app)
+        response_dict = json.loads(response.body)
+        self.assertEqual(response_dict.get(constants.error_key), None, 
+            "Auth request (with password) after logout should not return an error")
         
 class MainHandlerTestCase(unittest.TestCase):
 

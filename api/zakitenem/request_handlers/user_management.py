@@ -4,6 +4,7 @@ import request_utils
 from model import user_model
 from constants import error_definitions, constants
 import datetime
+import json
 
 #TODO remove global loggers?
 logger = logging.getLogger()
@@ -13,7 +14,8 @@ class AuthHandler(webapp2.RequestHandler):
     def set_cookie(self):
         import os
         logger.info("HERE")
-        cookie = os.urandom(64).encode('base-64')
+        cookie = os.urandom(64).encode("base-64")
+        cookie = cookie.replace("\n", "")
         #TODO check cookie generation
         logger.info("%s"%cookie) 
         expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
@@ -64,13 +66,39 @@ class LogoutHandler(webapp2.RequestHandler):
     def post(self, *args):
         try:
             logger.info("Logout request")
-            cookie = self.request.cookies.get(constants.cookie_key)
-            logger.info("cookie = %s"%cookie)
             self.response.delete_cookie(constants.cookie_key)
         except Exception, err:
             request_utils.out_error(self.response, err, 400, 400)
-            
 
+
+class PasswordRequestsHandler(webapp2.RequestHandler):
+    
+    def get(self, api_method):
+        try:
+            if api_method == "tools":
+                logger.info("tools request")
+                cookie = self.request.cookies.get(constants.cookie_key)
+                logger.info("cookie = %s"%cookie)
+                user = user_model.user_by_cookie(cookie)
+                tools = {}
+                if user.email and len(user.email) > 0:
+                    tools["email"] = user.email
+                pushable_installations = []
+                for inst in user.app_installations:
+                    if inst.device_token and len (inst.device_token) > 0:
+                        pushable_installations.append(request_utils.human_datetime(inst.date))
+                if len(pushable_installations) > 0:
+                    tools["push"] = pushable_installations
+                if len(tools.keys()) > 0:
+                    self.response.headers.add_header("Content-Type", "application/json")
+                    resp = {"tools":tools}
+                    self.response.out.write(json.dumps(resp))
+                else:
+                    request_utils.out_error(self.response, error_definitions.msg_no_tools, 
+                        error_definitions.code_no_tools)
+        except Exception, err:
+            request_utils.out_error(self.response, err, 400, 400)
+            
 
 
 

@@ -11,3 +11,5 @@ def out_error(response, error, status_code, http_code=0):
     response.set_status(http_code)
 
     
+def human_datetime(date):
+    return date.strftime("%H:%M %d %B %Y")

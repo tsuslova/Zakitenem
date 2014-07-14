@@ -17,3 +17,6 @@ msg_frequent_request = "Too frequent request"
 code_wrong_param = 100503
 msg_wrong_login = "Wrong login"
 msg_wrong_device_id = "Wrong device_id"
+
+code_no_tools = 100600
+msg_no_tools = "No tools"

@@ -85,7 +85,7 @@ class UserItem(ndb.Model):
     login = ndb.StringProperty()
     
     email = ndb.StringProperty(indexed=False)
-    phone = ndb.StringProperty(indexed=False)
+    phone = ndb.StringProperty()
     
     gender = ndb.BooleanProperty()
     password = ndb.StringProperty(indexed=False)
@@ -139,9 +139,8 @@ class UserItem(ndb.Model):
             logger.info("app_install would be updated  (%s)" % (app_install))
             app_install.populate(device_token=device_token, cookie=cookie)
         
-        user_by_cookie = UserByCookieItem(cookie=cookie, user=self.key, parent=self.key)
-        ndb.put_multi([user_by_cookie,self])
-    
+        self.put()
+
 class UserByCookieItem(ndb.Model):
     cookie = ndb.StringProperty()
     user = ndb.KeyProperty(UserItem)
@@ -160,7 +159,13 @@ def user_by_login(login):
     logger.info("user %s for login %s" % (user, login))
     return user 
 
-@ndb.transactional()
+def user_by_cookie(cookie):
+    user_by_cookie = UserByCookieItem.get_by_id(id=cookie)
+    user = user_by_cookie.user.get()
+    logger.info("user %s for cookie %s" % (user, cookie))
+    return user
+
+@ndb.transactional(xg=True)
 def create_user_from_login_info(login_info, cookie):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
@@ -174,8 +179,8 @@ def create_user_from_login_info(login_info, cookie):
     user.password = password_hash
     user.some_data = login_info.device_id
     user.create_installation(login_info.device_id, login_info.device_token, cookie)
-    # put would be called from create_installation. it is not necessary here.  
-    user.put()
+    user_by_cookie = UserByCookieItem(id=cookie, cookie=cookie, user=user.key)  
+    ndb.put_multi([user_by_cookie, user])
     logger.info("user %s created" % (user))
     return user
     

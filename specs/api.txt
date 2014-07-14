@@ -13,7 +13,7 @@ curl -v http://localhost:8080/api/main
 POST /auth 
 ===============
 sample:
-curl -v -b cookies.txt -c cookies.txt -d '{"login":"sldifs", "device_id":"2123", "password":"234"}' http://localhost:8080/api/auth
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://localhost:8080/api/auth
 curl -v -b cookies.txt -c cookies.txt -d '{"login":"dfgvjnv", "device_id":"2123"}' http://localhost:8080/api/auth
 
 PARAM {"login":"Toto", "password":"test", "device_id":"id", "device_token":"token"}
@@ -34,7 +34,7 @@ Response:
     
 
  Error cases:
- Common format: {"error_message":"error text", "error_code": 100500}
+ Common format: {"error_message":"error text", "error_code": "100500"}
  - error_code = 100500
 	"error_message":"Account used".
 	Поведение приложения: предложить вбить пользователю пароль, если это его аккаунт или выбрать себе другой аккаунт. 
@@ -53,14 +53,16 @@ Response:
 
 GET /password/tools
 ==============================
+curl -v -b cookies.txt -c cookies.txt http://localhost:8080/api/password/tools
+
 OK case: 
 - status code 200 
-{"tools":{"email","push":("22/09/2014", "02/10/2014")}}. 
+{"tools":{"email":"test@mail.ru","push":("22/09/2014", "02/10/2014")}}. 
 Показать пользователю, какими способами он может получить пароль. 
 Варианты tool: email, push, в дальнейшем добавится sms. Если девайсов зарегано несколько, можно предложить выбрать на какой послать по дате регистрации.
 
 Error cases: 
-Common format: {"error_message":"error text", "error_code": 100600}
+Common format: {"error_message":"error text", "error_code": "100600"}
  - error_code = 100600
 	"error_message":"No tools".
 	Шлем юзера в баню. Пусть достает primary device, вбивает там email, разрешает пуши и т.д.
@@ -73,12 +75,12 @@ PARAM {"tool":"email"}
 	Пароль можно получить push-нотификацией на primary device или получить по email (в дальнейшем добавится sms), если были заведены необходимые данные/разрешены пуши.
 OK cases: 
 - status code 200 
-{"tool":"email"} Показать пользователю, что пароль отправлен по email. Вернуль на экран аутентификации.
+{"tool":"email"} Показать пользователю, что пароль отправлен по email. Вернуть на экран логина.
 - status code 200 
-{"tool":"push"} Показать пользователю, что пароль отправлен в нотификации. Вернуль на экран аутентификации.
+{"tool":"push"} Показать пользователю, что пароль отправлен в нотификации. Вернуть на экран логина.
 
 Error cases: 
-Common format: {"error_message":"error text", "error_code": 100700}
+Common format: {"error_message":"error text", "error_code": "100700"}
  - error_code = 100600
 	"error_message":"Account used".
 

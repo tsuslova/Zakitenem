@@ -37,7 +37,27 @@ class Error404TestCase(unittest.TestCase):
         self.assertNotEqual(response_dict, None)
         self.assertEqual(response_dict[constants.error_key], u"No such page")
 
+#Test-data helpers
+def login_info_pass():
+    login = "Toto4"
+    device_id = "dsfbg4i"
+    password = "4dssfgsf3"
+    return user_model.create_login_info(login, device_id, "", password)
+    
+def login_info_no_pass():
+    login = "Toto4"
+    device_id = "dsfbg4i"
+    return user_model.create_login_info(login, device_id, "", "")
 
+def authorized_cookie():
+    request = webapp2.Request.blank('/api/auth')
+    request.method = 'POST'
+    login_info = login_info_pass()
+    request.body = login_info.data()
+    # Create a user:
+    response = request.get_response(main.app)
+    return response.headers["Set-Cookie"]
+    
 class AuthHandlerTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -53,18 +73,6 @@ class AuthHandlerTestCase(unittest.TestCase):
         
     def tearDown(self):
         self.testbed.deactivate()
-        
-    #Test-data helpers
-    def login_info_pass(self):
-        login = "Toto4"
-        device_id = "dsfbg4i"
-        password = "4dssfgsf3"
-        return user_model.create_login_info(login, device_id, "", password)
-        
-    def login_info_no_pass(self):
-        login = "Toto4"
-        device_id = "dsfbg4i"
-        return user_model.create_login_info(login, device_id, "", "")
     
     # Tests:
     def test_error_auth_get(self):
@@ -78,7 +86,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         logger.info("test_new_user_auth_ok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login_info = self.login_info_no_pass()
+        login_info = login_info_no_pass()
         request.body = login_info.data()
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
@@ -90,7 +98,7 @@ class AuthHandlerTestCase(unittest.TestCase):
 
     def test_auth_existing_no_pass_nok(self):
         logger.info("test_auth_existing_no_pass_nok")
-        login_info = self.login_info_no_pass()
+        login_info = login_info_no_pass()
         #
         user_model.create_user_from_login_info(login_info,"testcookie")
         
@@ -110,7 +118,7 @@ class AuthHandlerTestCase(unittest.TestCase):
     
     def test_auth_existing_with_pass_ok(self):
         logger.info("test_auth_existing_with_pass_ok")
-        login_info = self.login_info_pass()
+        login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info, "123")
           
         request = webapp2.Request.blank('/api/auth')
@@ -131,7 +139,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         logger.info("test_auth_with_pass_ok")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login_info = self.login_info_pass()
+        login_info = login_info_pass()
         request.body = login_info.data()
         # Create a user:
         request.get_response(main.app)
@@ -148,7 +156,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         logger.info("test_logout")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
-        login_info = self.login_info_pass()
+        login_info = login_info_pass()
         request.body = login_info.data()
         request.get_response(main.app)
         
@@ -160,6 +168,32 @@ class AuthHandlerTestCase(unittest.TestCase):
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth request (with password) after logout should not return an error")
+        
+
+class PasswordHandlerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        from google.appengine.datastore import datastore_stub_util
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        
+        # Create a consistency policy that will simulate the High Replication consistency model.
+        self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
+        
+        self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
+        self.testbed.init_memcache_stub(True)
+        
+    def tearDown(self):
+        self.testbed.deactivate()
+        
+    def test_no_password_tools(self):
+        cookie = authorized_cookie()
+        request = webapp2.Request.blank('/api/password/tools')
+        request.headers["Cookie"] = cookie
+        response = request.get_response(main.app)
+        response_dict = json.loads(response.body)
+        self.assertEqual(int(response_dict.get(constants.error_code_key)), 
+                         error_definitions.code_no_tools)
         
 class MainHandlerTestCase(unittest.TestCase):
 

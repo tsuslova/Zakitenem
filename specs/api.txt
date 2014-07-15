@@ -13,8 +13,10 @@ curl -v http://localhost:8080/api/main
 POST /auth 
 ===============
 sample:
-curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://localhost:8080/api/auth
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login1", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://localhost:8080/api/auth
 curl -v -b cookies.txt -c cookies.txt -d '{"login":"dfgvjnv", "device_id":"2123"}' http://localhost:8080/api/auth
+
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login1", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://zakitenem.appspot.com/api/auth
 
 PARAM {"login":"Toto", "password":"test", "device_id":"id", "device_token":"token"}
 login - required
@@ -54,6 +56,7 @@ Response:
 GET /password/tools
 ==============================
 curl -v -b cookies.txt -c cookies.txt http://localhost:8080/api/password/tools
+curl -v -b cookies.txt -c cookies.txt http://zakitenem.appspot.com/api/password/tools
 
 OK case: 
 - status code 200 
@@ -66,10 +69,13 @@ Common format: {"error_message":"error text", "error_code": "100600"}
  - error_code = 100600
 	"error_message":"No tools".
 	Шлем юзера в баню. Пусть достает primary device, вбивает там email, разрешает пуши и т.д.
-	Если primary device уже ушел, предлагаем написать письмо в тех поддержку, мол, "это я, я - Вася Пупкин! Помнишь давал тебе Infinity-board затестить? А теперь твое приложение меня с нового iPhone не пускает..." Если тех.поддержка не пропила остатки памяти и вспомнила тот случай, то временно задизаблит пользователя методом установит 
+	Если primary device уже ушел, предлагаем написать письмо в тех поддержку, мол, "это я, я - Вася Пупкин! Помнишь давал тебе Infinity-board затестить? А теперь твое приложение меня с нового iPhone не пускает..." Если тех.поддержка не пропила остатки памяти и вспомнила тот случай, то временно задизаблит пользователя.
+TODO: алгоритм блокирования пользователя??
 
 POST /password/request 
 ==============================
+curl -v -b cookies.txt -c cookies.txt -d '{"tool":"email"}' http://localhost:8080/api/password/request
+curl -v -b cookies.txt -c cookies.txt -d '{"tool":"email"}' http://zakitenem.appspot.com/api/password/request
 PARAM {"tool":"email"}
 Варианты tool: email, push, в дальнейшем добавится sms
 	Пароль можно получить push-нотификацией на primary device или получить по email (в дальнейшем добавится sms), если были заведены необходимые данные/разрешены пуши.
@@ -81,7 +87,7 @@ OK cases:
 
 Error cases: 
 Common format: {"error_message":"error text", "error_code": "100700"}
- - error_code = 100600
+ - error_code = 100700
 	"error_message":"Account used".
 
 

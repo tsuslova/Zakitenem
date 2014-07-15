@@ -82,16 +82,16 @@ class PasswordRequestsHandler(webapp2.RequestHandler):
                 user = user_model.user_by_cookie(cookie)
                 tools = {}
                 if user.email and len(user.email) > 0:
-                    tools["email"] = user.email
+                    tools[constants.option_email] = user.email
                 pushable_installations = []
                 for inst in user.app_installations:
                     if inst.device_token and len (inst.device_token) > 0:
                         pushable_installations.append(request_utils.human_datetime(inst.date))
                 if len(pushable_installations) > 0:
-                    tools["push"] = pushable_installations
+                    tools[constants.option_push] = pushable_installations
                 if len(tools.keys()) > 0:
                     self.response.headers.add_header("Content-Type", "application/json")
-                    resp = {"tools":tools}
+                    resp = {constants.tools_key:tools}
                     self.response.out.write(json.dumps(resp))
                 else:
                     request_utils.out_error(self.response, error_definitions.msg_no_tools, 
@@ -100,7 +100,28 @@ class PasswordRequestsHandler(webapp2.RequestHandler):
             request_utils.out_error(self.response, err, 400, 400)
             
 
-
+    def post(self, api_method):
+        try:
+            resp = None
+            if api_method == "request":
+                logger.info("request password")
+                tool_json = json.loads(self.request.body)
+                tool = tool_json[constants.tool_key]
+                print tool
+                cookie = self.request.cookies.get(constants.cookie_key)
+                logger.info("cookie = %s"%cookie)
+                user = user_model.user_by_cookie(cookie)
+                
+                user.send_password(tool)
+                resp = {constants.tool_key:tool}
+                print resp
+            if resp:
+                self.response.headers.add_header("Content-Type", "application/json")
+                self.response.out.write(json.dumps(resp))
+        except Exception, err:
+            print err
+            request_utils.out_error(self.response, err, 400, 400)
+        
 
 
 

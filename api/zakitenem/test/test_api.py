@@ -39,20 +39,27 @@ class Error404TestCase(unittest.TestCase):
 
 #Test-data helpers
 def login_info_pass():
+    login = "Toto_no_tools"
+    device_id = "dsfbg4i"
+    device_token = ""
+    password = "4dssfgsf3"
+    return user_model.create_login_info(login, device_id, device_token, password)
+    
+def login_info_device_token():
     login = "Toto4"
     device_id = "dsfbg4i"
+    device_token = "dsfbg4i"
     password = "4dssfgsf3"
-    return user_model.create_login_info(login, device_id, "", password)
-    
+    return user_model.create_login_info(login, device_id, device_token, password)
+
 def login_info_no_pass():
     login = "Toto4"
     device_id = "dsfbg4i"
     return user_model.create_login_info(login, device_id, "", "")
 
-def authorized_cookie():
+def authorized_cookie(login_info):
     request = webapp2.Request.blank('/api/auth')
     request.method = 'POST'
-    login_info = login_info_pass()
     request.body = login_info.data()
     # Create a user:
     response = request.get_response(main.app)
@@ -187,13 +194,27 @@ class PasswordHandlerTestCase(unittest.TestCase):
         self.testbed.deactivate()
         
     def test_no_password_tools(self):
-        cookie = authorized_cookie()
+        cookie = authorized_cookie(login_info_pass())
         request = webapp2.Request.blank('/api/password/tools')
         request.headers["Cookie"] = cookie
         response = request.get_response(main.app)
         response_dict = json.loads(response.body)
         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
                          error_definitions.code_no_tools)
+        
+# No way to test mail sending from testbed((         
+#     def test_request_password(self):
+#         cookie = authorized_cookie(login_info_device_token())
+#         request = webapp2.Request.blank('/api/password/request')
+#         request.method = 'POST'
+#         tool_data = {constants.tool_key:constants.option_email}
+#         request.body = json.dumps(tool_data)
+#         request.headers["Cookie"] = cookie
+#         response = request.get_response(main.app)
+#         response_dict = json.loads(response.body)
+#         self.assertEqual(response_dict.get(constants.tool_key)), 
+#                          constants.push_key)
+        
         
 class MainHandlerTestCase(unittest.TestCase):
 

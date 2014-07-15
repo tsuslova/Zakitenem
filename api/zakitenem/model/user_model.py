@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+from google.appengine.api import mail
 
 import logging
 import datetime
@@ -7,8 +8,8 @@ import json
 import hashlib, binascii
 
 from math import trunc
-from constants import constants
-from constants import error_definitions
+from constants import constants, error_definitions, locale
+
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
@@ -140,6 +141,26 @@ class UserItem(ndb.Model):
             app_install.populate(device_token=device_token, cookie=cookie)
         
         self.put()
+        
+    def send_password(self, tool):
+        import os
+        password = os.urandom(8).encode("base-64")
+        logger.info("generate password: %s"%password)
+        if constants.option_email == tool:
+            sender = "Support <%s>"%constants.zakitenem_email
+            to = "%s <%s>"%(self.login,self.email)
+            body = locale.resstore_pass_body%password
+            logger.info("send email from: %s to : %s"%(sender,to))
+            mail.send_mail(sender=sender, to=to,
+              subject=locale.resstore_pass_subject,
+              body="test")
+            
+            logger.info("save its hash to db")
+            self.password = ssshh(password, self.some_data)
+            self.put()
+        if constants.option_push == tool:
+            logger.info("TODO: send push")
+                
 
 class UserByCookieItem(ndb.Model):
     cookie = ndb.StringProperty()
@@ -161,6 +182,7 @@ def user_by_login(login):
 
 def user_by_cookie(cookie):
     user_by_cookie = UserByCookieItem.get_by_id(id=cookie)
+    print user_by_cookie
     user = user_by_cookie.user.get()
     logger.info("user %s for cookie %s" % (user, cookie))
     return user

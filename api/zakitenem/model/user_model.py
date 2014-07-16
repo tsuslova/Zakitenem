@@ -162,7 +162,15 @@ class UserItem(ndb.Model):
         if constants.option_push == tool:
             logger.info("TODO: send push")
                 
+    def set_properties(self, update_json):
+        for key, val in update_json.iteritems():
+            if key in self.updatable_properties:
+                if key == "gender":
+                    self.gender = True if val > 0 else False
+                else: 
+                    setattr(self, key, val)
 
+                
 class UserByCookieItem(ndb.Model):
     cookie = ndb.StringProperty()
     user = ndb.KeyProperty(UserItem)

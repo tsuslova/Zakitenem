@@ -120,7 +120,26 @@ class PasswordRequestsHandler(webapp2.RequestHandler):
             request_utils.out_error(self.response, err, 400, 400)
         
 
-
+class UserRequestsHandler(webapp2.RequestHandler):
+    
+    def post(self, api_method):
+        try:
+            resp = None
+            if api_method == "set":
+                logger.info("update user")
+                update_json = json.loads(self.request.body)
+                
+                cookie = self.request.cookies.get(constants.cookie_key)
+                user = user_model.user_by_cookie(cookie)
+                user.set_properties(update_json)
+                
+                resp = user.resp()
+            if resp:
+                self.response.headers.add_header("Content-Type", "application/json")
+                self.response.out.write(resp)
+                
+        except Exception, err:
+            request_utils.out_error(self.response, err, 400, 400)
 
 
 

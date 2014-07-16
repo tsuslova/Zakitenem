@@ -43,7 +43,7 @@ app = webapp2.WSGIApplication([
     ('/api/auth', user_management.AuthHandler),
     ('/api/logout', user_management.LogoutHandler),
     ('/api/password/(.*)', user_management.PasswordRequestsHandler),
-    
+    ('/api/user/(.*)', user_management.UserRequestsHandler),
     ('/unit_tests', run_unit_tests.RunUnitTests),
     ('/api/update_schema', UpdateHandler),
 ], debug=True)

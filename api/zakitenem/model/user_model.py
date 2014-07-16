@@ -119,7 +119,6 @@ class UserItem(ndb.Model):
         if password == None or len(password) == 0:
             logger.info("Password is empty")
             return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
-        
         password_hash = ssshh(password, self.some_data)
         if password_hash == self.password: 
             return None, 0
@@ -139,8 +138,8 @@ class UserItem(ndb.Model):
         else:
             logger.info("app_install would be updated  (%s)" % (app_install))
             app_install.populate(device_token=device_token, cookie=cookie)
-        
-        self.put()
+        user_by_cookie = UserByCookieItem(id=cookie, cookie=cookie, user=self.key)  
+        ndb.put_multi([user_by_cookie, self])
         
     def send_password(self, tool):
         import os
@@ -153,9 +152,9 @@ class UserItem(ndb.Model):
             logger.info("send email from: %s to : %s"%(sender,to))
             mail.send_mail(sender=sender, to=to,
               subject=locale.resstore_pass_subject,
-              body="test")
+              body=body)
             
-            logger.info("save its hash to db")
+            logger.info("save its hash to db %s %s"%(password,self.some_data))
             self.password = ssshh(password, self.some_data)
             self.put()
         if constants.option_push == tool:
@@ -182,7 +181,6 @@ def user_by_login(login):
 
 def user_by_cookie(cookie):
     user_by_cookie = UserByCookieItem.get_by_id(id=cookie)
-    print user_by_cookie
     user = user_by_cookie.user.get()
     logger.info("user %s for cookie %s" % (user, cookie))
     return user
@@ -201,8 +199,6 @@ def create_user_from_login_info(login_info, cookie):
     user.password = password_hash
     user.some_data = login_info.device_id
     user.create_installation(login_info.device_id, login_info.device_token, cookie)
-    user_by_cookie = UserByCookieItem(id=cookie, cookie=cookie, user=user.key)  
-    ndb.put_multi([user_by_cookie, user])
     logger.info("user %s created" % (user))
     return user
     

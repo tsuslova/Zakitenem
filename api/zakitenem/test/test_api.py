@@ -202,6 +202,16 @@ class PasswordHandlerTestCase(unittest.TestCase):
         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
                          error_definitions.code_no_tools)
         
+    
+    def test_password_tools_after_2login(self):
+        authorized_cookie(login_info_device_token())
+        cookie = authorized_cookie(login_info_device_token())
+        request = webapp2.Request.blank('/api/password/tools')
+        request.headers["Cookie"] = cookie
+        response = request.get_response(main.app)
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict.get(constants.tools_key), None)
+        
 # No way to test mail sending from testbed((         
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())

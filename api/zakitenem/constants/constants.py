@@ -1,4 +1,4 @@
-zakitenem_email = "zakitenem@gmail.com"
+zakitenem_email = "tamara.suslova@gmail.com"
 
 error_key = "error_message"
 error_code_key = "error_code"

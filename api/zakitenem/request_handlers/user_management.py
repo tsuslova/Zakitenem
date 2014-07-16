@@ -107,19 +107,16 @@ class PasswordRequestsHandler(webapp2.RequestHandler):
                 logger.info("request password")
                 tool_json = json.loads(self.request.body)
                 tool = tool_json[constants.tool_key]
-                print tool
                 cookie = self.request.cookies.get(constants.cookie_key)
                 logger.info("cookie = %s"%cookie)
                 user = user_model.user_by_cookie(cookie)
                 
                 user.send_password(tool)
                 resp = {constants.tool_key:tool}
-                print resp
             if resp:
                 self.response.headers.add_header("Content-Type", "application/json")
                 self.response.out.write(json.dumps(resp))
         except Exception, err:
-            print err
             request_utils.out_error(self.response, err, 400, 400)
         
 

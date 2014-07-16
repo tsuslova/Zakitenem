@@ -13,10 +13,10 @@ curl -v http://localhost:8080/api/main
 POST /auth 
 ===============
 sample:
-curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login1", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://localhost:8080/api/auth
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login3", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://localhost:8080/api/auth
 curl -v -b cookies.txt -c cookies.txt -d '{"login":"dfgvjnv", "device_id":"2123"}' http://localhost:8080/api/auth
 
-curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login1", "device_id":"02123s", "password":"234","device_token":"g83w47gisrge5u"}' http://zakitenem.appspot.com/api/auth
+curl -v -b cookies.txt -c cookies.txt -d '{"login":"my_login1", "device_id":"02123s", "password":"QhiG6KsvEvU=","device_token":"g83w47gisrge5u"}' http://zakitenem.appspot.com/api/auth
 
 PARAM {"login":"Toto", "password":"test", "device_id":"id", "device_token":"token"}
 login - required

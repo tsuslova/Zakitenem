@@ -99,6 +99,8 @@ class UserItem(ndb.Model):
     
     app_installations = ndb.StructuredProperty(AppInstallation, repeated=True)
     
+    updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
+    
     def resp(self):
         user_data = dict()
         user_data[constants.login_key] = self.login

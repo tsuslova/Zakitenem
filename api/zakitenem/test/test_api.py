@@ -212,6 +212,39 @@ class PasswordHandlerTestCase(unittest.TestCase):
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.tools_key), None)
         
+
+class UserHandlerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        from google.appengine.datastore import datastore_stub_util
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        
+        # Create a consistency policy that will simulate the High Replication consistency model.
+        self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
+        
+        self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
+        self.testbed.init_memcache_stub(True)
+        
+    def tearDown(self):
+        self.testbed.deactivate()
+        
+    def test_update_user(self):
+        cookie = authorized_cookie(login_info_pass())
+        request = webapp2.Request.blank('/api/user/set')
+        request.method = 'POST'
+        update_body = {constants.email_key:constants.zakitenem_email}
+        request.body = json.dumps(update_body)
+        request.get_response(main.app)
+        
+        request.headers["Cookie"] = cookie
+        
+        response = request.get_response(main.app)
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict.get(constants.user_key), None)
+        user_dict = response_dict.get(constants.user_key)
+        self.assertEqual(user_dict.get(constants.email_key), constants.zakitenem_email)
+        
 # No way to test mail sending from testbed((         
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())

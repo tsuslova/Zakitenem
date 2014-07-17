@@ -132,7 +132,6 @@ class UserRequestsHandler(webapp2.RequestHandler):
                 cookie = self.request.cookies.get(constants.cookie_key)
                 user = user_model.user_by_cookie(cookie)
                 user.set_properties(update_json)
-                
                 resp = user.resp()
             if resp:
                 self.response.headers.add_header("Content-Type", "application/json")

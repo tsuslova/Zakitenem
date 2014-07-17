@@ -244,7 +244,8 @@ class UserHandlerTestCase(unittest.TestCase):
         self.assertNotEqual(response_dict.get(constants.user_key), None)
         user_dict = response_dict.get(constants.user_key)
         self.assertEqual(user_dict.get(constants.email_key), constants.zakitenem_email)
-        
+
+
 # No way to test mail sending from testbed((         
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())

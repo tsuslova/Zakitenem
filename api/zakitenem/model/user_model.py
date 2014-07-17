@@ -96,6 +96,7 @@ class UserItem(ndb.Model):
     userpic = ndb.StringProperty(indexed=False)
     # TODO: how to store user region?
     region = ndb.StringProperty()
+    subscription_end_date = ndb.DateProperty() 
     
     app_installations = ndb.StructuredProperty(AppInstallation, repeated=True)
     
@@ -170,7 +171,12 @@ class UserItem(ndb.Model):
                 else: 
                     setattr(self, key, val)
 
-                
+    def upload_userpic(self):
+        avatar = self.request.get("img")
+        greeting.avatar = db.Blob(avatar)
+        greeting.put()
+    
+    
 class UserByCookieItem(ndb.Model):
     cookie = ndb.StringProperty()
     user = ndb.KeyProperty(UserItem)

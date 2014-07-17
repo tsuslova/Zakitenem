@@ -133,6 +133,9 @@ class UserRequestsHandler(webapp2.RequestHandler):
                 user = user_model.user_by_cookie(cookie)
                 user.set_properties(update_json)
                 resp = user.resp()
+            if api_method == "upload_userpic":
+                logger.info("upload_userpic")
+            
             if resp:
                 self.response.headers.add_header("Content-Type", "application/json")
                 self.response.out.write(resp)

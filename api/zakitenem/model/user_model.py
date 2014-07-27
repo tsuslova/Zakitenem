@@ -56,6 +56,18 @@ class LoginInfo(ndb.Model):
                       constants.device_token_key:self.device_token}
         return json.dumps(login_info)
         
+    @classmethod
+    def from_message(cls, message):
+        """
+        Args:
+            message: A LoginInfoMessage instance to be inserted.
+
+        Returns:
+            The Score entity that was inserted.
+        """
+        login_info = LoginInfo(login=message.login, device_id=message.device_id,
+                               password=message.password, device_token=message.device_token)
+        return login_info
     
 def login_info_from_data(data):
     login_info = LoginInfo()
@@ -76,12 +88,45 @@ def create_login_info(login, device_id, device_token="", password=""):
     login_info.device_token = device_token
     return login_info 
 
-class AppInstallation(ndb.Model):
-    device_id = ndb.StringProperty()
-    device_token = ndb.StringProperty(indexed=False)
-    cookie = ndb.StringProperty()
-    date = ndb.DateTimeProperty(auto_now_add=True)     
+  
+# Messages:
+  
+from protorpc import messages
+
+class SessionedMessage(messages.Message):
+    cookie = messages.StringField(1)
+    expires = messages.StringField(2)
+
+class LoginInfoMessage(messages.Message):
+    # required:
+    login = messages.StringField(1)
+    device_id = messages.StringField(2)
+    # optional
+    password = messages.StringField(3)
+    device_token = messages.StringField(4)
+
+class AppInstallationMessage(messages.Message):
+    device_id = messages.StringField(1)
+    device_token = messages.StringField(2)
+    date = messages.StringField(3)
+    session_info = messages.MessageField(SessionedMessage, 4)
+
+class UserMessage(messages.Message):
+    login = messages.StringField(1)
     
+    email = messages.StringField(2)
+    phone = messages.StringField(3)
+    
+    gender = messages.BooleanField(4)
+    password = messages.StringField(5)
+    
+    userpic = messages.StringField(6)
+    # TODO: how to store user region?
+    region = messages.StringField(7)
+    subscription_end_date = messages.StringField(8) 
+    
+    #app_installations = messages.MessageField(AppInstallationMessage, 9, repeated=True)
+
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
     
@@ -92,16 +137,34 @@ class UserItem(ndb.Model):
     password = ndb.StringProperty(indexed=False)
     some_data = ndb.StringProperty(indexed=False)
     
-    # TODO need store userpic as a link 
     userpic = ndb.StringProperty(indexed=False)
     # TODO: how to store user region?
     region = ndb.StringProperty()
     subscription_end_date = ndb.DateProperty() 
     
-    app_installations = ndb.StructuredProperty(AppInstallation, repeated=True)
+    #app_installations = ndb.StructuredProperty(AppInstallation, repeated=True)
     
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
     
+    def to_message(self):
+        """Turns the Score entity into a ProtoRPC object.
+
+        This is necessary so the entity can be returned in an API request.
+
+        Returns:
+            An instance of ScoreResponseMessage with the ID set to the datastore
+            ID of the current entity, the outcome simply the entity's outcome
+            value and the played value equal to the string version of played
+            from the property 'timestamp'.
+        """
+        return UserMessage(login = self.login,
+                           email = self.email,
+                           phone = self.phone,
+                           gender = self.gender,
+                           userpic = self.userpic,
+                           region = self.region
+                           )
+        
     def resp(self):
         user_data = dict()
         user_data[constants.login_key] = self.login
@@ -126,23 +189,6 @@ class UserItem(ndb.Model):
         if password_hash == self.password: 
             return None, 0
         return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
-    
-    def create_installation(self, device_id, device_token, cookie):
-        app_install = None
-        for each in self.app_installations:
-            if each.device_id == device_id:
-                app_install = each
-                break
-        if app_install == None:
-            logger.info("Create a new AppInstallation (parent %s)"%self.key)
-            app_install = AppInstallation(device_id=device_id, device_token=device_token,
-                                              cookie=cookie, parent=self.key)
-            self.app_installations.append(app_install)
-        else:
-            logger.info("app_install would be updated  (%s)" % (app_install))
-            app_install.populate(device_token=device_token, cookie=cookie)
-        user_by_cookie = UserByCookieItem(id=cookie, cookie=cookie, user=self.key)  
-        ndb.put_multi([user_by_cookie, self])
         
     def send_password(self, tool):
         import os
@@ -173,14 +219,41 @@ class UserItem(ndb.Model):
 
     def upload_userpic(self):
         avatar = self.request.get("img")
-        greeting.avatar = db.Blob(avatar)
-        greeting.put()
+        #greeting.avatar = db.Blob(avatar)
+        #greeting.put()
+
+class AppInstallation(ndb.Model):
+    device_id = ndb.StringProperty()
+    device_token = ndb.StringProperty(indexed=False)
     
-    
-class UserByCookieItem(ndb.Model):
     cookie = ndb.StringProperty()
+    expires = ndb.DateProperty()
+    #installation date
+    date = ndb.DateTimeProperty(auto_now_add=True)     
+    
     user = ndb.KeyProperty(UserItem)
     
+def create_installation(user, device_id, device_token):
+    logger.info("AppInstallation.query") 
+    app_install = None 
+    user_app_installs = AppInstallation.query(ancestor = user.key).fetch()
+    logger.info("TODO: is it possible not to fetch all the installations?")
+    if len(user_app_installs) > 0:
+        for each in user_app_installs:
+            if each.device_id == device_id:
+                app_install = each
+                break
+    cookie, expires = new_cookie()
+    if app_install == None:
+        logger.info("Create a new AppInstallation")
+        app_install = AppInstallation(id=cookie, device_id=device_id, device_token=device_token,
+                          cookie=cookie, expires = expires, user=user.key, parent=user.key)
+    else:
+        logger.info("app_install would be updated  (%s)" % (app_install))
+        app_install.populate(device_token=device_token, cookie=cookie, expires = expires,
+                             user=user.key)
+    app_install.put()
+        
 def ssshh(p, param):
     test = "DFSzF3q3Q34OIq7QRGWNERLWIU4aIQ3"
     result = hashlib.sha256('%s%s%s' % (test, p, param)).hexdigest()
@@ -196,13 +269,16 @@ def user_by_login(login):
     return user 
 
 def user_by_cookie(cookie):
-    user_by_cookie = UserByCookieItem.get_by_id(id=cookie)
+    user_by_cookie = AppInstallation.get_by_id(id=cookie)
+    if user_by_cookie.expires > datetime.datetime.now():
+        logger.error("Cookie expired")
+        return None
     user = user_by_cookie.user.get()
     logger.info("user %s for cookie %s" % (user, cookie))
     return user
 
 @ndb.transactional(xg=True)
-def create_user_from_login_info(login_info, cookie):
+def create_user_from_login_info(login_info):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
     logger.info("password  (%s)" % (password_hash))
@@ -211,14 +287,24 @@ def create_user_from_login_info(login_info, cookie):
         logger.critical("user %s is already created" % (user))
         return None
     user = UserItem(id=login_info.login)
+    logger.info("Create user")
     user.login = login_info.login
     user.password = password_hash
     user.some_data = login_info.device_id
-    user.create_installation(login_info.device_id, login_info.device_token, cookie)
+    logger.info("create_installation")
+    create_installation(user, login_info.device_id, login_info.device_token)
+    user.put()
     logger.info("user %s created" % (user))
     return user
-    
-        
+
+def new_cookie():
+    import os
+    logger.info("Generate cookie") 
+    cookie = os.urandom(64).encode("base-64")
+    cookie = cookie.replace("\n", "")
+    logger.info("%s"%cookie) 
+    expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
+    return cookie, expires
         
         
         

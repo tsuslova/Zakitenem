@@ -142,6 +142,3 @@ class UserRequestsHandler(webapp2.RequestHandler):
                 
         except Exception, err:
             request_utils.out_error(self.response, err, 400, 400)
-
-
-

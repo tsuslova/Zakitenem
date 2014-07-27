@@ -21,6 +21,8 @@ from tools import update_schema
 from google.appengine.ext import deferred
 import run_unit_tests
 
+raise_unauthorized = True
+
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         hostname = self.request.headers.get('host')
@@ -52,7 +54,7 @@ class UpdateHandler(webapp2.RequestHandler):
 
 
 
-CLIENT_ID = 'YOUR-CLIENT-ID'
+CLIENT_ID = '939540881750-5oq9op7ap76a0373m1q957e0pa5qu9qn.apps.googleusercontent.com'
 
 import endpoints
 from protorpc import remote
@@ -61,7 +63,7 @@ import logging
 
 from model import user_model
     
-from constants import error_definitions,constants
+from constants import error_definitions
 
 logger = logging.getLogger()
 
@@ -84,6 +86,9 @@ class ZakitenemApi(remote.Service):
                       name='auth')
     def auth(self, request):
         try:
+#             current_user = endpoints.get_current_user()
+#             if raise_unauthorized and current_user is None:
+#                 raise endpoints.UnauthorizedException('Invalid token.')
             logger.info("Authentication request")
             login_info = user_model.LoginInfo.from_message(request) #
             logger.info("login_info %s"%login_info)

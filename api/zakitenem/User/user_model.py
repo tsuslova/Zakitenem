@@ -49,12 +49,15 @@ class LoginInfoItem(ndb.Model):
     password = ndb.StringProperty()
     device_token = ndb.StringProperty()
     
-    def data(self):
+    def login_json(self):
         login_info = {constants.login_key:self.login,
                       constants.password_key:self.password,
                       constants.device_id_key:self.device_id,
                       constants.device_token_key:self.device_token}
-        return json.dumps(login_info)
+        return login_info 
+    
+    def data(self): 
+        return json.dumps(self.login_json())
         
     @classmethod
     def from_message(cls, message):

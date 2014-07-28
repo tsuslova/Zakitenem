@@ -9,10 +9,6 @@ builtins:
 - appstats: on
 
 handlers:
-- url: /favicon\.ico
-  static_files: favicon.ico
-  upload: favicon\.ico
-
 - url: /stats.*
   script: google.appengine.ext.appstats.ui.app
 - url: /_ah/spi/.*
@@ -25,3 +21,4 @@ libraries:
   version: latest
 - name: endpoints
   version: 1.0
+ 

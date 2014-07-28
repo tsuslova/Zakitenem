@@ -31,7 +31,7 @@ class RunUnitTests(webapp2.RequestHandler):
  
     def _findTestCases(self):
         import inspect, sys
-        from test import test_api
+        from Test import test_api
         testCases = []
         for class_name, obj in inspect.getmembers(test_api):
             if inspect.isclass(obj):
@@ -46,3 +46,4 @@ class RunUnitTests(webapp2.RequestHandler):
             for item in result_list:
                 self.response.out.write('%s\n' % item[0])
             self.response.out.write('\n')
+            

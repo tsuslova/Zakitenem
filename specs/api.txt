@@ -32,11 +32,12 @@ Response:
 - cookie with quite long expiration period
 - JSON response: the user data
   1. Если первый логин, то особой инфы не будет, только логин:
-   {"user":{"login":"Toto"}}
+   {"login":"Toto"}
   2. Если повторный, то все поля заполнены:
-   {"user":{"login":"Toto", "email":"test@test.com", "phone":"12321", "gender":false,"userpic":"https://www.facebook.com/photo.php?fbid=719668528066557&set=a.204239416276140.50907.100000702482882&type=1&theater", "region":"Nsk"}}    
+   {"login":"Toto", "email":"test@test.com", "phone":"12321", "gender":false,"userpic":"https://www.facebook.com/photo.php?fbid=719668528066557&set=a.204239416276140.50907.100000702482882&type=1&theater", "region":"Nsk"}
     
 
+#TODO: update! Now errors are handled inside the lib
  Error cases:
  Common format: {"error_message":"error text", "error_code": "100500"}
  - error_code = 100500

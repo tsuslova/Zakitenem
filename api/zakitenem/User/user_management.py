@@ -1,7 +1,7 @@
 import webapp2
 import logging
-import request_utils
-from model import user_model
+from request_handlers import request_utils
+import user_model
 from constants import error_definitions, constants
 import datetime
 import json
@@ -142,3 +142,32 @@ class UserRequestsHandler(webapp2.RequestHandler):
                 
         except Exception, err:
             request_utils.out_error(self.response, err, 400, 400)
+
+import endpoints
+
+def auth(request):
+    logger.info("Authentication request")
+    login_info = user_model.LoginInfoItem.from_message(request) #
+    logger.info("login_info %s"%login_info)
+    
+    if len(login_info.login) < 3: 
+        raise endpoints.BadRequestException(error_definitions.msg_wrong_login)
+    if len(login_info.device_id) == 0:
+        raise endpoints.BadRequestException(error_definitions.msg_wrong_device_id)
+    
+    logger.info("user_by_login")
+    user = user_model.user_by_login(login_info.login)
+    logger.info("user_by_login %s"%user)
+    if (user):
+        (error_text, error_code) = user.validate_password(login_info.password) 
+        if error_text or error_code:
+            raise endpoints.BadRequestException(error_text)
+        else:
+            user_model.create_installation(user,login_info.device_id,login_info.device_token)
+            return user.to_message()
+    else:
+        logger.info("Going to create a user")
+        user = user_model.create_user_from_login_info(login_info)
+        
+        return user.to_message()
+    

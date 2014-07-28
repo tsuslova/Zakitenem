@@ -10,7 +10,7 @@ from constants import constants
 from constants import error_definitions
 import sys
 import time
-from model import user_model
+from User import user_model
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -32,7 +32,7 @@ class Error404TestCase(unittest.TestCase):
         sys.stderr = NullWriter()
           
         request = webapp2.Request.blank('/page404_which_was_never_created')
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict, None)
         self.assertEqual(response_dict[constants.error_key], u"No such page")
@@ -62,7 +62,7 @@ def authorized_cookie(login_info):
     request.method = 'POST'
     request.body = login_info.data()
     # Create a user:
-    response = request.get_response(main.app)
+    response = request.get_response(main.application)
     return response.headers["Set-Cookie"]
     
 class AuthHandlerTestCase(unittest.TestCase):
@@ -86,7 +86,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         logger.info("test_error_auth_get")
         request = webapp2.Request.blank('/api/auth')
         request.method = 'GET'
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         self.assertEqual(response.status_int, 405)
          
     def test_new_user_auth_ok(self):
@@ -95,7 +95,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         request.method = 'POST'
         login_info = login_info_no_pass()
         request.body = login_info.data()
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         user_dict = response_dict.get(constants.user_key)
         self.assertNotEqual(user_dict, None, 
@@ -114,7 +114,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         request.body = login_info.data()
         user_model.debug_print_users()
         
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         
         self.assertNotEqual(response_dict.get(constants.error_key), None, 
@@ -131,7 +131,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         request = webapp2.Request.blank('/api/auth')
         request.method = 'POST'
         request.body = login_info.data()
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
           
         response_dict = json.loads(response.body)
          
@@ -149,11 +149,11 @@ class AuthHandlerTestCase(unittest.TestCase):
         login_info = login_info_pass()
         request.body = login_info.data()
         # Create a user:
-        request.get_response(main.app)
+        request.get_response(main.application)
         # sleep after creation to avoid "too frequent request" error
         time.sleep(0.5)
         # try login with created user with a password:
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         user_dict = response_dict.get(constants.user_key)
         self.assertEqual(login_info.login, user_dict[constants.login_key], 
@@ -165,13 +165,13 @@ class AuthHandlerTestCase(unittest.TestCase):
         request.method = 'POST'
         login_info = login_info_pass()
         request.body = login_info.data()
-        request.get_response(main.app)
+        request.get_response(main.application)
         
         logout_request = webapp2.Request.blank('/api/logout')
         logout_request.method = 'POST'
-        logout_request.get_response(main.app)
+        logout_request.get_response(main.application)
         
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth request (with password) after logout should not return an error")
@@ -197,7 +197,7 @@ class PasswordHandlerTestCase(unittest.TestCase):
         cookie = authorized_cookie(login_info_pass())
         request = webapp2.Request.blank('/api/password/tools')
         request.headers["Cookie"] = cookie
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
                          error_definitions.code_no_tools)
@@ -208,7 +208,7 @@ class PasswordHandlerTestCase(unittest.TestCase):
         cookie = authorized_cookie(login_info_device_token())
         request = webapp2.Request.blank('/api/password/tools')
         request.headers["Cookie"] = cookie
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.tools_key), None)
         
@@ -235,11 +235,11 @@ class UserHandlerTestCase(unittest.TestCase):
         request.method = 'POST'
         update_body = {constants.email_key:constants.zakitenem_email}
         request.body = json.dumps(update_body)
-        request.get_response(main.app)
+        request.get_response(main.application)
         
         request.headers["Cookie"] = cookie
         
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.user_key), None)
         user_dict = response_dict.get(constants.user_key)
@@ -254,7 +254,7 @@ class UserHandlerTestCase(unittest.TestCase):
 #         tool_data = {constants.tool_key:constants.option_email}
 #         request.body = json.dumps(tool_data)
 #         request.headers["Cookie"] = cookie
-#         response = request.get_response(main.app)
+#         response = request.get_response(main.application)
 #         response_dict = json.loads(response.body)
 #         self.assertEqual(response_dict.get(constants.tool_key)), 
 #                          constants.push_key)
@@ -274,7 +274,7 @@ class MainHandlerTestCase(unittest.TestCase):
     def test_main(self):
         logger.info("test_auth_with_pass_ok")
         request = webapp2.Request.blank('/api/main')
-        response = request.get_response(main.app)
+        response = request.get_response(main.application)
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict, None, "Main returns not json (%s)"%response)
 

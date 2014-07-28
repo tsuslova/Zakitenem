@@ -5,9 +5,9 @@ import logging
 import datetime
 import time
 import json
-import hashlib, binascii
+import hashlib
 
-from math import trunc
+import message
 from constants import constants, error_definitions, locale
 
 logger = logging.getLogger()
@@ -41,7 +41,7 @@ def to_dict(model):
 
 # Helper class to load/dump login information for requests.
 # TODO: Looks like it shouldn't be an ndb.Model as it is not used to store data in DB  
-class LoginInfo(ndb.Model):
+class LoginInfoItem(ndb.Model):
     # required:
     login = ndb.StringProperty()
     device_id = ndb.StringProperty()
@@ -58,19 +58,12 @@ class LoginInfo(ndb.Model):
         
     @classmethod
     def from_message(cls, message):
-        """
-        Args:
-            message: A LoginInfoMessage instance to be inserted.
-
-        Returns:
-            The Score entity that was inserted.
-        """
-        login_info = LoginInfo(login=message.login, device_id=message.device_id,
+        login_info = LoginInfoItem(login=message.login, device_id=message.device_id,
                                password=message.password, device_token=message.device_token)
         return login_info
     
 def login_info_from_data(data):
-    login_info = LoginInfo()
+    login_info = LoginInfoItem()
     login_info_json = json.loads(data)
     login_info.login = login_info_json.get(constants.login_key)
     login_info.password = login_info_json.get(constants.password_key)
@@ -81,7 +74,7 @@ def login_info_from_data(data):
 def create_login_info(login, device_id, device_token="", password=""):
     if len(login) == 0 or len(device_id) == 0:
         logger.warning("Required params not filled: %s(login) %s(device_id)" % (login, device_id))
-    login_info = LoginInfo()
+    login_info = LoginInfoItem()
     login_info.login = login
     login_info.password = password
     login_info.device_id = device_id
@@ -90,42 +83,6 @@ def create_login_info(login, device_id, device_token="", password=""):
 
   
 # Messages:
-  
-from protorpc import messages
-
-class SessionedMessage(messages.Message):
-    cookie = messages.StringField(1)
-    expires = messages.StringField(2)
-
-class LoginInfoMessage(messages.Message):
-    # required:
-    login = messages.StringField(1)
-    device_id = messages.StringField(2)
-    # optional
-    password = messages.StringField(3)
-    device_token = messages.StringField(4)
-
-class AppInstallationMessage(messages.Message):
-    device_id = messages.StringField(1)
-    device_token = messages.StringField(2)
-    date = messages.StringField(3)
-    session_info = messages.MessageField(SessionedMessage, 4)
-
-class UserMessage(messages.Message):
-    login = messages.StringField(1)
-    
-    email = messages.StringField(2)
-    phone = messages.StringField(3)
-    
-    gender = messages.BooleanField(4)
-    password = messages.StringField(5)
-    
-    userpic = messages.StringField(6)
-    # TODO: how to store user region?
-    region = messages.StringField(7)
-    subscription_end_date = messages.StringField(8) 
-    
-    #app_installations = messages.MessageField(AppInstallationMessage, 9, repeated=True)
 
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
@@ -142,7 +99,7 @@ class UserItem(ndb.Model):
     region = ndb.StringProperty()
     subscription_end_date = ndb.DateProperty() 
     
-    #app_installations = ndb.StructuredProperty(AppInstallation, repeated=True)
+    #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
     
@@ -157,7 +114,7 @@ class UserItem(ndb.Model):
             value and the played value equal to the string version of played
             from the property 'timestamp'.
         """
-        return UserMessage(login = self.login,
+        return message.User(login = self.login,
                            email = self.email,
                            phone = self.phone,
                            gender = self.gender,
@@ -222,7 +179,7 @@ class UserItem(ndb.Model):
         #greeting.avatar = db.Blob(avatar)
         #greeting.put()
 
-class AppInstallation(ndb.Model):
+class AppInstallationItem(ndb.Model):
     device_id = ndb.StringProperty()
     device_token = ndb.StringProperty(indexed=False)
     
@@ -234,9 +191,9 @@ class AppInstallation(ndb.Model):
     user = ndb.KeyProperty(UserItem)
     
 def create_installation(user, device_id, device_token):
-    logger.info("AppInstallation.query") 
+    logger.info("AppInstallationItem.query") 
     app_install = None 
-    user_app_installs = AppInstallation.query(ancestor = user.key).fetch()
+    user_app_installs = AppInstallationItem.query(ancestor = user.key).fetch()
     logger.info("TODO: is it possible not to fetch all the installations?")
     if len(user_app_installs) > 0:
         for each in user_app_installs:
@@ -246,7 +203,7 @@ def create_installation(user, device_id, device_token):
     cookie, expires = new_cookie()
     if app_install == None:
         logger.info("Create a new AppInstallation")
-        app_install = AppInstallation(id=cookie, device_id=device_id, device_token=device_token,
+        app_install = AppInstallationItem(id=cookie, device_id=device_id, device_token=device_token,
                           cookie=cookie, expires = expires, user=user.key, parent=user.key)
     else:
         logger.info("app_install would be updated  (%s)" % (app_install))
@@ -269,7 +226,7 @@ def user_by_login(login):
     return user 
 
 def user_by_cookie(cookie):
-    user_by_cookie = AppInstallation.get_by_id(id=cookie)
+    user_by_cookie = AppInstallationItem.get_by_id(id=cookie)
     if user_by_cookie.expires > datetime.datetime.now():
         logger.error("Cookie expired")
         return None

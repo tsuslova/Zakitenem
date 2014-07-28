@@ -61,15 +61,6 @@ class AuthHandler(webapp2.RequestHandler):
             request_utils.out_error(self.response, err, 400, 400)
 
 
-class LogoutHandler(webapp2.RequestHandler):
-    
-    def post(self, *args):
-        try:
-            logger.info("Logout request")
-            self.response.delete_cookie(constants.cookie_key)
-        except Exception, err:
-            request_utils.out_error(self.response, err, 400, 400)
-
 
 class PasswordRequestsHandler(webapp2.RequestHandler):
     
@@ -170,4 +161,7 @@ def auth(request):
         user = user_model.create_user_from_login_info(login_info)
         
         return user.to_message()
+    
+def logout(request):
+    logger.info("Logout does nothing now. Before it removed the cookie from request, but it is not necessary any more")
     

@@ -7,7 +7,7 @@ raise_unauthorized = True
 CLIENT_ID = '939540881750-5oq9op7ap76a0373m1q957e0pa5qu9qn.apps.googleusercontent.com'
 
 import endpoints
-from protorpc import remote 
+from protorpc import remote, message_types 
 
 from User import message as user_message 
 
@@ -34,12 +34,25 @@ class Api(remote.Service):
             logger.info("Authentication request")
             return user_management.auth(request)
         except endpoints.ServiceException:
-            logger.error("endpoints.ServiceException")
             raise
         except Exception, err:
             logger.error(err)
             raise endpoints.BadRequestException(error_definitions.msg_server_error)
 
       
+    @endpoints.method(user_message.Session, 
+                      message_types.VoidMessage,
+                      path='logout', http_method='POST',
+                      name='logout')
+    def logout(self, request):
+        try:
+            logger.info("Logout request")
+            return user_management.logout(request)
+        except endpoints.ServiceException:
+            raise
+        except Exception, err:
+            logger.error(err)
+            raise endpoints.BadRequestException(error_definitions.msg_server_error)
+        
 application = endpoints.api_server([Api], restricted=False)
 # application = manage_session(application)

@@ -14,7 +14,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 SIMPLE_TYPES = (int, long, float, bool, dict, basestring, list)
-NON_SERIALIZABLE_PROPERTIES = ("password", "cookie", "app_installations")
+NON_SERIALIZABLE_PROPERTIES = ("password", "cookie")
 
 def to_dict(model):
     output = {}
@@ -189,10 +189,13 @@ class AppInstallationItem(ndb.Model):
     
     user = ndb.KeyProperty(UserItem)
     
+def user_app_installations(user):
+    return AppInstallationItem.query(ndb.GenericProperty("user") == user.key).fetch()
+
 def create_installation(user, device_id, device_token):
     logger.info("AppInstallationItem.query") 
     app_install = None 
-    user_app_installs = AppInstallationItem.query(ndb.GenericProperty("user") == user.key).fetch()
+    user_app_installs = user_app_installations(user)
     logger.info("TODO: is it possible not to fetch all the installations?")
     if len(user_app_installs) > 0:
         for each in user_app_installs:
@@ -227,10 +230,11 @@ def user_by_login(login):
 
 def user_by_cookie(cookie):
     installation_by_cookie = AppInstallationItem.get_by_id(id=cookie)
-    if installation_by_cookie.expires > datetime.datetime.now():
-        logger.error("Cookie expired")
+    if installation_by_cookie.expires < datetime.date.today():
+        logger.error("Cookie expired %s %s"%(str(installation_by_cookie.expires),
+                                             str(datetime.date.today())))
         return None
-    user = user_by_cookie.user.get()
+    user = installation_by_cookie.user.get()
     logger.info("user %s for cookie %s" % (user, cookie))
     return user
 

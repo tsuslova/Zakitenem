@@ -193,7 +193,7 @@ def password_tools(request):
     if user.email and len(user.email) > 0:
         tools.email = user.email
     pushable_installations = []
-    for inst in user.app_installations:
+    for inst in user_model.user_app_installations(user):
         if inst.device_token and len (inst.device_token) > 0:
             pushable_installations.append(request_utils.human_datetime(inst.date))
     if len(pushable_installations) > 0:

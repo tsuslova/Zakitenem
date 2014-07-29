@@ -1,0 +1,251 @@
+{
+ "kind": "discovery#rpcDescription",
+ "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/m0BXtlYaktk4uGCYB4b12yLBcP4\"",
+ "discoveryVersion": "v1",
+ "id": "api:v1",
+ "name": "api",
+ "version": "v1",
+ "description": "Zakitenem API",
+ "icons": {
+  "x16": "http://www.google.com/images/icons/product/search-16.gif",
+  "x32": "http://www.google.com/images/icons/product/search-32.gif"
+ },
+ "protocol": "rpc",
+ "rootUrl": "https://zakitenem.appspot.com/_ah/api/",
+ "rpcUrl": "https://zakitenem.appspot.com/_ah/api/rpc",
+ "rpcPath": "/_ah/api/rpc",
+ "parameters": {
+  "alt": {
+   "type": "string",
+   "description": "Data format for the response.",
+   "default": "json",
+   "enum": [
+    "json"
+   ],
+   "enumDescriptions": [
+    "Responses with Content-Type of application/json"
+   ],
+   "location": "query"
+  },
+  "fields": {
+   "type": "string",
+   "description": "Selector specifying which fields to include in a partial response.",
+   "location": "query"
+  },
+  "key": {
+   "type": "string",
+   "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+   "location": "query"
+  },
+  "oauth_token": {
+   "type": "string",
+   "description": "OAuth 2.0 token for the current user.",
+   "location": "query"
+  },
+  "prettyPrint": {
+   "type": "boolean",
+   "description": "Returns response with indentations and line breaks.",
+   "default": "true",
+   "location": "query"
+  },
+  "quotaUser": {
+   "type": "string",
+   "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. Overrides userIp if both are provided.",
+   "location": "query"
+  },
+  "userIp": {
+   "type": "string",
+   "description": "IP address of the site where the request originates. Use this if you want to enforce per-user limits.",
+   "location": "query"
+  }
+ },
+ "auth": {
+  "oauth2": {
+   "scopes": {
+    "https://www.googleapis.com/auth/userinfo.email": {
+     "description": "View your email address"
+    }
+   }
+  }
+ },
+ "schemas": {
+  "UserMessageLoginInfo": {
+   "id": "UserMessageLoginInfo",
+   "type": "object",
+   "properties": {
+    "device_id": {
+     "type": "string"
+    },
+    "device_token": {
+     "type": "string"
+    },
+    "login": {
+     "type": "string"
+    },
+    "password": {
+     "type": "string"
+    }
+   }
+  },
+  "UserMessagePasswordRequsest": {
+   "id": "UserMessagePasswordRequsest",
+   "type": "object",
+   "properties": {
+    "session": {
+     "$ref": "UserMessageSession"
+    },
+    "tool": {
+     "type": "string"
+    }
+   }
+  },
+  "UserMessageSession": {
+   "id": "UserMessageSession",
+   "type": "object",
+   "properties": {
+    "cookie": {
+     "type": "string"
+    },
+    "expires": {
+     "type": "string"
+    }
+   }
+  },
+  "UserMessageTools": {
+   "id": "UserMessageTools",
+   "type": "object",
+   "properties": {
+    "email": {
+     "type": "string"
+    },
+    "push": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "sms": {
+     "type": "string"
+    }
+   }
+  },
+  "UserMessageUser": {
+   "id": "UserMessageUser",
+   "type": "object",
+   "properties": {
+    "email": {
+     "type": "string"
+    },
+    "gender": {
+     "type": "boolean"
+    },
+    "login": {
+     "type": "string"
+    },
+    "password": {
+     "type": "string"
+    },
+    "phone": {
+     "type": "string"
+    },
+    "region": {
+     "type": "string"
+    },
+    "session": {
+     "$ref": "UserMessageSession"
+    },
+    "subscription_end_date": {
+     "type": "string"
+    },
+    "userpic": {
+     "type": "string"
+    }
+   }
+  }
+ },
+ "methods": {
+  "api.auth": {
+   "id": "api.auth",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessageLoginInfo"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "UserMessageUser"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.logout": {
+   "id": "api.logout",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessageSession"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.password_request": {
+   "id": "api.password_request",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessagePasswordRequsest"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "UserMessageTools"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.password_tools": {
+   "id": "api.password_tools",
+   "allowGet": true,
+   "parameters": {
+    "cookie": {
+     "type": "string"
+    },
+    "expires": {
+     "type": "string"
+    }
+   },
+   "returns": {
+    "$ref": "UserMessageTools"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.user_update": {
+   "id": "api.user_update",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessageUser"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "UserMessageUser"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  }
+ }
+}

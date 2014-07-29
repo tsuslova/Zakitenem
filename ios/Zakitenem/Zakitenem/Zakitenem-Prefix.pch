@@ -13,4 +13,8 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+    #import <ReactiveCocoa/ReactiveCocoa.h>
+    #import "def_utils.h"
+    #import "Utils.h"
+    #import "GUIUtils.h"
 #endif

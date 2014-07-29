@@ -4,13 +4,9 @@ import unittest
 # from google.appengine.ext import db
 from google.appengine.ext import testbed
 import webtest
-import webapp2
 import main
 import json
 from constants import constants
-from constants import error_definitions
-import sys
-import time
 from User import user_model
 
 import endpoints
@@ -18,28 +14,6 @@ import endpoints
 logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-
-  
-# class Error404TestCase(unittest.TestCase):
-# 
-#     def setUp(self):
-#         self.testbed = testbed.Testbed()
-#         self.testbed.activate()
-#         
-#     def tearDown(self):
-#         self.testbed.deactivate()
-#     
-#     def test_error_format(self):
-#         class NullWriter:
-#             def write(self, s):
-#                 pass
-#         sys.stderr = NullWriter()
-#           
-#         request = webapp2.Request.blank('/page404_which_was_never_created')
-#         response = request.get_response(main.application)
-#         response_dict = json.loads(response.body)
-#         self.assertNotEqual(response_dict, None)
-#         self.assertEqual(response_dict[constants.error_key], u"No such page")
 
 #Test-data helpers
 def login_info_pass():
@@ -61,7 +35,7 @@ def login_info_no_pass():
     device_id = "dsfbg4i"
     return user_model.create_login_info(login, device_id, "", "")
 
-class AuthHandlerTestCase(unittest.TestCase):
+class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         from google.appengine.datastore import datastore_stub_util
@@ -80,7 +54,17 @@ class AuthHandlerTestCase(unittest.TestCase):
         
     def tearDown(self):
         self.testbed.deactivate()
+        
+    def authorized_session(self, login_info):
+        msg = login_info.login_json()
+        response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
+        response_dict = json.loads(response.body)
+        session = response_dict.get(constants.session_key)
+        return session
     
+    
+class AuthHandlerTestCase(MyTestCase):
+
     # Tests:
          
     def test_new_user_auth_ok(self):
@@ -153,32 +137,8 @@ class AuthHandlerTestCase(unittest.TestCase):
             "Auth request (with password) after logout should not return an error")
          
 
-class PasswordHandlerTestCase(unittest.TestCase):
- 
-    def setUp(self):
-        from google.appengine.datastore import datastore_stub_util
-        
-        app = endpoints.api_server([main.Api], restricted=False)
-        self.testapp = webtest.TestApp(app)
-        self.testbed = testbed.Testbed()
-        
-        self.testbed.setup_env(current_version_id='testbed.version') #needed because endpoints expects a . in this value
-        self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
-
-        self.testbed.activate()        
-        self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
-        self.testbed.init_memcache_stub(True)
-         
-    def tearDown(self):
-        self.testbed.deactivate()
-        
-    def authorized_session(self, login_info):
-        msg = login_info.login_json()
-        response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-        response_dict = json.loads(response.body)
-        session = response_dict.get(constants.session_key)
-        return session
-          
+class PasswordHandlerTestCase(MyTestCase):
+      
     def test_no_password_tools(self):
         session = self.authorized_session(login_info_pass())
         response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
@@ -194,38 +154,14 @@ class PasswordHandlerTestCase(unittest.TestCase):
         self.assertNotEqual(response_dict.get(constants.option_push), None)
          
  
-# class UserHandlerTestCase(unittest.TestCase):
-# 
-#     def setUp(self):
-#         from google.appengine.datastore import datastore_stub_util
-#         self.testbed = testbed.Testbed()
-#         self.testbed.activate()
-#         
-#         # Create a consistency policy that will simulate the High Replication consistency model.
-#         self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
-#         
-#         self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
-#         self.testbed.init_memcache_stub(True)
-#         
-#     def tearDown(self):
-#         self.testbed.deactivate()
-#         
-#     def test_update_user(self):
-#         cookie = authorized_cookie(login_info_pass())
-#         request = webapp2.Request.blank('user_update')
-#         request.method = 'POST'
-#         update_body = {constants.email_key:constants.zakitenem_email}
-#         request.body = json.dumps(update_body)
-#         request.get_response(main.application)
-#         
-#         request.headers["Cookie"] = cookie
-#         
-#         response = request.get_response(main.application)
-#         response_dict = json.loads(response.body)
-#         self.assertNotEqual(response_dict.get(constants.user_key), None)
-#         user_dict = response_dict.get(constants.user_key)
-#         self.assertEqual(user_dict.get(constants.email_key), constants.zakitenem_email)
-
+class UserHandlerTestCase(MyTestCase):
+    
+    def test_update_user(self):
+        session = self.authorized_session(login_info_device_token())
+        user_json = {constants.email_key:constants.zakitenem_email, "session":session}
+        response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
+        response_dict = json.loads(response.body)
+        self.assertEqual(response_dict.get(constants.email_key), constants.zakitenem_email)
 
 # No way to test mail sending from testbed((         
 #     def test_request_password(self):

@@ -111,7 +111,7 @@ curl -v -b cookies.txt -c cookies.txt -d '{"email":"tamara@gmail.com", "gender":
 PARAM поля для обновления {"email":"pupkin@mail.ru", "gender":1, "password":"password", }
 Устанавливает переданные параметры в соответствующие поля. Возвращает обновленный JSON пользователя:
 {"user":{"login":"Toto", "email":"test@tamara.suslova@gmail.com", "phone":"12321", "gender":false,"userpic":"https://www.facebook.com/photo.php?fbid=719668528066557&set=a.204239416276140.50907.100000702482882&type=1&theater", "region":"Nsk"}}    
-
+gender = True - женский пол. По умолчанию с сервера False не передается, пусть будет не установленный или False - мужской (по дефолту), true - женский
 
 POST /user/upload_userpic
 ==============================

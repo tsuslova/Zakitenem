@@ -12,6 +12,10 @@ class Tools(messages.Message):
     push = messages.StringField(2, repeated=True)
     sms = messages.StringField(3)
     
+class PasswordRequsest(messages.Message):
+    tool = messages.StringField(1)
+    session = messages.MessageField(Session, 2)
+    
 class LoginInfo(messages.Message):
     # required:
     login = messages.StringField(1)
@@ -24,7 +28,7 @@ class AppInstallation(messages.Message):
     device_id = messages.StringField(1)
     device_token = messages.StringField(2)
     date = messages.StringField(3)
-    session_info = messages.MessageField(Session, 4)
+    session = messages.MessageField(Session, 4)
 
 class User(messages.Message):
     login = messages.StringField(1)

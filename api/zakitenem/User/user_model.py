@@ -162,9 +162,10 @@ class UserItem(ndb.Model):
             logger.info("save its hash to db %s %s"%(password,self.some_data))
             self.password = ssshh(password, self.some_data)
             self.put()
+            return self.email
         if constants.option_push == tool:
-            logger.info("TODO: send push")
-                
+            logger.info("TODO: send push and return device in (a list) to which push was sent")
+            return []
     def set_properties(self, update_json):
         for key, val in update_json.iteritems():
             if key in self.updatable_properties:

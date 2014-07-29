@@ -203,14 +203,13 @@ def create_installation(user, device_id, device_token):
                 app_install = each
                 break
     cookie, expires = new_cookie()
-    if app_install == None:
-        logger.info("Create a new AppInstallation")
-        app_install = AppInstallationItem(id=cookie, device_id=device_id, device_token=device_token,
+    if app_install:
+        logger.info("app_install would be removed  (%s)" % (app_install))
+        app_install.key.delete()
+    
+    logger.info("Create a new AppInstallation")
+    app_install = AppInstallationItem(id=cookie, device_id=device_id, device_token=device_token,
                           cookie=cookie, expires = expires, user=user.key)
-    else:
-        logger.info("app_install would be updated  (%s)" % (app_install))
-        app_install.populate(device_token=device_token, cookie=cookie, expires = expires,
-                             user=user.key)
     app_install.put()
     return app_install
         
@@ -230,6 +229,9 @@ def user_by_login(login):
 
 def user_by_cookie(cookie):
     installation_by_cookie = AppInstallationItem.get_by_id(id=cookie)
+    if not installation_by_cookie:
+        logger.error("User not found")
+        return None
     if installation_by_cookie.expires < datetime.date.today():
         logger.error("Cookie expired %s %s"%(str(installation_by_cookie.expires),
                                              str(datetime.date.today())))

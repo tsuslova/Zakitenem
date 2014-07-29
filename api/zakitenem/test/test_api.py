@@ -50,7 +50,7 @@ def login_info_pass():
     return user_model.create_login_info(login, device_id, device_token, password)
     
 def login_info_device_token():
-    login = "Toto4"
+    login = "Toto5"
     device_id = "dsfbg4i"
     device_token = "dsfbg4i"
     password = "4dssfgsf3"
@@ -92,7 +92,7 @@ class AuthHandlerTestCase(unittest.TestCase):
         login = response_dict.get(constants.login_key)
         self.assertNotEqual(login, None, 
                             "Auth should return a login (got: %s)" % response_dict)
- 
+  
 # the test is returning a stringe error:
 # Content-Length is different from actual app_iter length (512!=63)
 # Need return to it later
@@ -111,43 +111,43 @@ class AuthHandlerTestCase(unittest.TestCase):
 #         self.assertNotEqual(response.json_body['faultstring'], None, 
 #             "Existing account authorization without password should return an error")
 #         self.assertEqual(response_dict[constants.error_key], error_definitions.msg_account_used)
-     
+      
     def test_auth_existing_with_pass_ok(self):
         logger.info("test_auth_existing_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-           
+            
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-
+ 
         response_dict = json.loads(response.body)
-          
+           
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth with existing account with correct password should not return an error")
-        
+         
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                         "Requested login differs from response")
         # TODO: check that a new AppInstallation was created for the account
-          
+           
     def test_auth_with_pass_ok(self):
         logger.info("test_auth_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-        
+         
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
         response_dict = json.loads(response.body)
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                          "Requested login differs from response")
-#         
+          
     def test_logout(self):
         logger.info("test_logout")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-        
+         
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-        
+         
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth request (with password) after logout should not return an error")
@@ -178,28 +178,22 @@ class PasswordHandlerTestCase(unittest.TestCase):
         response_dict = json.loads(response.body)
         session = response_dict.get(constants.session_key)
         return session
-         
+          
     def test_no_password_tools(self):
         session = self.authorized_session(login_info_pass())
-        print session
+        response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
+        #no tools - empty response
+        self.assertEqual(response.body, "{}")
+
+    def test_password_tools_after_2login(self):
+        self.authorized_session(login_info_device_token())
+        session = self.authorized_session(login_info_device_token())
         response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
         
-        print response
-#         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
-#                          error_definitions.code_no_tools)
-
-#         
-#     
-#     def test_password_tools_after_2login(self):
-#         authorized_cookie(login_info_device_token())
-#         cookie = authorized_cookie(login_info_device_token())
-#         request = webapp2.Request.blank('/api/password/tools')
-#         request.headers["Cookie"] = cookie
-#         response = request.get_response(main.application)
-#         response_dict = json.loads(response.body)
-#         self.assertNotEqual(response_dict.get(constants.tools_key), None)
-#         
-# 
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict.get(constants.option_push), None)
+         
+ 
 # class UserHandlerTestCase(unittest.TestCase):
 # 
 #     def setUp(self):

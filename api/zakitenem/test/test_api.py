@@ -212,7 +212,7 @@ class PasswordHandlerTestCase(unittest.TestCase):
 #         
 #     def test_update_user(self):
 #         cookie = authorized_cookie(login_info_pass())
-#         request = webapp2.Request.blank('/api/user/set')
+#         request = webapp2.Request.blank('user_update')
 #         request.method = 'POST'
 #         update_body = {constants.email_key:constants.zakitenem_email}
 #         request.body = json.dumps(update_body)

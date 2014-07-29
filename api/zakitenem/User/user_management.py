@@ -109,3 +109,8 @@ def password_request(request):
     setattr(resp, request.tool, result)
     return resp
 
+def user_update(request):
+    cookie = request.session.cookie
+    user = user_model.user_by_cookie(cookie)
+    user.set_properties(request)
+    return user.to_message()

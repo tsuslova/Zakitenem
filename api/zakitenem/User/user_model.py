@@ -166,13 +166,16 @@ class UserItem(ndb.Model):
         if constants.option_push == tool:
             logger.info("TODO: send push and return device in (a list) to which push was sent")
             return []
-    def set_properties(self, update_json):
-        for key, val in update_json.iteritems():
-            if key in self.updatable_properties:
+        
+    def set_properties(self, user_message):
+        for key in self.updatable_properties:
+            val = getattr(user_message, key)
+            if val:
                 if key == "gender":
                     self.gender = True if val > 0 else False
                 else: 
                     setattr(self, key, val)
+        self.put()
 
     def upload_userpic(self):
         avatar = self.request.get("img")

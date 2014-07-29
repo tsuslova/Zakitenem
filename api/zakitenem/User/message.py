@@ -46,5 +46,6 @@ class User(messages.Message):
     
     # Store here newly created installation to pass client a cookie.
     # May be I should find a better way...
+    # In request it is used for passing session info 
     session = messages.MessageField(Session, 9)
     

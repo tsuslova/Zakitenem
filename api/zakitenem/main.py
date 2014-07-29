@@ -83,5 +83,20 @@ class Api(remote.Service):
             logger.error(err)
             raise endpoints.BadRequestException(error_definitions.msg_server_error)
         
+
+    @endpoints.method(user_message.User, 
+                      user_message.User,
+                      path='user_update', http_method='POST',
+                      name='user_update')
+    def user_update(self, request):
+        try:
+            logger.info("user_update request")
+            return user_management.user_update(request)
+        except endpoints.ServiceException:
+            raise
+        except Exception, err:
+            logger.error(err)
+            raise endpoints.BadRequestException(error_definitions.msg_server_error)
+        
 application = endpoints.api_server([Api], restricted=False)
 # application = manage_session(application)

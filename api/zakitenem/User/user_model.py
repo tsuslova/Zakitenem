@@ -106,23 +106,19 @@ class UserItem(ndb.Model):
     
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
     
-    def to_message(self):
-        """Turns the Score entity into a ProtoRPC object.
-
-        This is necessary so the entity can be returned in an API request.
-
-        Returns:
-            An instance of ScoreResponseMessage with the ID set to the datastore
-            ID of the current entity, the outcome simply the entity's outcome
-            value and the played value equal to the string version of played
-            from the property 'timestamp'.
-        """
+    def to_message(self, app_installation = None):
+        session = None
+        if app_installation:
+            session = message.Session(cookie = app_installation.cookie,
+                                      expires = str(app_installation.expires) 
+                                     )
         return message.User(login = self.login,
                            email = self.email,
                            phone = self.phone,
                            gender = self.gender,
                            userpic = self.userpic,
-                           region = self.region
+                           region = self.region,
+                           session = session 
                            )
         
     def resp(self):
@@ -136,7 +132,7 @@ class UserItem(ndb.Model):
         resp = {constants.user_key:user_data}
         logger.info("Resp %s" % resp)
         return json.dumps(resp)
-    
+
     def validate_password(self, password):
         pass_empty = self.password == None or len(self.password) == 0
         if pass_empty:
@@ -196,7 +192,7 @@ class AppInstallationItem(ndb.Model):
 def create_installation(user, device_id, device_token):
     logger.info("AppInstallationItem.query") 
     app_install = None 
-    user_app_installs = AppInstallationItem.query(ancestor = user.key).fetch()
+    user_app_installs = AppInstallationItem.query(ndb.GenericProperty("user") == user.key).fetch()
     logger.info("TODO: is it possible not to fetch all the installations?")
     if len(user_app_installs) > 0:
         for each in user_app_installs:
@@ -207,12 +203,13 @@ def create_installation(user, device_id, device_token):
     if app_install == None:
         logger.info("Create a new AppInstallation")
         app_install = AppInstallationItem(id=cookie, device_id=device_id, device_token=device_token,
-                          cookie=cookie, expires = expires, user=user.key, parent=user.key)
+                          cookie=cookie, expires = expires, user=user.key)
     else:
         logger.info("app_install would be updated  (%s)" % (app_install))
         app_install.populate(device_token=device_token, cookie=cookie, expires = expires,
                              user=user.key)
     app_install.put()
+    return app_install
         
 def ssshh(p, param):
     test = "DFSzF3q3Q34OIq7QRGWNERLWIU4aIQ3"
@@ -229,15 +226,14 @@ def user_by_login(login):
     return user 
 
 def user_by_cookie(cookie):
-    user_by_cookie = AppInstallationItem.get_by_id(id=cookie)
-    if user_by_cookie.expires > datetime.datetime.now():
+    installation_by_cookie = AppInstallationItem.get_by_id(id=cookie)
+    if installation_by_cookie.expires > datetime.datetime.now():
         logger.error("Cookie expired")
         return None
     user = user_by_cookie.user.get()
     logger.info("user %s for cookie %s" % (user, cookie))
     return user
 
-@ndb.transactional(xg=True)
 def create_user_from_login_info(login_info):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
@@ -252,10 +248,10 @@ def create_user_from_login_info(login_info):
     user.password = password_hash
     user.some_data = login_info.device_id
     logger.info("create_installation")
-    create_installation(user, login_info.device_id, login_info.device_token)
+    app_install = create_installation(user, login_info.device_id, login_info.device_token)
     user.put()
     logger.info("user %s created" % (user))
-    return user
+    return user, app_install
 
 def new_cookie():
     import os
@@ -265,7 +261,7 @@ def new_cookie():
     logger.info("%s"%cookie) 
     expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
     return cookie, expires
-        
+
         
         
         

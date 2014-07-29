@@ -4,7 +4,8 @@ error_key = "error_message"
 error_code_key = "error_code"
 
 # Authorisation
-cookie_key = "session_id"
+session_key = "session"
+cookie_key = "cookie"
 
 login_key = "login"
 password_key = "password"

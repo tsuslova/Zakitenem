@@ -54,9 +54,9 @@ class AuthHandler(webapp2.RequestHandler):
                     self.write_user_2_resp(user)
             else:
                 logger.info("Going to create a user")
-                user = user_model.create_user_from_login_info(login_info, self.set_cookie())
-                
-                self.write_user_2_resp(user)
+                user, inst = user_model.create_user_from_login_info(login_info, self.set_cookie())
+                if user and inst:
+                    self.write_user_2_resp(user)
         except Exception, err:
             request_utils.out_error(self.response, err, 400, 400)
 
@@ -135,7 +135,25 @@ class UserRequestsHandler(webapp2.RequestHandler):
             request_utils.out_error(self.response, err, 400, 400)
 
 import endpoints
+from User import message
 
+def check_auth_success(user, app_install, is_new_user):
+    # It's not possible to create a user and an app_install in transaction as it's redundant
+    # to set them common parent (so I cannot make an ancestor query, so if it fails cleanup 
+    # and return an error    
+    if user and app_install:
+        return user.to_message(app_install)
+    if not user and app_install:
+        app_install.key.delete()
+        raise endpoints.BadRequestException("Fail to create user")
+    if user and not app_install:
+        if is_new_user:
+            # If it was an auth with a new user we should remove the user entity (without 
+            # AppInstallation user will not be able to login - so it have to re-register in any case
+            user.key.delete()
+        raise endpoints.BadRequestException("Fail to create app_install")
+    raise endpoints.BadRequestException("Fail to create user and app_install")
+    
 def auth(request):
     logger.info("Authentication request")
     login_info = user_model.LoginInfoItem.from_message(request) #
@@ -154,14 +172,30 @@ def auth(request):
         if error_text or error_code:
             raise endpoints.BadRequestException(error_text)
         else:
-            user_model.create_installation(user,login_info.device_id,login_info.device_token)
-            return user.to_message()
+            app_install = user_model.create_installation(user,login_info.device_id,
+                                                         login_info.device_token)
+            return check_auth_success(user, app_install, False)
     else:
         logger.info("Going to create a user")
-        user = user_model.create_user_from_login_info(login_info)
+        user, app_install = user_model.create_user_from_login_info(login_info)
+        return check_auth_success(user, app_install, True)
         
-        return user.to_message()
     
 def logout(request):
     logger.info("Logout does nothing now. Before it removed the cookie from request, but it is not necessary any more")
     
+def password_tools(request):
+    logger.info("tools request")
+    cookie = request.cookie
+    logger.info("cookie = %s"%cookie)
+    user = user_model.user_by_cookie(cookie)
+    tools = message.Tools()
+    if user.email and len(user.email) > 0:
+        tools.email = user.email
+    pushable_installations = []
+    for inst in user.app_installations:
+        if inst.device_token and len (inst.device_token) > 0:
+            pushable_installations.append(request_utils.human_datetime(inst.date))
+    if len(pushable_installations) > 0:
+        tools.push = pushable_installations
+    return tools

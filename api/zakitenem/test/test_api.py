@@ -61,14 +61,6 @@ def login_info_no_pass():
     device_id = "dsfbg4i"
     return user_model.create_login_info(login, device_id, "", "")
 
-def authorized_cookie(login_info):
-    request = webapp2.Request.blank('/_ah/api/api/v1/auth')
-    request.method = 'POST'
-    request.body = login_info.data()
-    # Create a user:
-    response = request.get_response(main.application)
-    return response.headers["Set-Cookie"]
-    
 class AuthHandlerTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -159,32 +151,43 @@ class AuthHandlerTestCase(unittest.TestCase):
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth request (with password) after logout should not return an error")
-#         
+         
 
-# class PasswordHandlerTestCase(unittest.TestCase):
-# 
-#     def setUp(self):
-#         from google.appengine.datastore import datastore_stub_util
-#         self.testbed = testbed.Testbed()
-#         self.testbed.activate()
-#         
-#         # Create a consistency policy that will simulate the High Replication consistency model.
-#         self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
-#         
-#         self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
-#         self.testbed.init_memcache_stub(True)
-#         
-#     def tearDown(self):
-#         self.testbed.deactivate()
-#         
-#     def test_no_password_tools(self):
-#         cookie = authorized_cookie(login_info_pass())
-#         request = webapp2.Request.blank('/api/password/tools')
-#         request.headers["Cookie"] = cookie
-#         response = request.get_response(main.application)
-#         response_dict = json.loads(response.body)
+class PasswordHandlerTestCase(unittest.TestCase):
+ 
+    def setUp(self):
+        from google.appengine.datastore import datastore_stub_util
+        
+        app = endpoints.api_server([main.Api], restricted=False)
+        self.testapp = webtest.TestApp(app)
+        self.testbed = testbed.Testbed()
+        
+        self.testbed.setup_env(current_version_id='testbed.version') #needed because endpoints expects a . in this value
+        self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
+
+        self.testbed.activate()        
+        self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
+        self.testbed.init_memcache_stub(True)
+         
+    def tearDown(self):
+        self.testbed.deactivate()
+        
+    def authorized_session(self, login_info):
+        msg = login_info.login_json()
+        response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
+        response_dict = json.loads(response.body)
+        session = response_dict.get(constants.session_key)
+        return session
+         
+    def test_no_password_tools(self):
+        session = self.authorized_session(login_info_pass())
+        print session
+        response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
+        
+        print response
 #         self.assertEqual(int(response_dict.get(constants.error_code_key)), 
 #                          error_definitions.code_no_tools)
+
 #         
 #     
 #     def test_password_tools_after_2login(self):

@@ -54,5 +54,18 @@ class Api(remote.Service):
             logger.error(err)
             raise endpoints.BadRequestException(error_definitions.msg_server_error)
         
+    @endpoints.method(user_message.Session, 
+                      user_message.Tools,
+                      path='password_tools', http_method='POST',
+                      name='password_tools')
+    def password_tools(self, request):
+        try:
+            logger.info("password_tools request")
+            return user_management.password_tools(request)
+        except endpoints.ServiceException:
+            raise
+        except Exception, err:
+            logger.error(err)
+            raise endpoints.BadRequestException(error_definitions.msg_server_error)
 application = endpoints.api_server([Api], restricted=False)
 # application = manage_session(application)

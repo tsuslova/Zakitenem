@@ -7,7 +7,11 @@ class Session(messages.Message):
     cookie = messages.StringField(1)
     expires = messages.StringField(2)
 
-
+class Tools(messages.Message):
+    email = messages.StringField(1)
+    push = messages.StringField(2, repeated=True)
+    sms = messages.StringField(3)
+    
 class LoginInfo(messages.Message):
     # required:
     login = messages.StringField(1)
@@ -35,4 +39,8 @@ class User(messages.Message):
     # TODO: how to store user region?
     region = messages.StringField(7)
     subscription_end_date = messages.StringField(8) 
+    
+    # Store here newly created installation to pass client a cookie.
+    # May be I should find a better way...
+    session = messages.MessageField(Session, 9)
     

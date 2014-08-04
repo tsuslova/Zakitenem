@@ -11,9 +11,10 @@
 	<key>fonts</key>
 	<array>
 		<string>Noteworthy-Light</string>
+		<string>LucidaGrande</string>
 	</array>
 	<key>length</key>
-	<integer>4144043</integer>
+	<integer>4071773</integer>
 	<key>version</key>
 	<integer>37</integer>
 </dict>

@@ -58,8 +58,8 @@ Response:
 
 GET /password/tools
 ==============================
-curl -v -b cookies.txt -c cookies.txt http://localhost:8080/api/password/tools
-curl -v -b cookies.txt -c cookies.txt http://zakitenem.appspot.com/api/password/tools
+curl -v -b cookies.txt -c cookies.txt http://localhost:8080/_ah/api/zakitenemapi/v1/password_request
+curl -v -d '{"cookie": "SLS409pqwzZ/SEe89ZeqE1IMGUne3pI6EKHjtF6Qd8oStOw6LnWnbj8ydruBK4E9aWB2xfy4ukC/tmdRmLKwmg=="}' http://zakitenem.appspot.com/_ah/api/zakitenemapi/v1/password_request
 
 OK case: 
 - status code 200 
@@ -74,7 +74,7 @@ TODO: алгоритм блокирования пользователя??
 
 POST /password/request 
 ==============================
-curl -v -b cookies.txt -c cookies.txt -d '{"tool":"email"}' http://localhost:8080/api/password/request
+curl -v -b cookies.txt -c cookies.txt -d '{"tool":"push"}' http://localhost:8080/api/password/request
 curl -v -b cookies.txt -c cookies.txt -d '{"tool":"email"}' http://zakitenem.appspot.com/api/password/request
 PARAM {"tool":"email"}
 Варианты tool: email, push, в дальнейшем добавится sms

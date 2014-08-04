@@ -16,6 +16,9 @@ logger.setLevel(logging.DEBUG)
 SIMPLE_TYPES = (int, long, float, bool, dict, basestring, list)
 NON_SERIALIZABLE_PROPERTIES = ("password", "cookie")
 
+#TODO : change before release: 
+use_sandbox = True
+
 def to_dict(model):
     output = {}
 
@@ -146,13 +149,14 @@ class UserItem(ndb.Model):
             return None, 0
         return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
         
-    def send_password(self, tool):
+    def send_password(self, request):
         import os
+        tool = request.tool
         password = os.urandom(8).encode("base-64")
         logger.info("generate password: %s"%password)
         if constants.option_email == tool:
             sender = "Support <%s>"%constants.zakitenem_email
-            to = "%s <%s>"%(self.login,self.email)
+            to = "%s <%s>"%(self.login, self.email)
             body = locale.resstore_pass_body%password
             logger.info("send email from: %s to : %s"%(sender,to))
             mail.send_mail(sender=sender, to=to,
@@ -164,9 +168,24 @@ class UserItem(ndb.Model):
             self.put()
             return self.email
         if constants.option_push == tool:
-            logger.info("TODO: send push and return device in (a list) to which push was sent")
-            return []
-        
+            pushed_to = []
+            for inst in user_app_installations(self):
+                if inst.device_token and len (inst.device_token) > 0:
+                    pushed_to.append(inst.device_token)
+                    self.push_password(password, self, inst.device_token)
+            self.password = ssshh(password, self.some_data)
+            self.put()
+            return pushed_to
+
+    def push_password(self, password, token):
+        from PyAPNs.apns import APNs, Payload
+        apns = APNs(use_sandbox=use_sandbox, cert_file='./resources/dev_push.pem')
+        payload = Payload(alert=password, sound="default", badge=1, custom={})
+        apns.gateway_server.send_notification(token, payload)
+        for (token, fail_time) in apns.feedback_server.items():
+            logging.info(token)
+            logging.info(fail_time)
+    
     def set_properties(self, user_message):
         for key in self.updatable_properties:
             val = getattr(user_message, key)

@@ -78,6 +78,8 @@
 		9912EFED1987B0B600E61777 /* GTLApiUserMessageUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE31987B0B600E61777 /* GTLApiUserMessageUser.m */; };
 		9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE51987B0B600E61777 /* GTLQueryApi.m */; };
 		9912EFEF1987B0B600E61777 /* GTLServiceApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE71987B0B600E61777 /* GTLServiceApi.m */; };
+		99E872D0198F77860099C3BC /* AuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872CE198F77860099C3BC /* AuthVC.m */; };
+		99E872D1198F77860099C3BC /* AuthVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E872CF198F77860099C3BC /* AuthVC.xib */; };
 		C7B6946F98BC42AFB02F302B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 374A293411F74D2D8BCD26EF /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -255,6 +257,9 @@
 		9912EFE51987B0B600E61777 /* GTLQueryApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLQueryApi.m; sourceTree = "<group>"; };
 		9912EFE61987B0B600E61777 /* GTLServiceApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceApi.h; sourceTree = "<group>"; };
 		9912EFE71987B0B600E61777 /* GTLServiceApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLServiceApi.m; sourceTree = "<group>"; };
+		99E872CD198F77860099C3BC /* AuthVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthVC.h; sourceTree = "<group>"; };
+		99E872CE198F77860099C3BC /* AuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthVC.m; sourceTree = "<group>"; };
+		99E872CF198F77860099C3BC /* AuthVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthVC.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -305,6 +310,7 @@
 		9912EEC51987ABED00E61777 /* Zakitenem */ = {
 			isa = PBXGroup;
 			children = (
+				99E872CC198F77860099C3BC /* Auth */,
 				9912EEF41987AFB600E61777 /* External */,
 				9912EECE1987ABED00E61777 /* AppDelegate.h */,
 				9912EECF1987ABED00E61777 /* AppDelegate.m */,
@@ -582,6 +588,16 @@
 			path = APIlib;
 			sourceTree = "<group>";
 		};
+		99E872CC198F77860099C3BC /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				99E872CD198F77860099C3BC /* AuthVC.h */,
+				99E872CE198F77860099C3BC /* AuthVC.m */,
+				99E872CF198F77860099C3BC /* AuthVC.xib */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -681,6 +697,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99E872D1198F77860099C3BC /* AuthVC.xib in Resources */,
 				9912EF681987AFB600E61777 /* GTMOAuth2ViewTouch.xib in Resources */,
 				9912EECA1987ABED00E61777 /* InfoPlist.strings in Resources */,
 				9912EEF31987AFA500E61777 /* Localizable.strings in Resources */,
@@ -751,6 +768,7 @@
 				9912EF5B1987AFB600E61777 /* GTMHTTPFetcherLogging.m in Sources */,
 				9912EFEA1987B0B600E61777 /* GTLApiUserMessagePasswordRequsest.m in Sources */,
 				9912EF691987AFB600E61777 /* GTLBatchQuery.m in Sources */,
+				99E872D0198F77860099C3BC /* AuthVC.m in Sources */,
 				9912EF5E1987AFB600E61777 /* GTMHTTPFetchHistory.m in Sources */,
 				9912EFCA1987AFC500E61777 /* UIView+maoAnimation.m in Sources */,
 				9912EFBF1987AFC500E61777 /* NSString+Helpers.m in Sources */,

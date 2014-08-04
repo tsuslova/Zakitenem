@@ -9,6 +9,10 @@
 #import "AppDelegate.h"
 #import "AuthVC.h"
 
+@interface AppDelegate()
+@property (strong, nonatomic) AuthVC *authVC;
+@end
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -22,8 +26,8 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
 
-    AuthVC *authVC = [[AuthVC alloc] init];
-    self.window.rootViewController = authVC;
+    self.authVC = [[AuthVC alloc] init];
+    self.window.rootViewController = self.authVC;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -42,6 +46,8 @@
     }
     
     DLOG(@"Push notifications token: %@", tokenStr);
+    self.authVC.tokenStr = tokenStr;
+    
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error

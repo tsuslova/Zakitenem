@@ -135,19 +135,19 @@ class UserItem(ndb.Model):
         resp = {constants.user_key:user_data}
         logger.info("Resp %s" % resp)
         return json.dumps(resp)
-
+    
     def validate_password(self, password):
         pass_empty = self.password == None or len(self.password) == 0
         if pass_empty:
             logger.info("User has empty password - no way to login with password")
-            return error_definitions.msg_account_used, error_definitions.code_account_used
+            return error_definitions.msg_account_used
         if password == None or len(password) == 0:
             logger.info("Password is empty")
-            return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
+            return error_definitions.msg_wrong_password
         password_hash = ssshh(password, self.some_data)
         if password_hash == self.password: 
-            return None, 0
-        return error_definitions.msg_wrong_password, error_definitions.code_wrong_password
+            return None
+        return error_definitions.msg_wrong_password
         
     def send_password(self, request):
         import os
@@ -215,16 +215,19 @@ class AppInstallationItem(ndb.Model):
 def user_app_installations(user):
     return AppInstallationItem.query(ndb.GenericProperty("user") == user.key).fetch()
 
-def create_installation(user, device_id, device_token):
-    logger.info("AppInstallationItem.query") 
-    app_install = None 
+def user_installation(user, device_id):
     user_app_installs = user_app_installations(user)
     logger.info("TODO: is it possible not to fetch all the installations?")
     if len(user_app_installs) > 0:
         for each in user_app_installs:
             if each.device_id == device_id:
                 app_install = each
-                break
+                return app_install
+    return None
+
+def create_installation(user, device_id, device_token, app_install=None):
+    logger.info("AppInstallationItem.query") 
+    
     cookie, expires = new_cookie()
     if app_install:
         logger.info("app_install would be removed  (%s)" % (app_install))

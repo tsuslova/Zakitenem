@@ -64,14 +64,22 @@ def auth(request):
     
     logger.info("user_by_login")
     user = user_model.user_by_login(login_info.login)
+    
     logger.info("user_by_login %s"%user)
     if (user):
-        (error_text, error_code) = user.validate_password(login_info.password) 
-        if error_text or error_code:
+        app_install = user_model.user_installation(user, login_info.device_id)
+        error_text = None
+        if not app_install:
+            error_text = user.validate_password(login_info.password)
+        else:
+            logger.info("user with the login&device_id was already logged in - it is normal to \
+            login without password from the same device (%s)"%app_install)
+             
+        if error_text:
             raise endpoints.BadRequestException(error_text)
         else:
-            app_install = user_model.create_installation(user,login_info.device_id,
-                                                         login_info.device_token)
+            app_install = user_model.create_installation(user, login_info.device_id,
+                                                         login_info.device_token, app_install)
             return check_auth_success(user, app_install, False)
     else:
         logger.info("Going to create a user")

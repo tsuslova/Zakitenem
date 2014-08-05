@@ -9,7 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface AuthVC : UIViewController
-//TODO: refactoring
-@property (strong, nonatomic) NSString *tokenStr;
 
 @end

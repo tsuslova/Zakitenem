@@ -249,7 +249,7 @@ def debug_print_users():
     print query.fetch(10)
     
 def user_by_login(login):
-    user = UserItem.get_by_id(id=login)
+    user = UserItem.get_by_id(id=login.lower())
     logger.info("user %s for login %s" % (user, login))
     return user 
 
@@ -270,11 +270,11 @@ def create_user_from_login_info(login_info):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0
     password_hash = ssshh(login_info.password, login_info.device_id) if pass_not_empty else ""
     logger.info("password  (%s)" % (password_hash))
-    user = UserItem.get_by_id(id=login_info.login)
+    user = UserItem.get_by_id(id=login_info.login.lower())
     if user:
         logger.critical("user %s is already created" % (user))
         return None
-    user = UserItem(id=login_info.login)
+    user = UserItem(id=login_info.login.lower())
     logger.info("Create user")
     user.login = login_info.login
     user.password = password_hash

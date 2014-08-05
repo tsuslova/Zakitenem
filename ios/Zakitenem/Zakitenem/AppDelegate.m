@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "AuthVC.h"
 
+#import "APNSManager.h"
+
 @interface AppDelegate()
 @property (strong, nonatomic) AuthVC *authVC;
 @end
@@ -25,7 +27,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-
+    [[APNSManager sharedManager] startLoadingToken];
     self.authVC = [[AuthVC alloc] init];
     self.window.rootViewController = self.authVC;
     [self.window makeKeyAndVisible];
@@ -46,13 +48,13 @@
     }
     
     DLOG(@"Push notifications token: %@", tokenStr);
-    self.authVC.tokenStr = tokenStr;
-    
+    [[APNSManager sharedManager] stopLoadingToken:tokenStr];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
     DLOG(@"Push notifications registration failed with error:%@", error);
+    [[APNSManager sharedManager] stopLoadingToken:nil];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo

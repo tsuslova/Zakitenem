@@ -73,7 +73,7 @@ def auth(request):
             error_text = user.validate_password(login_info.password)
         else:
             logger.info("user with the login&device_id was already logged in - it is normal to \
-            login without password from the same device (%s)"%app_install)
+                login without password from the same device (%s)"%app_install)
              
         if error_text:
             raise endpoints.BadRequestException(error_text)

@@ -8,14 +8,20 @@
 
 #import "AppDelegate.h"
 #import "AuthVC.h"
+#import "ForecastsVC.h"
 
 #import "APNSManager.h"
+#import "UserManager.h"
+
+
 
 @interface AppDelegate()
 @property (strong, nonatomic) AuthVC *authVC;
+@property (strong, nonatomic) UINavigationController *rootVC;
 @end
 
 @implementation AppDelegate
+static NSString *const kCurrentUserProperty = @"currentUser";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -28,8 +34,15 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [[APNSManager sharedManager] startLoadingToken];
-    self.authVC = [[AuthVC alloc] init];
-    self.window.rootViewController = self.authVC;
+    
+    self.rootVC = [[UINavigationController alloc] init];
+    self.rootVC.navigationBarHidden = YES;
+    if ([UserManager sharedManager].currentUser){
+        [self initStack];
+    } else {
+        [self showAuth];
+    }
+    self.window.rootViewController = self.rootVC;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -60,6 +73,35 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     DLOG(@"Push userInfo %@ ", userInfo);
+}
+
+#pragma mark - Main controllers
+- (void)initStack
+{
+    [self.rootVC popToRootViewControllerAnimated:NO];
+    self.rootVC.viewControllers = @[[[ForecastsVC alloc] initWithNibName:@"ForecastsVC" bundle:nil]];
+}
+
+- (void)showAuth
+{
+    [[UserManager sharedManager] addObserver:self forKeyPath:kCurrentUserProperty options:0
+                                     context:nil];
+    self.authVC = [[AuthVC alloc] init];
+    self.rootVC.viewControllers = @[self.authVC];
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if ([keyPath isEqualToString:kCurrentUserProperty]){
+        if ([[UserManager sharedManager] currentUser]){
+            [self initStack];
+        } else {
+            [self showAuth];
+        }
+    }
 }
 
 

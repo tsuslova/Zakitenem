@@ -81,6 +81,9 @@
 		99E872D0198F77860099C3BC /* AuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872CE198F77860099C3BC /* AuthVC.m */; };
 		99E872D1198F77860099C3BC /* AuthVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E872CF198F77860099C3BC /* AuthVC.xib */; };
 		99E872DA1990B9930099C3BC /* APNSManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872D91990B9930099C3BC /* APNSManager.m */; };
+		99E872DD1990CB5D0099C3BC /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872DC1990CB5D0099C3BC /* UserManager.m */; };
+		99E872E21990D3590099C3BC /* ForecastsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872E01990D3590099C3BC /* ForecastsVC.m */; };
+		99E872E31990D3590099C3BC /* ForecastsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E872E11990D3590099C3BC /* ForecastsVC.xib */; };
 		C7B6946F98BC42AFB02F302B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 374A293411F74D2D8BCD26EF /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -265,6 +268,11 @@
 		99E872D61990A7A30099C3BC /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		99E872D81990B9930099C3BC /* APNSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNSManager.h; sourceTree = "<group>"; };
 		99E872D91990B9930099C3BC /* APNSManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNSManager.m; sourceTree = "<group>"; };
+		99E872DB1990CB5D0099C3BC /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
+		99E872DC1990CB5D0099C3BC /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
+		99E872DF1990D3590099C3BC /* ForecastsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForecastsVC.h; sourceTree = "<group>"; };
+		99E872E01990D3590099C3BC /* ForecastsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForecastsVC.m; sourceTree = "<group>"; };
+		99E872E11990D3590099C3BC /* ForecastsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForecastsVC.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +326,7 @@
 				99E872D51990A78F0099C3BC /* InternalUtils */,
 				99E872CC198F77860099C3BC /* Auth */,
 				9912EEF41987AFB600E61777 /* External */,
+				99E872DE1990D33E0099C3BC /* Forecast */,
 				9912EECE1987ABED00E61777 /* AppDelegate.h */,
 				9912EECF1987ABED00E61777 /* AppDelegate.m */,
 				9912EEEE1987AFA500E61777 /* InfoPlist.strings */,
@@ -618,8 +627,20 @@
 			children = (
 				99E872D81990B9930099C3BC /* APNSManager.h */,
 				99E872D91990B9930099C3BC /* APNSManager.m */,
+				99E872DB1990CB5D0099C3BC /* UserManager.h */,
+				99E872DC1990CB5D0099C3BC /* UserManager.m */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		99E872DE1990D33E0099C3BC /* Forecast */ = {
+			isa = PBXGroup;
+			children = (
+				99E872DF1990D3590099C3BC /* ForecastsVC.h */,
+				99E872E01990D3590099C3BC /* ForecastsVC.m */,
+				99E872E11990D3590099C3BC /* ForecastsVC.xib */,
+			);
+			path = Forecast;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -731,6 +752,7 @@
 				9912EFC61987AFC500E61777 /* LoadingView.xib in Resources */,
 				9912EF631987AFB600E61777 /* UnitTests-Info.plist in Resources */,
 				9912EED21987ABED00E61777 /* Images.xcassets in Resources */,
+				99E872E31990D3590099C3BC /* ForecastsVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -800,10 +822,12 @@
 				9912EF601987AFB600E61777 /* GTMMIMEDocument.m in Sources */,
 				9912EF5A1987AFB600E61777 /* GTMHTTPFetcher.m in Sources */,
 				9912EFCB1987AFC500E61777 /* UIView+maoDimensions.m in Sources */,
+				99E872DD1990CB5D0099C3BC /* UserManager.m in Sources */,
 				9912EFC71987AFC500E61777 /* MAOInputAccessoryView.m in Sources */,
 				9912EFC31987AFC500E61777 /* UIViewController+Lock.m in Sources */,
 				9912EFEF1987B0B600E61777 /* GTLServiceApi.m in Sources */,
 				9912EF611987AFB600E61777 /* GTMReadMonitorInputStream.m in Sources */,
+				99E872E21990D3590099C3BC /* ForecastsVC.m in Sources */,
 				99E872DA1990B9930099C3BC /* APNSManager.m in Sources */,
 				9912EFEB1987B0B600E61777 /* GTLApiUserMessageSession.m in Sources */,
 				9912EFC91987AFC500E61777 /* UIColor+maoConversion.m in Sources */,

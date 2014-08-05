@@ -10,12 +10,11 @@
 #import "Utils.h"
 #import "constants.h"
 #import "APNSManager.h"
+#import "UserManager.h"
 
 //GAE
 #import "GTLServiceApi.h"
 #import "GTLQueryApi.h"
-#import "GTLApiUserMessageLoginInfo.h"
-#import "GTLApiUserMessageUser.h"
 #import "GTLErrorObject.h"
 #import "UIViewController+Lock.h"
 
@@ -76,12 +75,8 @@ static NSString *const kToken = @"token";
         [self unlock];
         //TODO: store GTLApiUserMessageUser *obj
         if (error){
-            id errorResponse = [[error userInfo] objectForKey:kGTLStructuredErrorKey];
-            NSMutableDictionary *errorJSON = [errorResponse JSON];
-            DLOG(@"%@", [error userInfo]);
-            
-            if (errorJSON){
-                GTLErrorObject *structuredError = [GTLErrorObject objectWithJSON:errorJSON];
+            GTLErrorObject *structuredError = [[error userInfo] objectForKey:kGTLStructuredErrorKey];
+            if (structuredError){
                 DLOG(@"%@", structuredError.message);
                 if ([structuredError.message isEqualToString:kAccountUsed]){
                     DLOG(@"TODO Need a logic to restore/create password");
@@ -95,8 +90,11 @@ static NSString *const kToken = @"token";
                 DLOG(@"Not a server error - assume as network one");
                 showErrorAlertView(error, NSLocalizedString(@"NoInternetErrorMessage", ));
             }
-            
+        } else {
+            DLOG(@"Logged in!");
+            [[UserManager sharedManager] loggedIn:obj];
         }
+        
     }];
 
 }

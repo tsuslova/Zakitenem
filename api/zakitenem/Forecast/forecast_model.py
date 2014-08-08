@@ -12,10 +12,6 @@ from constants import constants, error_definitions, locale
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-
-#TODO : change before release: 
-use_sandbox = True
-
 # Helper class to load/dump login information for requests.
 # TODO: Looks like it shouldn't be an ndb.Model as it is not used to store data in DB  
 class LoginInfoItem(ndb.Model):
@@ -77,8 +73,7 @@ class UserItem(ndb.Model):
     userpic = ndb.StringProperty(indexed=False)
     # TODO: how to store user region?
     region = ndb.StringProperty()
-    subscription_end_date = ndb.DateProperty()
-    
+    subscription_end_date = ndb.DateProperty() 
     
     #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
@@ -269,5 +264,6 @@ def new_cookie():
     expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
     return cookie, expires
 
+        
         
         

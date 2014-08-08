@@ -23,7 +23,7 @@ class LoginInfo(messages.Message):
     # optional
     password = messages.StringField(3)
     device_token = messages.StringField(4)
-
+     
 class AppInstallation(messages.Message):
     device_id = messages.StringField(1)
     device_token = messages.StringField(2)
@@ -49,3 +49,12 @@ class User(messages.Message):
     # In request it is used for passing session info 
     session = messages.MessageField(Session, 9)
     
+class Region(messages.Message):
+    name = messages.StringField(1)
+    
+    latitude = messages.FloatField(2)
+    longitude = messages.FloatField(3)
+   
+class RegionList (messages.Message):
+    possible_region = messages.MessageField(Region, 1) 
+    regions = messages.MessageField(Region, 2, repeated = True)

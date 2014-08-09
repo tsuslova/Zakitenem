@@ -125,6 +125,7 @@ def user_update(request):
 
 def region_list(request):
     import ConfigParser
+    import math
     config_file='./resources/regions_config.cfg'
     parser = ConfigParser.RawConfigParser()
     parser.read(config_file)
@@ -134,6 +135,9 @@ def region_list(request):
             my_region_name = request.name
         
     region_list = message.RegionList()
+    
+    nearest_region = None
+    min_distanse = -1
     for section in parser.sections():
         region = message.Region()
         unicode_content = parser.get(section, "name").decode('utf-8')
@@ -141,11 +145,18 @@ def region_list(request):
         region.latitude = float(parser.get(section, "latitude"))
         region.longitude = float(parser.get(section, "longitude"))
         region_list.regions.append(region)
-        if my_region_name == section:
+        if my_region_name and my_region_name.lower() == section.lower():
             region_list.possible_region = region
         else :
             #TODO find nearest by coordinates
-            pass
+            if request:
+                distanse = math.hypot(region.latitude - request.latitude, 
+                                 region.longitude - request.longitude)
+                if min_distanse < 0 or distanse < min_distanse:
+                    min_distanse = distanse 
+                    nearest_region = region
+    if not region_list.possible_region and nearest_region:
+        region_list.possible_region = nearest_region
     return region_list
 
 

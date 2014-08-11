@@ -141,7 +141,7 @@ def region_list(request):
     for section in parser.sections():
         region = message.Region()
         unicode_content = parser.get(section, "name").decode('utf-8')
-        region.name =unicode_content 
+        region.name = unicode_content 
         region.latitude = float(parser.get(section, "latitude"))
         region.longitude = float(parser.get(section, "longitude"))
         region_list.regions.append(region)

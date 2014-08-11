@@ -30,6 +30,17 @@ class AppInstallation(messages.Message):
     date = messages.StringField(3)
     session = messages.MessageField(Session, 4)
 
+class Region(messages.Message):
+    id = messages.StringField(1)
+    name = messages.StringField(2)
+    
+    latitude = messages.FloatField(3)
+    longitude = messages.FloatField(4)
+   
+class RegionList (messages.Message):
+    possible_region = messages.MessageField(Region, 1) 
+    regions = messages.MessageField(Region, 2, repeated = True)
+    
 class User(messages.Message):
     login = messages.StringField(1)
     
@@ -39,9 +50,10 @@ class User(messages.Message):
     gender = messages.BooleanField(4)
     password = messages.StringField(5)
     
-    userpic = messages.StringField(6)
-    # TODO: how to store user region?
-    region = messages.StringField(7)
+    userpic = messages.BytesField(6)
+    
+    region = messages.MessageField(Region, 7)
+    
     subscription_end_date = messages.StringField(8) 
     
     # Store here newly created installation to pass client a cookie.
@@ -49,12 +61,3 @@ class User(messages.Message):
     # In request it is used for passing session info 
     session = messages.MessageField(Session, 9)
     
-class Region(messages.Message):
-    name = messages.StringField(1)
-    
-    latitude = messages.FloatField(2)
-    longitude = messages.FloatField(3)
-   
-class RegionList (messages.Message):
-    possible_region = messages.MessageField(Region, 1) 
-    regions = messages.MessageField(Region, 2, repeated = True)

@@ -62,8 +62,23 @@ def create_login_info(login, device_id, device_token="", password=""):
     return login_info 
 
   
-# Messages:
 
+class RegionItem(ndb.Model):
+    name = ndb.StringProperty()
+    
+    latitude = ndb.FloatProperty()
+    longitude = ndb.FloatProperty()
+    
+    def to_message(self):
+        return message.Region(name = self.name,
+                              latitude = self.latitude,
+                              longitude = self.longitude
+                              )
+    @classmethod
+    def from_message(message):
+        return RegionItem(name = message.name, latitude = message.latitude, 
+                      longitude = message.longitude)
+        
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
     
@@ -74,12 +89,12 @@ class UserItem(ndb.Model):
     password = ndb.StringProperty(indexed=False)
     some_data = ndb.StringProperty(indexed=False)
     
-    userpic = ndb.StringProperty(indexed=False)
-    # TODO: how to store user region?
-    region = ndb.StringProperty()
+    userpic = ndb.BlobProperty(indexed=False)
+    
+    region = ndb.StructuredProperty(RegionItem, indexed=False)
     subscription_end_date = ndb.DateProperty()
-    
-    
+
+
     #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
@@ -95,7 +110,7 @@ class UserItem(ndb.Model):
                            phone = self.phone,
                            gender = self.gender,
                            userpic = self.userpic,
-                           region = self.region,
+                           region = self.region.to_message(),
                            session = session 
                            )
         
@@ -165,16 +180,14 @@ class UserItem(ndb.Model):
         for key in self.updatable_properties:
             val = getattr(user_message, key)
             if val:
+                #TODO check that val is Message field and iterate through fields instead?
+                if key == "region":
+                    self.region = RegionItem.from_message(val)
                 if key == "gender":
                     self.gender = True if val > 0 else False
                 else: 
                     setattr(self, key, val)
         self.put()
-
-    def upload_userpic(self):
-        avatar = self.request.get("img")
-        #greeting.avatar = db.Blob(avatar)
-        #greeting.put()
 
 class AppInstallationItem(ndb.Model):
     device_id = ndb.StringProperty()

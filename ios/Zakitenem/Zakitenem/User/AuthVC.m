@@ -7,18 +7,23 @@
 //
 
 #import "AuthVC.h"
-#import "Utils.h"
-#import "constants.h"
+
 #import "APNSManager.h"
 #import "UserManager.h"
+
+#import "UserUpdateVC.h"
+
+//Utils
+#import "UIViewController+Lock.h"
+#import "Utils.h"
+#import "constants.h"
 
 //GAE
 #import "GTLServiceApi.h"
 #import "GTLQueryApi.h"
 #import "GTLErrorObject.h"
-#import "UIViewController+Lock.h"
 
-@interface AuthVC () <UITextFieldDelegate>
+@interface AuthVC () <UITextFieldDelegate, UserUpdateDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *tfLogin;
 @end
@@ -92,7 +97,8 @@ static NSString *const kToken = @"token";
             }
         } else {
             DLOG(@"Logged in!");
-            [[UserManager sharedManager] loggedIn:obj];
+            UserUpdateVC *userUpdateVC = [[UserUpdateVC alloc] initWithUser:obj delegate:self];
+            [self.navigationController pushViewController:userUpdateVC animated:YES];
         }
         
     }];
@@ -109,5 +115,12 @@ static NSString *const kToken = @"token";
         [self loginQuery:self.tfLogin.text];
     }
 }
+
+#pragma mark - UserUpdateDelegate
+- (void)userUpdated:(GTLApiUserMessageUser *)user
+{
+    [[UserManager sharedManager] loggedIn:user];
+}
+
 
 @end

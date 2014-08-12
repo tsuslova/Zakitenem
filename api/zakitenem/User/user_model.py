@@ -100,17 +100,16 @@ class UserItem(ndb.Model):
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
     
     def to_message(self, app_installation = None):
-        session = None
-        if app_installation:
-            session = message.Session(cookie = app_installation.cookie,
-                                      expires = str(app_installation.expires) 
-                                     )
+        session = message.Session(cookie = app_installation.cookie, 
+                  expires = str(app_installation.expires)) if app_installation else None
+        region = self.region.to_message() if self.region else None
+
         return message.User(login = self.login,
                            email = self.email,
                            phone = self.phone,
                            gender = self.gender,
                            userpic = self.userpic,
-                           region = self.region.to_message(),
+                           region = region,
                            session = session 
                            )
         
@@ -270,7 +269,7 @@ def create_user_from_login_info(login_info):
     logger.info("create_installation")
     app_install = create_installation(user, login_info.device_id, login_info.device_token)
     user.put()
-    logger.info("user %s created" % (user))
+    logger.info("user %s created (app_install=%s)" % (user,app_install))
     return user, app_install
 
 def new_cookie():

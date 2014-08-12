@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/m0BXtlYaktk4uGCYB4b12yLBcP4\"",
+ "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/mAnCw3JyddIuEem5uhhElwb589o\"",
  "discoveryVersion": "v1",
  "id": "api:v1",
  "name": "api",
@@ -99,6 +99,41 @@
     }
    }
   },
+  "UserMessageRegion": {
+   "id": "UserMessageRegion",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "latitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "longitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "name": {
+     "type": "string"
+    }
+   }
+  },
+  "UserMessageRegionList": {
+   "id": "UserMessageRegionList",
+   "type": "object",
+   "properties": {
+    "possible_region": {
+     "$ref": "UserMessageRegion"
+    },
+    "regions": {
+     "type": "array",
+     "items": {
+      "$ref": "UserMessageRegion"
+     }
+    }
+   }
+  },
   "UserMessageSession": {
    "id": "UserMessageSession",
    "type": "object",
@@ -149,7 +184,7 @@
      "type": "string"
     },
     "region": {
-     "type": "string"
+     "$ref": "UserMessageRegion"
     },
     "session": {
      "$ref": "UserMessageSession"
@@ -158,7 +193,8 @@
      "type": "string"
     },
     "userpic": {
-     "type": "string"
+     "type": "string",
+     "format": "byte"
     }
    }
   }
@@ -225,6 +261,32 @@
    },
    "returns": {
     "$ref": "UserMessageTools"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.regions_list": {
+   "id": "api.regions_list",
+   "allowGet": true,
+   "parameters": {
+    "id": {
+     "type": "string"
+    },
+    "latitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "longitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "name": {
+     "type": "string"
+    }
+   },
+   "returns": {
+    "$ref": "UserMessageRegionList"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

@@ -78,10 +78,27 @@
 		9912EFED1987B0B600E61777 /* GTLApiUserMessageUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE31987B0B600E61777 /* GTLApiUserMessageUser.m */; };
 		9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE51987B0B600E61777 /* GTLQueryApi.m */; };
 		9912EFEF1987B0B600E61777 /* GTLServiceApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE71987B0B600E61777 /* GTLServiceApi.m */; };
-		99E872D0198F77860099C3BC /* AuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872CE198F77860099C3BC /* AuthVC.m */; };
-		99E872D1198F77860099C3BC /* AuthVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E872CF198F77860099C3BC /* AuthVC.xib */; };
-		99E872DA1990B9930099C3BC /* APNSManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872D91990B9930099C3BC /* APNSManager.m */; };
-		99E872DD1990CB5D0099C3BC /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872DC1990CB5D0099C3BC /* UserManager.m */; };
+		999F30991990EEB4008CB0AD /* Barnaul_Aviator.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F308E1990EEB4008CB0AD /* Barnaul_Aviator.html */; };
+		999F309A1990EEB4008CB0AD /* Berdsk.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F308F1990EEB4008CB0AD /* Berdsk.html */; };
+		999F309B1990EEB4008CB0AD /* Bistrovka.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30901990EEB4008CB0AD /* Bistrovka.html */; };
+		999F309C1990EEB4008CB0AD /* Gorkoe_Kamen.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30911990EEB4008CB0AD /* Gorkoe_Kamen.html */; };
+		999F309D1990EEB4008CB0AD /* Krasnyi_Yar.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30921990EEB4008CB0AD /* Krasnyi_Yar.html */; };
+		999F309E1990EEB4008CB0AD /* Lazurnay.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30931990EEB4008CB0AD /* Lazurnay.html */; };
+		999F309F1990EEB4008CB0AD /* Neokom.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30941990EEB4008CB0AD /* Neokom.html */; };
+		999F30A01990EEB4008CB0AD /* Novichiha.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30951990EEB4008CB0AD /* Novichiha.html */; };
+		999F30A11990EEB4008CB0AD /* Omsk.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30961990EEB4008CB0AD /* Omsk.html */; };
+		999F30A21990EEB4008CB0AD /* Savvushka.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30971990EEB4008CB0AD /* Savvushka.html */; };
+		999F30A31990EEB4008CB0AD /* Topolnoe.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30981990EEB4008CB0AD /* Topolnoe.html */; };
+		999F30B31992251C008CB0AD /* RNCachingURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30B21992251C008CB0AD /* RNCachingURLProtocol.m */; };
+		999F30BD1998D88E008CB0AD /* AuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30B61998D88E008CB0AD /* AuthVC.m */; };
+		999F30BE1998D88E008CB0AD /* AuthVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999F30B71998D88E008CB0AD /* AuthVC.xib */; };
+		999F30BF1998D88E008CB0AD /* APNSManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30BA1998D88E008CB0AD /* APNSManager.m */; };
+		999F30C01998D88E008CB0AD /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30BC1998D88E008CB0AD /* UserManager.m */; };
+		999F30C41998D8AB008CB0AD /* UserUpdateVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30C21998D8AB008CB0AD /* UserUpdateVC.m */; };
+		999F30C51998D8AB008CB0AD /* UserUpdateVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999F30C31998D8AB008CB0AD /* UserUpdateVC.xib */; };
+		999F30CA1998DD69008CB0AD /* GTLApiUserMessageRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30C71998DD69008CB0AD /* GTLApiUserMessageRegion.m */; };
+		999F30CB1998DD69008CB0AD /* GTLApiUserMessageRegionList.m in Sources */ = {isa = PBXBuildFile; fileRef = 999F30C91998DD69008CB0AD /* GTLApiUserMessageRegionList.m */; };
+		99A51F08199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 99A51F07199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.m */; };
 		99E872E21990D3590099C3BC /* ForecastsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 99E872E01990D3590099C3BC /* ForecastsVC.m */; };
 		99E872E31990D3590099C3BC /* ForecastsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E872E11990D3590099C3BC /* ForecastsVC.xib */; };
 		C7B6946F98BC42AFB02F302B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 374A293411F74D2D8BCD26EF /* libPods.a */; };
@@ -261,15 +278,37 @@
 		9912EFE51987B0B600E61777 /* GTLQueryApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLQueryApi.m; sourceTree = "<group>"; };
 		9912EFE61987B0B600E61777 /* GTLServiceApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceApi.h; sourceTree = "<group>"; };
 		9912EFE71987B0B600E61777 /* GTLServiceApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLServiceApi.m; sourceTree = "<group>"; };
-		99E872CD198F77860099C3BC /* AuthVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthVC.h; sourceTree = "<group>"; };
-		99E872CE198F77860099C3BC /* AuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthVC.m; sourceTree = "<group>"; };
-		99E872CF198F77860099C3BC /* AuthVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthVC.xib; sourceTree = "<group>"; };
+		999F308E1990EEB4008CB0AD /* Barnaul_Aviator.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Barnaul_Aviator.html; sourceTree = "<group>"; };
+		999F308F1990EEB4008CB0AD /* Berdsk.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Berdsk.html; sourceTree = "<group>"; };
+		999F30901990EEB4008CB0AD /* Bistrovka.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Bistrovka.html; sourceTree = "<group>"; };
+		999F30911990EEB4008CB0AD /* Gorkoe_Kamen.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Gorkoe_Kamen.html; sourceTree = "<group>"; };
+		999F30921990EEB4008CB0AD /* Krasnyi_Yar.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Krasnyi_Yar.html; sourceTree = "<group>"; };
+		999F30931990EEB4008CB0AD /* Lazurnay.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Lazurnay.html; sourceTree = "<group>"; };
+		999F30941990EEB4008CB0AD /* Neokom.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Neokom.html; sourceTree = "<group>"; };
+		999F30951990EEB4008CB0AD /* Novichiha.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Novichiha.html; sourceTree = "<group>"; };
+		999F30961990EEB4008CB0AD /* Omsk.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Omsk.html; sourceTree = "<group>"; };
+		999F30971990EEB4008CB0AD /* Savvushka.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Savvushka.html; sourceTree = "<group>"; };
+		999F30981990EEB4008CB0AD /* Topolnoe.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Topolnoe.html; sourceTree = "<group>"; };
+		999F30B11992251C008CB0AD /* RNCachingURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCachingURLProtocol.h; sourceTree = "<group>"; };
+		999F30B21992251C008CB0AD /* RNCachingURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCachingURLProtocol.m; sourceTree = "<group>"; };
+		999F30B51998D88E008CB0AD /* AuthVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthVC.h; sourceTree = "<group>"; };
+		999F30B61998D88E008CB0AD /* AuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthVC.m; sourceTree = "<group>"; };
+		999F30B71998D88E008CB0AD /* AuthVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthVC.xib; sourceTree = "<group>"; };
+		999F30B91998D88E008CB0AD /* APNSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNSManager.h; sourceTree = "<group>"; };
+		999F30BA1998D88E008CB0AD /* APNSManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNSManager.m; sourceTree = "<group>"; };
+		999F30BB1998D88E008CB0AD /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
+		999F30BC1998D88E008CB0AD /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
+		999F30C11998D8AB008CB0AD /* UserUpdateVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserUpdateVC.h; sourceTree = "<group>"; };
+		999F30C21998D8AB008CB0AD /* UserUpdateVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserUpdateVC.m; sourceTree = "<group>"; };
+		999F30C31998D8AB008CB0AD /* UserUpdateVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserUpdateVC.xib; sourceTree = "<group>"; };
+		999F30C61998DD69008CB0AD /* GTLApiUserMessageRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiUserMessageRegion.h; sourceTree = "<group>"; };
+		999F30C71998DD69008CB0AD /* GTLApiUserMessageRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiUserMessageRegion.m; sourceTree = "<group>"; };
+		999F30C81998DD69008CB0AD /* GTLApiUserMessageRegionList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiUserMessageRegionList.h; sourceTree = "<group>"; };
+		999F30C91998DD69008CB0AD /* GTLApiUserMessageRegionList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiUserMessageRegionList.m; sourceTree = "<group>"; };
+		99A51F06199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTLApiUserMessageUser+Wrapper.h"; sourceTree = "<group>"; };
+		99A51F07199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTLApiUserMessageUser+Wrapper.m"; sourceTree = "<group>"; };
 		99E872D41990A7270099C3BC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		99E872D61990A7A30099C3BC /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
-		99E872D81990B9930099C3BC /* APNSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNSManager.h; sourceTree = "<group>"; };
-		99E872D91990B9930099C3BC /* APNSManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNSManager.m; sourceTree = "<group>"; };
-		99E872DB1990CB5D0099C3BC /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
-		99E872DC1990CB5D0099C3BC /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		99E872DF1990D3590099C3BC /* ForecastsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForecastsVC.h; sourceTree = "<group>"; };
 		99E872E01990D3590099C3BC /* ForecastsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForecastsVC.m; sourceTree = "<group>"; };
 		99E872E11990D3590099C3BC /* ForecastsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForecastsVC.xib; sourceTree = "<group>"; };
@@ -324,11 +363,12 @@
 			isa = PBXGroup;
 			children = (
 				99E872D51990A78F0099C3BC /* InternalUtils */,
-				99E872CC198F77860099C3BC /* Auth */,
 				9912EEF41987AFB600E61777 /* External */,
 				99E872DE1990D33E0099C3BC /* Forecast */,
+				999F30B41998D88E008CB0AD /* User */,
 				9912EECE1987ABED00E61777 /* AppDelegate.h */,
 				9912EECF1987ABED00E61777 /* AppDelegate.m */,
+				999F30861990EEA1008CB0AD /* Resources */,
 				9912EEEE1987AFA500E61777 /* InfoPlist.strings */,
 				9912EEF01987AFA500E61777 /* Localizable.strings */,
 				9912EF841987AFC500E61777 /* Utils */,
@@ -352,6 +392,7 @@
 		9912EEF41987AFB600E61777 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				999F30B019922511008CB0AD /* cache */,
 				9912EEF51987AFB600E61777 /* GAE */,
 			);
 			path = External;
@@ -595,6 +636,10 @@
 				9912EFE11987B0B600E61777 /* GTLApiUserMessageTools.m */,
 				9912EFE21987B0B600E61777 /* GTLApiUserMessageUser.h */,
 				9912EFE31987B0B600E61777 /* GTLApiUserMessageUser.m */,
+				999F30C61998DD69008CB0AD /* GTLApiUserMessageRegion.h */,
+				999F30C71998DD69008CB0AD /* GTLApiUserMessageRegion.m */,
+				999F30C81998DD69008CB0AD /* GTLApiUserMessageRegionList.h */,
+				999F30C91998DD69008CB0AD /* GTLApiUserMessageRegionList.m */,
 				9912EFE41987B0B600E61777 /* GTLQueryApi.h */,
 				9912EFE51987B0B600E61777 /* GTLQueryApi.m */,
 				9912EFE61987B0B600E61777 /* GTLServiceApi.h */,
@@ -603,15 +648,67 @@
 			path = APIlib;
 			sourceTree = "<group>";
 		};
-		99E872CC198F77860099C3BC /* Auth */ = {
+		999F30861990EEA1008CB0AD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				99E872D71990B9500099C3BC /* Model */,
-				99E872CD198F77860099C3BC /* AuthVC.h */,
-				99E872CE198F77860099C3BC /* AuthVC.m */,
-				99E872CF198F77860099C3BC /* AuthVC.xib */,
+				999F308D1990EEB4008CB0AD /* Forecasts */,
 			);
-			path = Auth;
+			path = Resources;
+			sourceTree = SOURCE_ROOT;
+		};
+		999F308D1990EEB4008CB0AD /* Forecasts */ = {
+			isa = PBXGroup;
+			children = (
+				999F308E1990EEB4008CB0AD /* Barnaul_Aviator.html */,
+				999F308F1990EEB4008CB0AD /* Berdsk.html */,
+				999F30901990EEB4008CB0AD /* Bistrovka.html */,
+				999F30911990EEB4008CB0AD /* Gorkoe_Kamen.html */,
+				999F30921990EEB4008CB0AD /* Krasnyi_Yar.html */,
+				999F30931990EEB4008CB0AD /* Lazurnay.html */,
+				999F30941990EEB4008CB0AD /* Neokom.html */,
+				999F30951990EEB4008CB0AD /* Novichiha.html */,
+				999F30961990EEB4008CB0AD /* Omsk.html */,
+				999F30971990EEB4008CB0AD /* Savvushka.html */,
+				999F30981990EEB4008CB0AD /* Topolnoe.html */,
+			);
+			name = Forecasts;
+			path = Model;
+			sourceTree = "<group>";
+		};
+		999F30B019922511008CB0AD /* cache */ = {
+			isa = PBXGroup;
+			children = (
+				999F30B11992251C008CB0AD /* RNCachingURLProtocol.h */,
+				999F30B21992251C008CB0AD /* RNCachingURLProtocol.m */,
+			);
+			path = cache;
+			sourceTree = "<group>";
+		};
+		999F30B41998D88E008CB0AD /* User */ = {
+			isa = PBXGroup;
+			children = (
+				999F30B51998D88E008CB0AD /* AuthVC.h */,
+				999F30B61998D88E008CB0AD /* AuthVC.m */,
+				999F30B71998D88E008CB0AD /* AuthVC.xib */,
+				999F30C11998D8AB008CB0AD /* UserUpdateVC.h */,
+				999F30C21998D8AB008CB0AD /* UserUpdateVC.m */,
+				999F30C31998D8AB008CB0AD /* UserUpdateVC.xib */,
+				999F30B81998D88E008CB0AD /* Model */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		999F30B81998D88E008CB0AD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				999F30B91998D88E008CB0AD /* APNSManager.h */,
+				999F30BA1998D88E008CB0AD /* APNSManager.m */,
+				999F30BB1998D88E008CB0AD /* UserManager.h */,
+				999F30BC1998D88E008CB0AD /* UserManager.m */,
+				99A51F06199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.h */,
+				99A51F07199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		99E872D51990A78F0099C3BC /* InternalUtils */ = {
@@ -620,17 +717,6 @@
 				99E872D61990A7A30099C3BC /* constants.h */,
 			);
 			path = InternalUtils;
-			sourceTree = "<group>";
-		};
-		99E872D71990B9500099C3BC /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				99E872D81990B9930099C3BC /* APNSManager.h */,
-				99E872D91990B9930099C3BC /* APNSManager.m */,
-				99E872DB1990CB5D0099C3BC /* UserManager.h */,
-				99E872DC1990CB5D0099C3BC /* UserManager.m */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		99E872DE1990D33E0099C3BC /* Forecast */ = {
@@ -742,17 +828,29 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99E872D1198F77860099C3BC /* AuthVC.xib in Resources */,
+				999F309B1990EEB4008CB0AD /* Bistrovka.html in Resources */,
+				999F309C1990EEB4008CB0AD /* Gorkoe_Kamen.html in Resources */,
+				999F30A31990EEB4008CB0AD /* Topolnoe.html in Resources */,
 				9912EF681987AFB600E61777 /* GTMOAuth2ViewTouch.xib in Resources */,
+				999F309E1990EEB4008CB0AD /* Lazurnay.html in Resources */,
+				999F30A21990EEB4008CB0AD /* Savvushka.html in Resources */,
 				9912EECA1987ABED00E61777 /* InfoPlist.strings in Resources */,
+				999F30A11990EEB4008CB0AD /* Omsk.html in Resources */,
+				999F30BE1998D88E008CB0AD /* AuthVC.xib in Resources */,
 				9912EEF31987AFA500E61777 /* Localizable.strings in Resources */,
 				9912EF661987AFB600E61777 /* ReleaseNotes.txt in Resources */,
+				999F30991990EEB4008CB0AD /* Barnaul_Aviator.html in Resources */,
 				9912EF621987AFB600E61777 /* ReleaseNotes.txt in Resources */,
+				999F30A01990EEB4008CB0AD /* Novichiha.html in Resources */,
 				9912EEF21987AFA500E61777 /* InfoPlist.strings in Resources */,
 				9912EFC61987AFC500E61777 /* LoadingView.xib in Resources */,
 				9912EF631987AFB600E61777 /* UnitTests-Info.plist in Resources */,
+				999F309A1990EEB4008CB0AD /* Berdsk.html in Resources */,
 				9912EED21987ABED00E61777 /* Images.xcassets in Resources */,
 				99E872E31990D3590099C3BC /* ForecastsVC.xib in Resources */,
+				999F30C51998D8AB008CB0AD /* UserUpdateVC.xib in Resources */,
+				999F309D1990EEB4008CB0AD /* Krasnyi_Yar.html in Resources */,
+				999F309F1990EEB4008CB0AD /* Neokom.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -798,7 +896,11 @@
 			files = (
 				9912EFD41987AFC500E61777 /* UILabel+SizeToFit.m in Sources */,
 				9912EF5C1987AFB600E61777 /* GTMHTTPFetcherLogViewController.m in Sources */,
+				999F30C01998D88E008CB0AD /* UserManager.m in Sources */,
+				999F30BF1998D88E008CB0AD /* APNSManager.m in Sources */,
+				999F30CB1998DD69008CB0AD /* GTLApiUserMessageRegionList.m in Sources */,
 				9912EFCF1987AFC500E61777 /* NSString+formattedText.m in Sources */,
+				999F30B31992251C008CB0AD /* RNCachingURLProtocol.m in Sources */,
 				9912EED01987ABED00E61777 /* AppDelegate.m in Sources */,
 				9912EF6B1987AFB600E61777 /* GTLDateTime.m in Sources */,
 				9912EF6E1987AFB600E61777 /* GTLQuery.m in Sources */,
@@ -814,21 +916,20 @@
 				9912EF5B1987AFB600E61777 /* GTMHTTPFetcherLogging.m in Sources */,
 				9912EFEA1987B0B600E61777 /* GTLApiUserMessagePasswordRequsest.m in Sources */,
 				9912EF691987AFB600E61777 /* GTLBatchQuery.m in Sources */,
-				99E872D0198F77860099C3BC /* AuthVC.m in Sources */,
 				9912EF5E1987AFB600E61777 /* GTMHTTPFetchHistory.m in Sources */,
 				9912EFCA1987AFC500E61777 /* UIView+maoAnimation.m in Sources */,
 				9912EFBF1987AFC500E61777 /* NSString+Helpers.m in Sources */,
 				9912EFC51987AFC500E61777 /* LoadingView.m in Sources */,
 				9912EF601987AFB600E61777 /* GTMMIMEDocument.m in Sources */,
+				999F30BD1998D88E008CB0AD /* AuthVC.m in Sources */,
 				9912EF5A1987AFB600E61777 /* GTMHTTPFetcher.m in Sources */,
 				9912EFCB1987AFC500E61777 /* UIView+maoDimensions.m in Sources */,
-				99E872DD1990CB5D0099C3BC /* UserManager.m in Sources */,
+				999F30C41998D8AB008CB0AD /* UserUpdateVC.m in Sources */,
 				9912EFC71987AFC500E61777 /* MAOInputAccessoryView.m in Sources */,
 				9912EFC31987AFC500E61777 /* UIViewController+Lock.m in Sources */,
 				9912EFEF1987B0B600E61777 /* GTLServiceApi.m in Sources */,
 				9912EF611987AFB600E61777 /* GTMReadMonitorInputStream.m in Sources */,
 				99E872E21990D3590099C3BC /* ForecastsVC.m in Sources */,
-				99E872DA1990B9930099C3BC /* APNSManager.m in Sources */,
 				9912EFEB1987B0B600E61777 /* GTLApiUserMessageSession.m in Sources */,
 				9912EFC91987AFC500E61777 /* UIColor+maoConversion.m in Sources */,
 				9912EFE91987B0B600E61777 /* GTLApiUserMessageLoginInfo.m in Sources */,
@@ -845,6 +946,7 @@
 				9912EFCE1987AFC500E61777 /* NSMutableAttributedString+Attributes.m in Sources */,
 				9912EFCD1987AFC500E61777 /* MenuBarButtonItem.m in Sources */,
 				9912EF6F1987AFB600E61777 /* GTLRuntimeCommon.m in Sources */,
+				999F30CA1998DD69008CB0AD /* GTLApiUserMessageRegion.m in Sources */,
 				9912EFD31987AFC500E61777 /* UILabel+formattedText.m in Sources */,
 				9912EF711987AFB600E61777 /* GTLUploadParameters.m in Sources */,
 				9912EFC11987AFC500E61777 /* Utils.m in Sources */,
@@ -852,6 +954,7 @@
 				9912EFE81987B0B600E61777 /* GTLApiConstants.m in Sources */,
 				9912EFD11987AFC500E61777 /* UIImage+TintColor.m in Sources */,
 				9912EF5F1987AFB600E61777 /* GTMHTTPUploadFetcher.m in Sources */,
+				99A51F08199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.m in Sources */,
 				9912EFBD1987AFC500E61777 /* NSDictionary+APIErrors.m in Sources */,
 				9912EFCC1987AFC500E61777 /* UIView+maoLayerAccess.m in Sources */,
 				9912EFC21987AFC500E61777 /* UIViewController+dismissSelf.m in Sources */,

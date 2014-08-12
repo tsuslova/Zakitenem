@@ -19,15 +19,41 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSURL *url = [NSURL URLWithString:@"http://windguru.cz"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [self.webView loadRequest:request];
+    
+    NSString *html = @"<html>";
+    NSString *forecastPath = [[NSBundle mainBundle] pathForResource:@"Neokom" ofType:@"html"];
+    
+    NSError *error;
+    NSString *forecastHTML = [NSString stringWithContentsOfFile:forecastPath encoding:NSUTF8StringEncoding error:&error];
+    if (error){
+        NSLog(@"%@", [error localizedDescription]);
+        return;
+    }
+    html = [html stringByAppendingString:forecastHTML];
+    html = [html stringByAppendingString:@"</html>"];
+    
+    [self.webView loadHTMLString:html baseURL:nil];
 }
 
 #pragma mark - IBActions
 - (IBAction)logout:(id)sender
 {
     [[UserManager sharedManager] logout];
+}
+
+- (IBAction)reload:(id)sender
+{
+    DLOG(@"%@",self.webView.request);
+    [self.webView stopLoading];
+    [self.webView reload];
+}
+
+#pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    DLOG(@"%@",request.URL.absoluteString);
+    return YES;
 }
 
 @end

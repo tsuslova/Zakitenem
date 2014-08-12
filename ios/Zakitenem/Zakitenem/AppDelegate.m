@@ -13,6 +13,7 @@
 #import "APNSManager.h"
 #import "UserManager.h"
 
+#import "RNCachingURLProtocol.h"
 
 
 @interface AppDelegate()
@@ -25,6 +26,7 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [NSURLProtocol registerClass:[RNCachingURLProtocol class]];
     
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
         UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |
@@ -33,15 +35,18 @@ static NSString *const kCurrentUserProperty = @"currentUser";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
     [[APNSManager sharedManager] startLoadingToken];
     
     self.rootVC = [[UINavigationController alloc] init];
     self.rootVC.navigationBarHidden = YES;
+    
     if ([UserManager sharedManager].currentUser){
         [self initStack];
     } else {
         [self showAuth];
     }
+    
     self.window.rootViewController = self.rootVC;
     [self.window makeKeyAndVisible];
     return YES;
@@ -80,6 +85,8 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 {
     [self.rootVC popToRootViewControllerAnimated:NO];
     self.rootVC.viewControllers = @[[[ForecastsVC alloc] initWithNibName:@"ForecastsVC" bundle:nil]];
+    
+    
 }
 
 - (void)showAuth

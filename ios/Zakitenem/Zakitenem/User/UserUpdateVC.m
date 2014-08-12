@@ -7,7 +7,8 @@
 //
 
 #import "UserUpdateVC.h"
-#import "GTLApiUserMessageUser+Wrapper.h"
+
+#import "UIViewController+Lock.h"
 
 //GAE
 #import "GTLServiceApi.h"
@@ -15,10 +16,13 @@
 #import "GTLErrorObject.h"
 #import "GTLApiUserMessageUser.h"
 
+#import "GTLApiUserMessageUser+Wrapper.h"
+
 @interface UserUpdateVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
-@property (weak, nonatomic) GTLApiUserMessageUser *user;
+@property (strong, nonatomic) GTLApiUserMessageUser *user;
 @property (weak, nonatomic) id<UserUpdateDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIButton *btnUserpic;
+@property (weak, nonatomic) IBOutlet UIImageView *ivUserpic;
 
 @end
 
@@ -37,7 +41,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    self.ivUserpic.image = self.user.userpicImage;
 }
 
 #pragma mark - IBActions
@@ -61,6 +65,8 @@
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self lock];
     UIImage *image = (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
 
     [self.user setUserpicImage:image];
@@ -69,11 +75,13 @@
     service.retryEnabled = YES;
     
     GTLQueryApi *query = [GTLQueryApi queryForUserUpdateWithObject:self.user];
-//    [picker dismissSelf];
+
     [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
                                                     GTLApiUserMessageUser *obj, NSError *error){
-    
-        self.btnUserpic.imageView.image = image;
+        [self unlock];
+        
+        self.ivUserpic.image = obj.userpicImage;
+        self.btnUserpic.titleLabel.text = @"";
     }];
 }
 

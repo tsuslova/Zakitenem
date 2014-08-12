@@ -13,8 +13,8 @@
 
 - (void)setUserpicImage:(UIImage*)image
 {
-    //TODO: 0.1 -> 1 after image resolution changing
-    NSData* data = UIImageJPEGRepresentation(image, 0.1f);
+    //TODO: 0.001f -> 0.1 after image resolution changing
+    NSData* data = UIImageJPEGRepresentation(image, 0.001f);
     self.userpic = GTLEncodeBase64(data);
 }
 

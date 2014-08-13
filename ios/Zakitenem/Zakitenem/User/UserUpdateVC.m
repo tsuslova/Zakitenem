@@ -70,8 +70,8 @@
     }
     [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
         GTLApiUserMessageRegionList *list, NSError *error) {
-        DLOG(@"%@",list);
-        DLOG(@"%@",list.possibleRegion);
+        DLOG(@"%@", list);
+        DLOG(@"%@", list.possibleRegion);
     }];
 }
 
@@ -123,7 +123,7 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

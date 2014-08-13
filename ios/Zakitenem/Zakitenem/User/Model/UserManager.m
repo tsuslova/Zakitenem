@@ -8,10 +8,11 @@
 
 #import "UserManager.h"
 
-@interface UserManager()
+
+@interface UserManager() <CLLocationManagerDelegate>
 
 @property (strong, nonatomic) GTLApiUserMessageUser *currentUser;
-
+@property (strong, nonatomic) CLLocationManager *userLocationManager;
 @end
 
 @implementation UserManager
@@ -25,8 +26,21 @@ static NSString *const kUserKey = @"UserKey";
     
 	dispatch_once(&pred, ^{
 		singleton = [[self alloc] init];
+        
 	});
     return singleton;
+}
+
+- (id)init
+{
+    if (self = [super init]){
+        _userLocationManager = [[CLLocationManager alloc] init];
+        _userLocationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+        _userLocationManager.delegate = self;
+        
+        [_userLocationManager startUpdatingLocation];
+    }
+    return self;
 }
 
 - (GTLApiUserMessageUser*)currentUser
@@ -53,6 +67,14 @@ static NSString *const kUserKey = @"UserKey";
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     self.currentUser = nil;
+}
+
+#pragma mark - CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager
+	didUpdateToLocation:(CLLocation *)newLocation
+		   fromLocation:(CLLocation *)oldLocation
+{
+    self.userLocation = newLocation;
 }
 
 @end

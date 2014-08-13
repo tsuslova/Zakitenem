@@ -9,12 +9,15 @@
 #import "UserUpdateVC.h"
 
 #import "UIViewController+Lock.h"
+#import "UserManager.h"
 
 //GAE
 #import "GTLServiceApi.h"
 #import "GTLQueryApi.h"
 #import "GTLErrorObject.h"
 #import "GTLApiUserMessageUser.h"
+#import "GTLApiUserMessageRegionList.h"
+#import "GTLApiUserMessageRegion.h"
 
 #import "GTLApiUserMessageUser+Wrapper.h"
 
@@ -42,6 +45,50 @@
 {
     [super viewDidLoad];
     self.ivUserpic.image = self.user.userpicImage;
+    [self loadRegions];
+}
+
+#pragma mark - Data loading
+
+- (void)loadRegions
+{
+    GTLServiceApi *service = [[GTLServiceApi alloc] init];
+    service.retryEnabled = YES;
+    
+    GTLQueryApi *query = [GTLQueryApi queryForRegionsList];
+    if (self.user.region){
+        query.bodyObject = self.user.region;
+    } else {
+        if ([UserManager sharedManager].userLocation){
+            CLLocationCoordinate2D coordinate = [UserManager sharedManager].userLocation.coordinate;
+            
+            NSDictionary *regionJSON =
+                @{@"latitude":[NSString stringWithFormat:@"%f", coordinate.latitude],
+                  @"longitude":[NSString stringWithFormat:@"%f", coordinate.longitude]};
+            query.JSON = [NSMutableDictionary dictionaryWithDictionary:regionJSON];
+        }
+    }
+    [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
+        GTLApiUserMessageRegionList *list, NSError *error) {
+        DLOG(@"%@",list);
+        DLOG(@"%@",list.possibleRegion);
+    }];
+}
+
+- (void)save
+{
+    [self lock];
+    
+    GTLServiceApi *service = [[GTLServiceApi alloc] init];
+    service.retryEnabled = YES;
+    
+    GTLQueryApi *query = [GTLQueryApi queryForUserUpdateWithObject:self.user];
+    
+    [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
+                                                    GTLApiUserMessageUser *obj, NSError *error){
+        [self unlock];
+        [self.delegate userUpdated:self.user];
+    }];
 }
 
 #pragma mark - IBActions
@@ -59,30 +106,19 @@
 
 - (IBAction)save:(id)sender
 {
-    [self.delegate userUpdated:self.user];
+    [self save];
+
 }
 
+
 #pragma mark - UIImagePickerControllerDelegate
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-    [self lock];
     UIImage *image = (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
 
     [self.user setUserpicImage:image];
-    
-    GTLServiceApi *service = [[GTLServiceApi alloc] init];
-    service.retryEnabled = YES;
-    
-    GTLQueryApi *query = [GTLQueryApi queryForUserUpdateWithObject:self.user];
-
-    [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
-                                                    GTLApiUserMessageUser *obj, NSError *error){
-        [self unlock];
-        
-        self.ivUserpic.image = obj.userpicImage;
-        self.btnUserpic.titleLabel.text = @"";
-    }];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker

@@ -131,11 +131,10 @@ def region_list(request):
     parser.read(config_file)
     my_region_name = None
     if request:
-        if request.name in parser.sections():
+        if request.name and request.name in parser.sections():
             my_region_name = request.name
         
     region_list = message.RegionList()
-    
     nearest_region = None
     min_distanse = -1
     for section in parser.sections():
@@ -148,8 +147,7 @@ def region_list(request):
         if my_region_name and my_region_name.lower() == section.lower():
             region_list.possible_region = region
         else :
-            #TODO find nearest by coordinates
-            if request:
+            if request and request.latitude and request.longitude:
                 distanse = math.hypot(region.latitude - request.latitude, 
                                  region.longitude - request.longitude)
                 if min_distanse < 0 or distanse < min_distanse:

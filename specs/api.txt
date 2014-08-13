@@ -1,3 +1,16 @@
++ сгенерить discovery doc
+так:
+cd api/zakitenem/
+endpointscfg.py get_discovery_doc --format rpc main.Api
+
+  + собрать ios generator
+так:+ сгенерить библиотеку
+cd ../../
+/Users/toto/Library/Developer/Xcode/DerivedData/ServiceGenerator-dpidxbzczvchfacqqmmbizumcwnu/Build/Products/Debug/ServiceGenerator \
+    ./api/zakitenem/api-v1.discovery \
+    --outputDir ./APIlib
+
+
 
 GET /main
 ===============

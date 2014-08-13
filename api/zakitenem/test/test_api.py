@@ -100,7 +100,7 @@ class AuthHandlerTestCase(MyTestCase):
         logger.info("test_auth_existing_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-            
+
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
  
@@ -163,7 +163,7 @@ class UserHandlerTestCase(MyTestCase):
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.email_key), constants.zakitenem_email)
 
-# No way to test mail sending from testbed((         
+# No way to test mail sending from testbed((
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())
 #         request = webapp2.Request.blank('/api/password/request')
@@ -175,6 +175,6 @@ class UserHandlerTestCase(MyTestCase):
 #         response_dict = json.loads(response.body)
 #         self.assertEqual(response_dict.get(constants.tool_key)), 
 #                          constants.push_key)
-        
-        
+
+
 

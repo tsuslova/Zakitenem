@@ -112,7 +112,7 @@ class AuthHandlerTestCase(MyTestCase):
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                         "Requested login differs from response")
         # TODO: check that a new AppInstallation was created for the account
-           
+
     def test_auth_with_pass_ok(self):
         logger.info("test_auth_with_pass_ok")
         login_info = login_info_pass()

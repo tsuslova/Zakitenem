@@ -70,13 +70,14 @@ class RegionItem(ndb.Model):
     longitude = ndb.FloatProperty()
     
     def to_message(self):
-        return message.Region(name = self.name,
+        return message.Region(id = self.id,
+                              name = self.name,
                               latitude = self.latitude,
                               longitude = self.longitude
                               )
     @classmethod
     def from_message(message):
-        return RegionItem(name = message.name, latitude = message.latitude, 
+        return RegionItem(id = message.id, name = message.name, latitude = message.latitude, 
                       longitude = message.longitude)
         
 class UserItem(ndb.Model):

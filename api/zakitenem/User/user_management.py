@@ -158,3 +158,12 @@ def region_list(request):
     return region_list
 
 
+from Forecast import message as ForecastMessage
+
+def forecasts(request):
+    logger.info("forecasts")
+    cookie = request.cookie
+    logger.info("cookie = %s"%cookie)
+    #user = user_model.user_by_cookie(cookie)
+    region = "Novosibirsk"
+    return ForecastMessage.region_spots(region)

@@ -88,4 +88,8 @@ class Api(remote.Service):
         return self.safe_execute(lambda:user_management.region_list(request))
 
 application = endpoints.api_server([Api], restricted=False)
-# application = manage_session(application)
+
+from Test import test_api
+import unittest
+suite = unittest.TestLoader().loadTestsFromModule(test_api)
+unittest.TextTestRunner(verbosity=2).run(suite)

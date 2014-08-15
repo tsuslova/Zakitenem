@@ -165,5 +165,9 @@ def forecasts(request):
     cookie = request.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
-    region = user.region.id if user and user.region else constants.default_region
+    region = constants.default_region 
+    if user and user.region:
+        region = user.region.id 
+    else:
+        logger.info("No user region found - use default one")
     return ForecastMessage.region_spots(region)

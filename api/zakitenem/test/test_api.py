@@ -178,3 +178,13 @@ class UserHandlerTestCase(MyTestCase):
 
 
 
+        
+ 
+class ForecastHandlerTestCase(MyTestCase):
+    
+    def test_forecasts(self):
+        session = self.authorized_session(login_info_device_token())
+        user_json = {constants.email_key:constants.zakitenem_email, "session":session}
+        response = self.testapp.post_json('/_ah/spi/Api.user_forecasts', user_json)
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict.get(constants.spots_key), None)

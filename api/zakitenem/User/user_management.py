@@ -51,7 +51,7 @@ def check_auth_success(user, app_install, is_new_user):
             user.key.delete()
         raise endpoints.BadRequestException("Fail to create app_install")
     raise endpoints.BadRequestException("Fail to create user and app_install")
-    
+
 def auth(request):
     logger.info("Authentication request")
     login_info = user_model.LoginInfoItem.from_message(request) #
@@ -164,6 +164,6 @@ def forecasts(request):
     logger.info("forecasts")
     cookie = request.cookie
     logger.info("cookie = %s"%cookie)
-    #user = user_model.user_by_cookie(cookie)
-    region = "Novosibirsk"
+    user = user_model.user_by_cookie(cookie)
+    region = user.region.id if user and user.region else constants.default_region
     return ForecastMessage.region_spots(region)

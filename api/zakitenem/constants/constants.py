@@ -1,4 +1,5 @@
 zakitenem_email = "tamara.suslova@gmail.com"
+default_region = "Novosibirsk"
 
 error_key = "error_message"
 error_code_key = "error_code"
@@ -25,5 +26,7 @@ tool_key = "tool"
 # Tools options:
 option_push = "push"
 option_email = "email"
+
+spots_key = "spots"
 
 SECS_BETWEEN_REQUESTS = 2.0

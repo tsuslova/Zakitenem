@@ -64,6 +64,7 @@ def create_login_info(login, device_id, device_token="", password=""):
   
 
 class RegionItem(ndb.Model):
+    id = ndb.StringProperty()
     name = ndb.StringProperty()
     
     latitude = ndb.FloatProperty()
@@ -76,7 +77,7 @@ class RegionItem(ndb.Model):
                               longitude = self.longitude
                               )
     @classmethod
-    def from_message(message):
+    def from_message(cls, message):
         return RegionItem(id = message.id, name = message.name, latitude = message.latitude, 
                       longitude = message.longitude)
         
@@ -183,7 +184,7 @@ class UserItem(ndb.Model):
                 #TODO check that val is Message field and iterate through fields instead?
                 if key == "region":
                     self.region = RegionItem.from_message(val)
-                if key == "gender":
+                elif key == "gender":
                     self.gender = True if val > 0 else False
                 else: 
                     setattr(self, key, val)

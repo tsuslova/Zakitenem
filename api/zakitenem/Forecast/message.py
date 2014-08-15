@@ -13,8 +13,11 @@ class Spot(messages.Message):
     name = messages.StringField(2)
     url = messages.StringField(3)
     forecast = messages.StringField(4)
-
-    default_rating = messages.IntegerField(5)
+    
+    latitude = messages.FloatField(5)
+    longitude = messages.FloatField(6)
+    
+    default_rating = messages.IntegerField(7)
     
 class SpotList(messages.Message):
     spots = messages.MessageField(Spot, 1, repeated = True)
@@ -29,7 +32,12 @@ def region_spots(region_id):
         spot.id = section
         spot.name = parser.get(section, "name").decode('utf-8')
         with open('./resources/Forecasts/%s.html'%section, 'r') as forecast_file:
-            spot.forecast = forecast_file.read() 
+            spot.forecast = forecast_file.read()
+             
+        if parser.has_option(section, "latitude"):
+            spot.latitude = float(parser.get(section, "latitude"))
+            spot.longitude = float(parser.get(section, "longitude"))
+        
         spot.default_rating = int(parser.get(section, "default_rating"))
         spot_list.append(spot)
     spot_list.sort(key=lambda x:x.default_rating, reverse=True)
@@ -37,3 +45,4 @@ def region_spots(region_id):
         spot_list_end = len(spot_list) - forecast_max_count
         spot_list = spot_list[:-spot_list_end]
     return SpotList(spots=spot_list)
+

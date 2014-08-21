@@ -381,6 +381,11 @@ static NSString *const kFemaleKiter = @"Кайтерша";
     }
 }
 
+- (IBAction)skip:(id)sender
+{
+    [self.delegate userUpdated:self.user];
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     for (UIView *view in [self.view subviews]) {

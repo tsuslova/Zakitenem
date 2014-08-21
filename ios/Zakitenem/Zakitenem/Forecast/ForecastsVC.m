@@ -45,7 +45,7 @@
     [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
         GTLApiForecastMessageSpotList *obj, NSError *error){
         [self unlock];
-        DLOG(@"%@", obj);
+        DLOG(@"%@", obj.spots);
         [self showSpotsForecast:obj.spots];
     }];
 }
@@ -57,7 +57,7 @@
         html = [html stringByAppendingString:spot.forecast];
     }
     html = [html stringByAppendingString:@"</html>"];
-    
+    [self lock];
     [self.webView loadHTMLString:html baseURL:nil];
 }
 
@@ -80,6 +80,23 @@
 {
     DLOG(@"%@",request.URL.absoluteString);
     return YES;
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    DLOG(@"%@",[error localizedDescription]);
+    [self unlock];
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    DLOG(@"");
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    DLOG(@"");
+    [self unlock];
 }
 
 @end

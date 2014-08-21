@@ -137,6 +137,7 @@ static NSString *const kCurrentUserProperty = @"currentUser";
             [authNC popToRootViewControllerAnimated:NO];
             authNC.viewControllers = @[];
             [self initStack];
+            self.window.rootViewController = self.rootVC;
         } else {
             [self showAuth];
         }

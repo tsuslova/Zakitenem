@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9911048F19A5D7A100D2C12E /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048419A5D7A100D2C12E /* GKCropBorderView.m */; };
+		9911049019A5D7A100D2C12E /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048619A5D7A100D2C12E /* GKImageCropOverlayView.m */; };
+		9911049119A5D7A100D2C12E /* GKImageCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048819A5D7A100D2C12E /* GKImageCropView.m */; };
+		9911049219A5D7A100D2C12E /* GKImageCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048A19A5D7A100D2C12E /* GKImageCropViewController.m */; };
+		9911049319A5D7A100D2C12E /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048C19A5D7A100D2C12E /* GKImagePicker.m */; };
+		9911049419A5D7A100D2C12E /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */; };
 		9912EEC01987ABED00E61777 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEBF1987ABED00E61777 /* Foundation.framework */; };
 		9912EEC21987ABED00E61777 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC11987ABED00E61777 /* CoreGraphics.framework */; };
 		9912EEC41987ABED00E61777 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC31987ABED00E61777 /* UIKit.framework */; };
@@ -138,6 +144,18 @@
 /* Begin PBXFileReference section */
 		374A293411F74D2D8BCD26EF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E9BB2E0A1924D3FB4A6F23B /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		9911048319A5D7A100D2C12E /* GKCropBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKCropBorderView.h; sourceTree = "<group>"; };
+		9911048419A5D7A100D2C12E /* GKCropBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKCropBorderView.m; sourceTree = "<group>"; };
+		9911048519A5D7A100D2C12E /* GKImageCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropOverlayView.h; sourceTree = "<group>"; };
+		9911048619A5D7A100D2C12E /* GKImageCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImageCropOverlayView.m; sourceTree = "<group>"; };
+		9911048719A5D7A100D2C12E /* GKImageCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropView.h; sourceTree = "<group>"; };
+		9911048819A5D7A100D2C12E /* GKImageCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImageCropView.m; sourceTree = "<group>"; };
+		9911048919A5D7A100D2C12E /* GKImageCropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropViewController.h; sourceTree = "<group>"; };
+		9911048A19A5D7A100D2C12E /* GKImageCropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImageCropViewController.m; sourceTree = "<group>"; };
+		9911048B19A5D7A100D2C12E /* GKImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImagePicker.h; sourceTree = "<group>"; };
+		9911048C19A5D7A100D2C12E /* GKImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImagePicker.m; sourceTree = "<group>"; };
+		9911048D19A5D7A100D2C12E /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKResizeableCropOverlayView.h; sourceTree = "<group>"; };
+		9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -329,6 +347,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9911048219A5D7A100D2C12E /* GKCropImage */ = {
+			isa = PBXGroup;
+			children = (
+				9911048319A5D7A100D2C12E /* GKCropBorderView.h */,
+				9911048419A5D7A100D2C12E /* GKCropBorderView.m */,
+				9911048519A5D7A100D2C12E /* GKImageCropOverlayView.h */,
+				9911048619A5D7A100D2C12E /* GKImageCropOverlayView.m */,
+				9911048719A5D7A100D2C12E /* GKImageCropView.h */,
+				9911048819A5D7A100D2C12E /* GKImageCropView.m */,
+				9911048919A5D7A100D2C12E /* GKImageCropViewController.h */,
+				9911048A19A5D7A100D2C12E /* GKImageCropViewController.m */,
+				9911048B19A5D7A100D2C12E /* GKImagePicker.h */,
+				9911048C19A5D7A100D2C12E /* GKImagePicker.m */,
+				9911048D19A5D7A100D2C12E /* GKResizeableCropOverlayView.h */,
+				9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */,
+			);
+			path = GKCropImage;
+			sourceTree = "<group>";
+		};
 		9912EEB31987ABED00E61777 = {
 			isa = PBXGroup;
 			children = (
@@ -392,6 +429,7 @@
 		9912EEF41987AFB600E61777 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				9911048219A5D7A100D2C12E /* GKCropImage */,
 				999F30B019922511008CB0AD /* cache */,
 				9912EEF51987AFB600E61777 /* GAE */,
 			);
@@ -897,6 +935,7 @@
 				9912EFD41987AFC500E61777 /* UILabel+SizeToFit.m in Sources */,
 				9912EF5C1987AFB600E61777 /* GTMHTTPFetcherLogViewController.m in Sources */,
 				999F30C01998D88E008CB0AD /* UserManager.m in Sources */,
+				9911049119A5D7A100D2C12E /* GKImageCropView.m in Sources */,
 				999F30BF1998D88E008CB0AD /* APNSManager.m in Sources */,
 				999F30CB1998DD69008CB0AD /* GTLApiUserMessageRegionList.m in Sources */,
 				9912EFCF1987AFC500E61777 /* NSString+formattedText.m in Sources */,
@@ -910,6 +949,7 @@
 				9912EFD21987AFC500E61777 /* UIImage+Tools.m in Sources */,
 				9912EFC81987AFC500E61777 /* MAOKeyboardHelper.m in Sources */,
 				9912EFD01987AFC500E61777 /* PhoneTextField.m in Sources */,
+				9911048F19A5D7A100D2C12E /* GKCropBorderView.m in Sources */,
 				9912EFC41987AFC500E61777 /* BorderedTextField.m in Sources */,
 				9912EFBE1987AFC500E61777 /* NSError+Helpers.m in Sources */,
 				9912EF721987AFB600E61777 /* GTLBase64.m in Sources */,
@@ -917,11 +957,13 @@
 				9912EFEA1987B0B600E61777 /* GTLApiUserMessagePasswordRequsest.m in Sources */,
 				9912EF691987AFB600E61777 /* GTLBatchQuery.m in Sources */,
 				9912EF5E1987AFB600E61777 /* GTMHTTPFetchHistory.m in Sources */,
+				9911049419A5D7A100D2C12E /* GKResizeableCropOverlayView.m in Sources */,
 				9912EFCA1987AFC500E61777 /* UIView+maoAnimation.m in Sources */,
 				9912EFBF1987AFC500E61777 /* NSString+Helpers.m in Sources */,
 				9912EFC51987AFC500E61777 /* LoadingView.m in Sources */,
 				9912EF601987AFB600E61777 /* GTMMIMEDocument.m in Sources */,
 				999F30BD1998D88E008CB0AD /* AuthVC.m in Sources */,
+				9911049019A5D7A100D2C12E /* GKImageCropOverlayView.m in Sources */,
 				9912EF5A1987AFB600E61777 /* GTMHTTPFetcher.m in Sources */,
 				9912EFCB1987AFC500E61777 /* UIView+maoDimensions.m in Sources */,
 				999F30C41998D8AB008CB0AD /* UserUpdateVC.m in Sources */,
@@ -938,6 +980,7 @@
 				9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */,
 				9912EF731987AFB600E61777 /* GTLFramework.m in Sources */,
 				9912EF641987AFB600E61777 /* GTMOAuth2Authentication.m in Sources */,
+				9911049319A5D7A100D2C12E /* GKImagePicker.m in Sources */,
 				9912EECC1987ABED00E61777 /* main.m in Sources */,
 				9912EF651987AFB600E61777 /* GTMOAuth2SignIn.m in Sources */,
 				9912EFEC1987B0B600E61777 /* GTLApiUserMessageTools.m in Sources */,
@@ -961,6 +1004,7 @@
 				9912EF751987AFB600E61777 /* GTLUtilities.m in Sources */,
 				9912EF5D1987AFB600E61777 /* GTMHTTPFetcherService.m in Sources */,
 				9912EFC01987AFC500E61777 /* Reachability.m in Sources */,
+				9911049219A5D7A100D2C12E /* GKImageCropViewController.m in Sources */,
 				9912EF701987AFB600E61777 /* GTLService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

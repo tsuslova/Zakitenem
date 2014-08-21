@@ -15,3 +15,14 @@
 "Error" = "Ошибка";
 
 "NoInternetErrorMessage" = "Сервер недоступен. Пожалуйста, проверьте подключение к интернету";
+
+"UserUpdate_Nickname" = "Ник";
+"UserUpdate_Email" = "E-mail";
+"UserUpdate_Region" = "Регион";
+"UserUpdate_Phone" = "Телефон";
+
+"GKIchoosePhoto" = "Choose Photo";
+"GKIuse" = "Use";
+"GKImoveAndScale" = "Move and Scale";
+"GKIcancel" = "Cancel";
+"GKIuse" = "Choose";

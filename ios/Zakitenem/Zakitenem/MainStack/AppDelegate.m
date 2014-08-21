@@ -87,8 +87,10 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 - (void)setTabbarItem:(UITabBarItem*)tabBarItem image:(NSString*)imageName
 {
     UIImage *image = [UIImage imageNamed:imageName];
-    tabBarItem.selectedImage = image;
     tabBarItem.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    
+    UIImage *selectedImage = [UIImage imageNamed:[imageName stringByAppendingString:@"_selected"]];
+    tabBarItem.selectedImage = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     //Now we have title inside an image - set image inset to use full height for tabbar image
     const CGFloat tabbarTitleHeight = 5;

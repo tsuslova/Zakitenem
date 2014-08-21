@@ -13,12 +13,12 @@
 		9911049219A5D7A100D2C12E /* GKImageCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048A19A5D7A100D2C12E /* GKImageCropViewController.m */; };
 		9911049319A5D7A100D2C12E /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048C19A5D7A100D2C12E /* GKImagePicker.m */; };
 		9911049419A5D7A100D2C12E /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */; };
+		9911049819A5D9F600D2C12E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911049719A5D9F600D2C12E /* AppDelegate.m */; };
 		9912EEC01987ABED00E61777 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEBF1987ABED00E61777 /* Foundation.framework */; };
 		9912EEC21987ABED00E61777 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC11987ABED00E61777 /* CoreGraphics.framework */; };
 		9912EEC41987ABED00E61777 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC31987ABED00E61777 /* UIKit.framework */; };
 		9912EECA1987ABED00E61777 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9912EEC81987ABED00E61777 /* InfoPlist.strings */; };
 		9912EECC1987ABED00E61777 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EECB1987ABED00E61777 /* main.m */; };
-		9912EED01987ABED00E61777 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EECF1987ABED00E61777 /* AppDelegate.m */; };
 		9912EED21987ABED00E61777 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9912EED11987ABED00E61777 /* Images.xcassets */; };
 		9912EEF21987AFA500E61777 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9912EEEE1987AFA500E61777 /* InfoPlist.strings */; };
 		9912EEF31987AFA500E61777 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9912EEF01987AFA500E61777 /* Localizable.strings */; };
@@ -156,6 +156,8 @@
 		9911048C19A5D7A100D2C12E /* GKImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImagePicker.m; sourceTree = "<group>"; };
 		9911048D19A5D7A100D2C12E /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKResizeableCropOverlayView.h; sourceTree = "<group>"; };
 		9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
+		9911049619A5D9F600D2C12E /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		9911049719A5D9F600D2C12E /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -164,8 +166,6 @@
 		9912EEC91987ABED00E61777 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9912EECB1987ABED00E61777 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9912EECD1987ABED00E61777 /* Zakitenem-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Zakitenem-Prefix.pch"; sourceTree = "<group>"; };
-		9912EECE1987ABED00E61777 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		9912EECF1987ABED00E61777 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9912EED11987ABED00E61777 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9912EED81987ABED00E61777 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		9912EEEF1987AFA500E61777 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -366,6 +366,15 @@
 			path = GKCropImage;
 			sourceTree = "<group>";
 		};
+		9911049519A5D9F600D2C12E /* MainStack */ = {
+			isa = PBXGroup;
+			children = (
+				9911049619A5D9F600D2C12E /* AppDelegate.h */,
+				9911049719A5D9F600D2C12E /* AppDelegate.m */,
+			);
+			path = MainStack;
+			sourceTree = "<group>";
+		};
 		9912EEB31987ABED00E61777 = {
 			isa = PBXGroup;
 			children = (
@@ -399,12 +408,11 @@
 		9912EEC51987ABED00E61777 /* Zakitenem */ = {
 			isa = PBXGroup;
 			children = (
+				9911049519A5D9F600D2C12E /* MainStack */,
 				99E872D51990A78F0099C3BC /* InternalUtils */,
 				9912EEF41987AFB600E61777 /* External */,
 				99E872DE1990D33E0099C3BC /* Forecast */,
 				999F30B41998D88E008CB0AD /* User */,
-				9912EECE1987ABED00E61777 /* AppDelegate.h */,
-				9912EECF1987ABED00E61777 /* AppDelegate.m */,
 				999F30861990EEA1008CB0AD /* Resources */,
 				9912EEEE1987AFA500E61777 /* InfoPlist.strings */,
 				9912EEF01987AFA500E61777 /* Localizable.strings */,
@@ -940,7 +948,6 @@
 				999F30CB1998DD69008CB0AD /* GTLApiUserMessageRegionList.m in Sources */,
 				9912EFCF1987AFC500E61777 /* NSString+formattedText.m in Sources */,
 				999F30B31992251C008CB0AD /* RNCachingURLProtocol.m in Sources */,
-				9912EED01987ABED00E61777 /* AppDelegate.m in Sources */,
 				9912EF6B1987AFB600E61777 /* GTLDateTime.m in Sources */,
 				9912EF6E1987AFB600E61777 /* GTLQuery.m in Sources */,
 				9912EF6C1987AFB600E61777 /* GTLErrorObject.m in Sources */,
@@ -995,6 +1002,7 @@
 				9912EFC11987AFC500E61777 /* Utils.m in Sources */,
 				9912EF591987AFB600E61777 /* GTMGatherInputStream.m in Sources */,
 				9912EFE81987B0B600E61777 /* GTLApiConstants.m in Sources */,
+				9911049819A5D9F600D2C12E /* AppDelegate.m in Sources */,
 				9912EFD11987AFC500E61777 /* UIImage+TintColor.m in Sources */,
 				9912EF5F1987AFB600E61777 /* GTMHTTPUploadFetcher.m in Sources */,
 				99A51F08199A004600328CE7 /* GTLApiUserMessageUser+Wrapper.m in Sources */,

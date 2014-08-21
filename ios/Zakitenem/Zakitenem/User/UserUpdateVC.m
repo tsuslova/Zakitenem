@@ -350,7 +350,7 @@ static NSString *const kFemaleKiter = @"Кайтерша";
 
 - (IBAction)save:(id)sender
 {
-    //[self save];
+    [self save];
     NSLog(@"%@", self.user);
     NSLog(@"\n%@", self.user.password);
     NSLog(@"\n%@", self.user.email);

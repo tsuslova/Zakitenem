@@ -9,6 +9,15 @@
 #import "ForecastsVC.h"
 #import "UserManager.h"
 
+//GAE
+#import "GTLServiceApi.h"
+#import "GTLQueryApi.h"
+#import "GTLErrorObject.h"
+#import "GTLApiUserMessageUser.h"
+#import "GTLApiForecastMessageSpot.h"
+#import "GTLApiForecastMessageSpotList.h"
+
+
 @interface ForecastsVC () <UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 
@@ -19,17 +28,34 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self loadForecasts];
+}
+
+#pragma mark - Data loading
+
+- (void)loadForecasts
+{
+    [self lock];
     
+    GTLServiceApi *service = [[GTLServiceApi alloc] init];
+    service.retryEnabled = YES;
+    GTLApiUserMessageSession *session = [[UserManager sharedManager] currentUser].session;
+    GTLQueryApi *query = [GTLQueryApi queryForUserForecastsWithObject:session];
+    
+    [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
+        GTLApiForecastMessageSpotList *obj, NSError *error){
+        [self unlock];
+        DLOG(@"%@", obj);
+        [self showSpotsForecast:obj.spots];
+    }];
+}
+
+- (void)showSpotsForecast:(NSArray*)spotsList
+{
     NSString *html = @"<html>";
-    NSString *forecastPath = [[NSBundle mainBundle] pathForResource:@"Neokom" ofType:@"html"];
-    
-    NSError *error;
-    NSString *forecastHTML = [NSString stringWithContentsOfFile:forecastPath encoding:NSUTF8StringEncoding error:&error];
-    if (error){
-        NSLog(@"%@", [error localizedDescription]);
-        return;
+    for (GTLApiForecastMessageSpot *spot in spotsList){
+        html = [html stringByAppendingString:spot.forecast];
     }
-    html = [html stringByAppendingString:forecastHTML];
     html = [html stringByAppendingString:@"</html>"];
     
     [self.webView loadHTMLString:html baseURL:nil];

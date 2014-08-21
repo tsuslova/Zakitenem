@@ -14,6 +14,8 @@
 		9911049319A5D7A100D2C12E /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048C19A5D7A100D2C12E /* GKImagePicker.m */; };
 		9911049419A5D7A100D2C12E /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */; };
 		9911049819A5D9F600D2C12E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911049719A5D9F600D2C12E /* AppDelegate.m */; };
+		991104E619A6024100D2C12E /* GTLApiForecastMessageSpot.m in Sources */ = {isa = PBXBuildFile; fileRef = 991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */; };
+		991104E719A6024100D2C12E /* GTLApiForecastMessageSpotList.m in Sources */ = {isa = PBXBuildFile; fileRef = 991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */; };
 		9912EEC01987ABED00E61777 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEBF1987ABED00E61777 /* Foundation.framework */; };
 		9912EEC21987ABED00E61777 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC11987ABED00E61777 /* CoreGraphics.framework */; };
 		9912EEC41987ABED00E61777 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC31987ABED00E61777 /* UIKit.framework */; };
@@ -158,6 +160,10 @@
 		9911048E19A5D7A100D2C12E /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
 		9911049619A5D9F600D2C12E /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9911049719A5D9F600D2C12E /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		991104E219A6024100D2C12E /* GTLApiForecastMessageSpot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiForecastMessageSpot.h; sourceTree = "<group>"; };
+		991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiForecastMessageSpot.m; sourceTree = "<group>"; };
+		991104E419A6024100D2C12E /* GTLApiForecastMessageSpotList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiForecastMessageSpotList.h; sourceTree = "<group>"; };
+		991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiForecastMessageSpotList.m; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -669,6 +675,10 @@
 		9912EFD61987B0B600E61777 /* APIlib */ = {
 			isa = PBXGroup;
 			children = (
+				991104E219A6024100D2C12E /* GTLApiForecastMessageSpot.h */,
+				991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */,
+				991104E419A6024100D2C12E /* GTLApiForecastMessageSpotList.h */,
+				991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */,
 				9912EFD71987B0B600E61777 /* GTLApi.h */,
 				9912EFD81987B0B600E61777 /* GTLApiConstants.h */,
 				9912EFD91987B0B600E61777 /* GTLApiConstants.m */,
@@ -984,6 +994,7 @@
 				9912EFE91987B0B600E61777 /* GTLApiUserMessageLoginInfo.m in Sources */,
 				9912EFD51987AFC500E61777 /* UIView+NibLoading.m in Sources */,
 				9912EF6A1987AFB600E61777 /* GTLBatchResult.m in Sources */,
+				991104E619A6024100D2C12E /* GTLApiForecastMessageSpot.m in Sources */,
 				9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */,
 				9912EF731987AFB600E61777 /* GTLFramework.m in Sources */,
 				9912EF641987AFB600E61777 /* GTMOAuth2Authentication.m in Sources */,
@@ -1000,6 +1011,7 @@
 				9912EFD31987AFC500E61777 /* UILabel+formattedText.m in Sources */,
 				9912EF711987AFB600E61777 /* GTLUploadParameters.m in Sources */,
 				9912EFC11987AFC500E61777 /* Utils.m in Sources */,
+				991104E719A6024100D2C12E /* GTLApiForecastMessageSpotList.m in Sources */,
 				9912EF591987AFB600E61777 /* GTMGatherInputStream.m in Sources */,
 				9912EFE81987B0B600E61777 /* GTLApiConstants.m in Sources */,
 				9911049819A5D9F600D2C12E /* AppDelegate.m in Sources */,

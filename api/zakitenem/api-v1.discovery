@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/mAnCw3JyddIuEem5uhhElwb589o\"",
+ "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/nmyc6GwNzU3TIofd_8oJ9E4bFbI\"",
  "discoveryVersion": "v1",
  "id": "api:v1",
  "name": "api",
@@ -69,6 +69,48 @@
   }
  },
  "schemas": {
+  "ForecastMessageSpot": {
+   "id": "ForecastMessageSpot",
+   "type": "object",
+   "properties": {
+    "default_rating": {
+     "type": "string",
+     "format": "int64"
+    },
+    "forecast": {
+     "type": "string"
+    },
+    "id": {
+     "type": "string"
+    },
+    "latitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "longitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "name": {
+     "type": "string"
+    },
+    "url": {
+     "type": "string"
+    }
+   }
+  },
+  "ForecastMessageSpotList": {
+   "id": "ForecastMessageSpotList",
+   "type": "object",
+   "properties": {
+    "spots": {
+     "type": "array",
+     "items": {
+      "$ref": "ForecastMessageSpot"
+     }
+    }
+   }
+  },
   "UserMessageLoginInfo": {
    "id": "UserMessageLoginInfo",
    "type": "object",
@@ -287,6 +329,23 @@
    },
    "returns": {
     "$ref": "UserMessageRegionList"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.user_forecasts": {
+   "id": "api.user_forecasts",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessageSession"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "ForecastMessageSpotList"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

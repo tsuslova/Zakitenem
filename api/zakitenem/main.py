@@ -77,7 +77,7 @@ class Api(remote.Service):
                       name='user_forecasts')
     def user_forecasts(self, request):
         return self.safe_execute(lambda:user_management.forecasts(request))
-    
+
     # Return list of regions. If request is filled and contains user coordinate, 
     # RegionList.possible_region object will contain possible user region
     @endpoints.method(UserMessage.Region, 
@@ -89,7 +89,7 @@ class Api(remote.Service):
 
 application = endpoints.api_server([Api], restricted=False)
 
-from Test import test_api
-import unittest
-suite = unittest.TestLoader().loadTestsFromModule(test_api)
-unittest.TextTestRunner(verbosity=2).run(suite)
+# from Test import test_api
+# import unittest
+# suite = unittest.TestLoader().loadTestsFromModule(test_api)
+# unittest.TextTestRunner(verbosity=2).run(suite)

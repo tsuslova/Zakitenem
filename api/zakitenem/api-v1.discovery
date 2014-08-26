@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/nmyc6GwNzU3TIofd_8oJ9E4bFbI\"",
+ "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/qKoUbgZgW4E5HV9xp9bEzutLt1E\"",
  "discoveryVersion": "v1",
  "id": "api:v1",
  "name": "api",
@@ -210,8 +210,18 @@
    "id": "UserMessageUser",
    "type": "object",
    "properties": {
+    "birthday": {
+     "type": "string",
+     "format": "date-time"
+    },
     "email": {
      "type": "string"
+    },
+    "friend_list_ids": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
     },
     "gender": {
      "type": "boolean"
@@ -232,7 +242,8 @@
      "$ref": "UserMessageSession"
     },
     "subscription_end_date": {
-     "type": "string"
+     "type": "string",
+     "format": "date-time"
     },
     "userpic": {
      "type": "string",

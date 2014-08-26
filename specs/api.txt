@@ -8,7 +8,7 @@ endpointscfg.py get_discovery_doc --format rpc main.Api
 cd ../../
 /Users/toto/Library/Developer/Xcode/DerivedData/ServiceGenerator-dpidxbzczvchfacqqmmbizumcwnu/Build/Products/Debug/ServiceGenerator \
     ./api/zakitenem/api-v1.discovery \
-    --outputDir ./APIlib
+    --outputDir ./ios/Zakitenem/Zakitenem/External/GAE/APIlib/
 
 
 

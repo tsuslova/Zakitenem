@@ -322,7 +322,8 @@ static int const kFemaleKiterTag = 2;
                 wself.regionList = list;
             }
             DLOG(@"%@", list.possibleRegion);
-            if (list.possibleRegion.name) {
+            //If user region wasn't set yet - use "default" one (possibleRegion)
+            if (!self.user.region && list.possibleRegion.name) {
                 [wself.regionTextField setText:list.possibleRegion.name];
                 [wself.user setRegion:list.possibleRegion];
             }
@@ -347,9 +348,14 @@ static int const kFemaleKiterTag = 2;
             [self unlock];
         }
         if (error){
-            DLOG(@"TODO An error occured, store userdata locally! %@", [error localizedDescription]);
+            DLOG(@"TODO store userdata locally! %@", [error localizedDescription]);
         }
-        [self.delegate userUpdated:self.user];
+        self.user = (GTLApiUserMessageUser *)obj;
+        if (self.delegate){
+            [self.delegate userUpdated:self.user];
+        } else {
+            [[UserManager sharedManager] loggedIn:self.user];
+        }
     }];
 }
 

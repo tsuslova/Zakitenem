@@ -16,6 +16,7 @@
 		9911049819A5D9F600D2C12E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911049719A5D9F600D2C12E /* AppDelegate.m */; };
 		991104E619A6024100D2C12E /* GTLApiForecastMessageSpot.m in Sources */ = {isa = PBXBuildFile; fileRef = 991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */; };
 		991104E719A6024100D2C12E /* GTLApiForecastMessageSpotList.m in Sources */ = {isa = PBXBuildFile; fileRef = 991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */; };
+		991104E919AB170F00D2C12E /* UserUpdateVCLogin.xib in Resources */ = {isa = PBXBuildFile; fileRef = 991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */; };
 		9912EEC01987ABED00E61777 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEBF1987ABED00E61777 /* Foundation.framework */; };
 		9912EEC21987ABED00E61777 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC11987ABED00E61777 /* CoreGraphics.framework */; };
 		9912EEC41987ABED00E61777 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC31987ABED00E61777 /* UIKit.framework */; };
@@ -164,6 +165,7 @@
 		991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiForecastMessageSpot.m; sourceTree = "<group>"; };
 		991104E419A6024100D2C12E /* GTLApiForecastMessageSpotList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiForecastMessageSpotList.h; sourceTree = "<group>"; };
 		991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiForecastMessageSpotList.m; sourceTree = "<group>"; };
+		991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserUpdateVCLogin.xib; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -749,6 +751,7 @@
 				999F30C11998D8AB008CB0AD /* UserUpdateVC.h */,
 				999F30C21998D8AB008CB0AD /* UserUpdateVC.m */,
 				999F30C31998D8AB008CB0AD /* UserUpdateVC.xib */,
+				991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */,
 				999F30B81998D88E008CB0AD /* Model */,
 			);
 			path = User;
@@ -894,6 +897,7 @@
 				999F30A11990EEB4008CB0AD /* Omsk.html in Resources */,
 				999F30BE1998D88E008CB0AD /* AuthVC.xib in Resources */,
 				9912EEF31987AFA500E61777 /* Localizable.strings in Resources */,
+				991104E919AB170F00D2C12E /* UserUpdateVCLogin.xib in Resources */,
 				9912EF661987AFB600E61777 /* ReleaseNotes.txt in Resources */,
 				999F30991990EEB4008CB0AD /* Barnaul_Aviator.html in Resources */,
 				9912EF621987AFB600E61777 /* ReleaseNotes.txt in Resources */,

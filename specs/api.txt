@@ -69,6 +69,7 @@ Response:
 	Если первое - пиши в техподдержку (она сделает password/set) (открываем message composer)
 	Если второе - вбейте, пожалуйста, смененный пароль или запросите его снова (push или email: password_tools -> request_password -> если опять никак письмо в техподдержку)
 
+
 GET /password/tools
 ==============================
 curl -v -b cookies.txt -c cookies.txt http://localhost:8080/_ah/api/zakitenemapi/v1/password_request

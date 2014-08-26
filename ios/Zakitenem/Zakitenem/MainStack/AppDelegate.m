@@ -18,10 +18,11 @@
 #import "RNCachingURLProtocol.h"
 
 
-@interface AppDelegate()
+@interface AppDelegate() 
 @property (strong, nonatomic) AuthVC *authVC;
 @property (strong, nonatomic) UIViewController *rootVC;
 @property (strong, nonatomic) UITabBarController *tabbarController;
+
 @end
 
 @implementation AppDelegate

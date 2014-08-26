@@ -85,7 +85,7 @@ class Api(remote.Service):
                       path='regions_list', http_method='GET',
                       name='regions_list')
     def region_list(self, request):
-        return self.safe_execute(lambda:user_management.region_list(request))
+        return self.safe_execute(lambda:user_management.request_region_list(request))
 
 application = endpoints.api_server([Api], restricted=False)
 

@@ -24,6 +24,13 @@ def login_info_pass():
     return user_model.create_login_info(login, device_id, device_token, password)
     
 def login_info_device_token():
+    login = "Toto6"
+    device_id = "dsfbg4i"
+    device_token = "dsfbg4i"
+    password = "4dssfgsf3"
+    return user_model.create_login_info(login, device_id, device_token, password)
+
+def region_device_token():
     login = "Toto5"
     device_id = "dsfbg4i"
     device_token = "dsfbg4i"
@@ -64,9 +71,9 @@ class MyTestCase(unittest.TestCase):
     
      
 class AuthHandlerTestCase(MyTestCase):
- 
+  
     # Tests:
-          
+           
     def test_new_user_auth_ok(self):
         logger.info("test_new_user_auth_ok")
         login_info = login_info_no_pass()
@@ -76,7 +83,7 @@ class AuthHandlerTestCase(MyTestCase):
         login = response_dict.get(constants.login_key)
         self.assertNotEqual(login, None, 
                             "Auth should return a login (got: %s)" % response_dict)
-   
+    
 # the test is returning a stringe error:
 # Content-Length is different from actual app_iter length (512!=63)
 # Need return to it later
@@ -95,74 +102,84 @@ class AuthHandlerTestCase(MyTestCase):
 #         self.assertNotEqual(response.json_body['faultstring'], None, 
 #             "Existing account authorization without password should return an error")
 #         self.assertEqual(response_dict[constants.error_key], error_definitions.msg_account_used)
-       
+        
     def test_auth_existing_with_pass_ok(self):
         logger.info("test_auth_existing_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
- 
+  
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-  
+   
         response_dict = json.loads(response.body)
-            
+             
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth with existing account with correct password should not return an error")
-          
+           
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                         "Requested login differs from response")
         # TODO: check that a new AppInstallation was created for the account
- 
+  
     def test_auth_with_pass_ok(self):
         logger.info("test_auth_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-          
+           
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
         response_dict = json.loads(response.body)
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                          "Requested login differs from response")
-           
+            
     def test_logout(self):
         logger.info("test_logout")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-          
+           
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-          
+           
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth request (with password) after logout should not return an error")
-          
- 
+           
+  
 class PasswordHandlerTestCase(MyTestCase):
-       
+        
     def test_no_password_tools(self):
         session = self.authorized_session(login_info_pass())
         response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
         #no tools - empty response
         self.assertEqual(response.body, "{}")
- 
+  
     def test_password_tools_after_2login(self):
         self.authorized_session(login_info_device_token())
         session = self.authorized_session(login_info_device_token())
         response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
-         
+          
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.option_push), None)
-          
-  
+           
+   
 class UserHandlerTestCase(MyTestCase):
-     
+ 
     def test_update_user(self):
         session = self.authorized_session(login_info_device_token())
         user_json = {constants.email_key:constants.zakitenem_email, "session":session}
         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.email_key), constants.zakitenem_email)
- 
+  
+    def test_update_user_region(self):
+        session = self.authorized_session(region_device_token())
+        user_json = {constants.region_key:{constants.id_key:constants.default_region}, 
+                     "session":session}
+        response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
+        response_dict = json.loads(response.body)
+        region = response_dict.get(constants.region_key)
+        self.assertNotEqual(region, None)
+        self.assertEqual(region.get(constants.id_key), constants.default_region)
+  
 # No way to test mail sending from testbed((
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())
@@ -181,7 +198,7 @@ class UserHandlerTestCase(MyTestCase):
         
  
 class ForecastHandlerTestCase(MyTestCase):
-    
+     
     def test_forecasts(self):
         session = self.authorized_session(login_info_device_token())
         response = self.testapp.post_json('/_ah/spi/Api.user_forecasts', session)

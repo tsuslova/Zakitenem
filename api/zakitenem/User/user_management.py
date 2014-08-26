@@ -120,43 +120,46 @@ def password_request(request):
 def user_update(request):
     cookie = request.session.cookie
     user = user_model.user_by_cookie(cookie)
+    # if a region for user wasn't really set yet (only region was set), we have to use a region 
+    # from config file (to insert to database)
+    if request and request.region and not request.region.name:
+        regionlist = region_list(request.region.id, None, None)
+        request.region = regionlist.possible_region
     user.set_properties(request)
     return user.to_message()
 
-def region_list(request):
+def region_list(region_id, latitude, longitude):
     import ConfigParser
     import math
     config_file='./resources/regions_config.cfg'
     parser = ConfigParser.RawConfigParser()
     parser.read(config_file)
-    my_region_name = None
-    if request:
-        if request.name and request.name in parser.sections():
-            my_region_name = request.name
         
-    region_list = message.RegionList()
+    regionlist = message.RegionList()
     nearest_region = None
     min_distanse = -1
     for section in parser.sections():
         region = message.Region()
+        region.id = section
         unicode_content = parser.get(section, "name").decode('utf-8')
         region.name = unicode_content 
         region.latitude = float(parser.get(section, "latitude"))
         region.longitude = float(parser.get(section, "longitude"))
-        region_list.regions.append(region)
-        if my_region_name and my_region_name.lower() == section.lower():
-            region_list.possible_region = region
+        regionlist.regions.append(region)
+        if region_id and region_id.lower() == section.lower():
+            regionlist.possible_region = region
         else :
-            if request and request.latitude and request.longitude:
-                distanse = math.hypot(region.latitude - request.latitude, 
-                                 region.longitude - request.longitude)
+            if latitude and longitude:
+                distanse = math.hypot(region.latitude - latitude, region.longitude - longitude)
                 if min_distanse < 0 or distanse < min_distanse:
                     min_distanse = distanse 
                     nearest_region = region
-    if not region_list.possible_region and nearest_region:
-        region_list.possible_region = nearest_region
-    return region_list
+    if not regionlist.possible_region and nearest_region:
+        regionlist.possible_region = nearest_region
+    return regionlist
 
+def request_region_list(request):
+    return region_list(request.id, request.latitude, request.longitude)
 
 from Forecast import message as ForecastMessage
 

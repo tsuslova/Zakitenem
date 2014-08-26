@@ -2,6 +2,7 @@
 # names shorter
 
 from protorpc import messages
+from protorpc import message_types
 
 class Session(messages.Message):
     cookie = messages.StringField(1)
@@ -43,21 +44,22 @@ class RegionList (messages.Message):
     
 class User(messages.Message):
     login = messages.StringField(1)
-    
     email = messages.StringField(2)
     phone = messages.StringField(3)
-    
     gender = messages.BooleanField(4)
     password = messages.StringField(5)
-    
     userpic = messages.BytesField(6)
+    birthday = message_types.DateTimeField(7)
     
-    region = messages.MessageField(Region, 7)
+    region = messages.MessageField(Region, 8)
     
-    subscription_end_date = messages.StringField(8) 
+    subscription_end_date = message_types.DateTimeField(9) 
     
     # Store here newly created installation to pass client a cookie.
     # May be I should find a better way...
     # In request it is used for passing session info 
-    session = messages.MessageField(Session, 9)
+    session = messages.MessageField(Session, 10)
+    
+    #list of login's of my friends
+    friend_list_ids = messages.StringField(11, repeated = True)
     

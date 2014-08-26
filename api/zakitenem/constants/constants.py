@@ -29,4 +29,6 @@ option_email = "email"
 
 spots_key = "spots"
 
+id_key = "id"
+
 SECS_BETWEEN_REQUESTS = 2.0

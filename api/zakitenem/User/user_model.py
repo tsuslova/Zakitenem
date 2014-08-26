@@ -78,8 +78,9 @@ class RegionItem(ndb.Model):
                               )
     @classmethod
     def from_message(cls, message):
-        return RegionItem(id = message.id, name = message.name, latitude = message.latitude, 
-                      longitude = message.longitude)
+        region = RegionItem.get_or_insert(message.id, id = message.id, name = message.name, 
+                                        latitude = message.latitude, longitude = message.longitude)
+        return region
         
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
@@ -92,40 +93,32 @@ class UserItem(ndb.Model):
     some_data = ndb.StringProperty(indexed=False)
     
     userpic = ndb.BlobProperty(indexed=False)
+    birthday = ndb.DateProperty()
     
     region = ndb.StructuredProperty(RegionItem, indexed=False)
     subscription_end_date = ndb.DateProperty()
-
+    
+    friend_list_ids = ndb.StringProperty(repeated=True)
 
     #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
-    updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
+    updatable_properties = ["email","phone", "gender", "password", "userpic", "region", "birthday", 
+                            "friend_list_ids"]
     
     def to_message(self, app_installation = None):
         session = message.Session(cookie = app_installation.cookie, 
                   expires = str(app_installation.expires)) if app_installation else None
         region = self.region.to_message() if self.region else None
-
         return message.User(login = self.login,
                            email = self.email,
                            phone = self.phone,
                            gender = self.gender,
                            userpic = self.userpic,
+                           birthday = self.birthday,
                            region = region,
-                           session = session 
+                           session = session,
+                           friend_list_ids = self.friend_list_ids 
                            )
-        
-    def resp(self):
-        user_data = dict()
-        user_data[constants.login_key] = self.login
-        user_data[constants.email_key] = self.email
-        user_data[constants.phone_key] = self.phone
-        user_data[constants.gender_key] = self.gender
-        user_data[constants.userpic_key] = self.userpic
-        user_data[constants.region_key] = self.region
-        resp = {constants.user_key:user_data}
-        logger.info("Resp %s" % resp)
-        return json.dumps(resp)
     
     def validate_password(self, password):
         pass_empty = self.password == None or len(self.password) == 0
@@ -188,7 +181,8 @@ class UserItem(ndb.Model):
                     self.gender = True if val > 0 else False
                 else: 
                     setattr(self, key, val)
-        self.put()
+        self.put() 
+        
 
 class AppInstallationItem(ndb.Model):
     device_id = ndb.StringProperty()

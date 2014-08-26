@@ -97,7 +97,8 @@ static NSString *const kToken = @"token";
             }
         } else {
             DLOG(@"Logged in!");
-            UserUpdateVC *userUpdateVC = [[UserUpdateVC alloc] initWithUser:obj delegate:self];
+            UserUpdateVC *userUpdateVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVCLogin"
+                user:obj delegate:self];
             [self.navigationController pushViewController:userUpdateVC animated:YES];
         }
         

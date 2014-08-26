@@ -29,8 +29,8 @@
 static float const PICKER_HEIGHT_PROPORTION = 0.45;
 static NSInteger const REGION_PICKER_COMPONENTS_NUMBER = 1;
 static CGFloat const KEYBOARD_HELPER_HEIGHT = 30;
-static NSString *const kMaleKiter = @"Кайтер";
-static NSString *const kFemaleKiter = @"Кайтерша";
+static int const kMaleKiterTag = 1;
+static int const kFemaleKiterTag = 2;
 
 @interface UserUpdateVC ()
 //    <UINavigationControllerDelegate,
@@ -41,6 +41,7 @@ static NSString *const kFemaleKiter = @"Кайтерша";
      UIPickerViewDataSource>
 
 @property (strong, nonatomic) GTLApiUserMessageUser *user;
+@property (copy, nonatomic) NSDictionary *notChangedUserJSON;
 @property (weak, nonatomic) id<UserUpdateDelegate> delegate;
 @property (strong, nonatomic) GTLApiUserMessageRegionList *regionList;
 
@@ -62,11 +63,19 @@ static NSString *const kFemaleKiter = @"Кайтерша";
 
 #pragma mark - Initialization & view lifecycle
 
-- (id)initWithUser:(GTLApiUserMessageUser *)user delegate:(id<UserUpdateDelegate>)delegate
+- (id)init
 {
-    self = [super init];
+    assert("Use designated initializer");
+    return nil;
+}
+
+- (id)initWithNibName:(NSString*)nibName user:(GTLApiUserMessageUser *)user
+             delegate:(id<UserUpdateDelegate>)delegate
+{
+    self = [super initWithNibName:nibName bundle:nil];
     if (self) {
         _user = user;
+        _notChangedUserJSON = [user.JSON copy];
         _delegate = delegate;
     }
     return self;
@@ -110,6 +119,10 @@ static NSString *const kFemaleKiter = @"Кайтерша";
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
+    
+    if ([self checkNeedSaveUser]){
+        [self save:NO];
+    }
 }
 
 #pragma mark - Utility methods
@@ -152,8 +165,7 @@ static NSString *const kFemaleKiter = @"Кайтерша";
     self.shift = 0;
 }
 
-- (void)viewShouldSlide:(BOOL)shouldSlide
-         withShiftValue:(CGFloat)shift
+- (void)viewShouldSlide:(BOOL)shouldSlide withShiftValue:(CGFloat)shift
    andAnimationDuration:(NSTimeInterval)animationDuration
 {
     if (shouldSlide) {
@@ -301,6 +313,7 @@ static NSString *const kFemaleKiter = @"Кайтерша";
             query.JSON = [NSMutableDictionary dictionaryWithDictionary:regionJSON];
         }
     }
+    DLOG(@"%@", query);
     typeof(self) __weak wself = self;
     [service executeQuery:query completionHandler:
         ^(GTLServiceTicket *ticket, GTLApiUserMessageRegionList *list, NSError *error) {
@@ -316,9 +329,12 @@ static NSString *const kFemaleKiter = @"Кайтерша";
         }];
 }
 
-- (void)save
+- (void)save:(BOOL)showActivity
 {
-    [self lock];
+    if (showActivity){
+        [self lock];
+    }
+    
     
     GTLServiceApi *service = [[GTLServiceApi alloc] init];
     service.retryEnabled = YES;
@@ -327,9 +343,21 @@ static NSString *const kFemaleKiter = @"Кайтерша";
     
     [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
                                                     GTLApiUserMessageUser *obj, NSError *error){
-        [self unlock];
+        if (showActivity){
+            [self unlock];
+        }
+        if (error){
+            DLOG(@"TODO An error occured, store userdata locally! %@", [error localizedDescription]);
+        }
         [self.delegate userUpdated:self.user];
     }];
+}
+
+- (BOOL)checkNeedSaveUser
+{
+    DLOG(@"%@",self.notChangedUserJSON);
+    DLOG(@"%@",self.user.JSON);
+    return ![self.notChangedUserJSON isEqualToDictionary:self.user.JSON];
 }
 
 #pragma mark - IBActions
@@ -348,9 +376,9 @@ static NSString *const kFemaleKiter = @"Кайтерша";
 }
 
 
-- (IBAction)save:(id)sender
+- (IBAction)savePressed:(id)sender
 {
-    [self save];
+    [self save:YES];
     NSLog(@"%@", self.user);
     NSLog(@"\n%@", self.user.password);
     NSLog(@"\n%@", self.user.email);
@@ -373,9 +401,9 @@ static NSString *const kFemaleKiter = @"Кайтерша";
         } else {
             [button setSelected:NO];
         }
-        if ([button.titleLabel.text isEqualToString:kMaleKiter]) {
+        if (button.titleLabel.tag == kMaleKiterTag) {
             self.user.gender = @0;
-        } else if ([button.titleLabel.text isEqualToString:kFemaleKiter]) {
+        } else if (button.titleLabel.tag == kFemaleKiterTag) {
             self.user.gender = @1;
         }
     }
@@ -406,17 +434,17 @@ static NSString *const kFemaleKiter = @"Кайтерша";
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     if ([textField isEqual:self.passwordTextField]) {
-        [self.user setPassword:[self.passwordTextField.text copy]];
+        self.user.password = self.passwordTextField.text;
     } else if ([textField isEqual:self.emailTextField]) {
-        [self.user setEmail:[self.emailTextField.text copy]];
+        self.user.email = self.emailTextField.text;
     } else if ([textField isEqual:self.regionTextField]) {
         for (GTLApiUserMessageRegion *region in [self.regionList regions]) {
-            if ([region.name isEqualToString:[self.regionTextField.text copy]]) {
-                [self.user setRegion:region];
+            if ([region.name isEqualToString:self.regionTextField.text]) {
+                self.user.region = region;
             }
         }
     } else if ([textField isEqual:self.phoneTextField]) {
-        [self.user setPhone:[self.phoneTextField.text copy]];
+        self.user.phone = self.phoneTextField.text;
     }
     [self textFieldShouldReturn:textField];
 }
@@ -428,23 +456,19 @@ static NSString *const kFemaleKiter = @"Кайтерша";
     return REGION_PICKER_COMPONENTS_NUMBER;
 }
 
-- (NSInteger)pickerView:(UIPickerView *)pickerView
-numberOfRowsInComponent:(NSInteger)component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     return [[self.regionList regions] count];
 }
 
-- (void)pickerView:(UIPickerView *)pickerView
-      didSelectRow:(NSInteger)row
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row
        inComponent:(NSInteger)component
 {
-    [self.regionTextField setText:[self pickerView:pickerView
-                                       titleForRow:row
-                                      forComponent:component]];
+    NSString *regionName = [self pickerView:pickerView titleForRow:row forComponent:component];
+    [self.regionTextField setText:regionName];
 }
 
-- (NSString *)pickerView:(UIPickerView *)pickerView
-             titleForRow:(NSInteger)row
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row
             forComponent:(NSInteger)component
 {
     return [[[self.regionList regions] objectAtIndex:row] name];
@@ -455,7 +479,7 @@ numberOfRowsInComponent:(NSInteger)component
 - (void)imagePicker:(GKImagePicker *)imagePicker pickedImage:(UIImage *)image
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-    [self.user setUserpicImage:image];
+    self.user.userpicImage = image;
     [self.btnUserpic setImage:[[self.user userpicImage] copy] forState:UIControlStateNormal];
 }
 

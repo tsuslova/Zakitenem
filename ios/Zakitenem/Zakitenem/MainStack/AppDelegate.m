@@ -101,9 +101,10 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 - (void)initStack
 {
     ForecastsVC *forecastsVC = [[ForecastsVC alloc] initWithNibName:@"ForecastsVC" bundle:nil];
-    UserUpdateVC *secondVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" bundle:nil];
-    UserUpdateVC *thirdVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" bundle:nil];
-    UserUpdateVC *userUpdateVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" bundle:nil];
+    GTLApiUserMessageUser *currentUser = [[UserManager sharedManager] currentUser];
+    UserUpdateVC *secondVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" user:currentUser delegate:nil];
+    UserUpdateVC *thirdVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" user:currentUser delegate:nil];
+    UserUpdateVC *userUpdateVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" user:currentUser delegate:nil];
     [self setTabbarItem:forecastsVC.tabBarItem image:@"btn_forecast"];
     [self setTabbarItem:secondVC.tabBarItem image:@"btn_plan"];
     [self setTabbarItem:thirdVC.tabBarItem image:@"btn_news"];

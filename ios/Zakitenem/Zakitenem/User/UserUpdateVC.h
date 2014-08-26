@@ -16,6 +16,7 @@
 
 @interface UserUpdateVC : UIViewController
 
-- (id)initWithUser:(GTLApiUserMessageUser *)user delegate:(id<UserUpdateDelegate>)delegate;
+- (id)initWithNibName:(NSString*)nibName user:(GTLApiUserMessageUser *)user
+             delegate:(id<UserUpdateDelegate>)delegate;
 
 @end

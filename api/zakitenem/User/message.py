@@ -54,7 +54,7 @@ class User(messages.Message):
     region = messages.MessageField(Region, 8)
     
     subscription_end_date = message_types.DateTimeField(9) 
-    
+
     # Store here newly created installation to pass client a cookie.
     # May be I should find a better way...
     # In request it is used for passing session info 

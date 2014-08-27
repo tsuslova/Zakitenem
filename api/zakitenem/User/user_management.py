@@ -68,6 +68,7 @@ def auth(request):
     logger.info("user_by_login %s"%user)
     if (user):
         app_install = user_model.user_installation(user, login_info.device_id)
+        logger.info("app_install= %s (%s)"%(app_install, login_info.device_id))
         error_text = None
         if not app_install:
             error_text = user.validate_password(login_info.password)
@@ -119,7 +120,8 @@ def password_request(request):
 
 def user_update(request):
     cookie = request.session.cookie
-    user = user_model.user_by_cookie(cookie)
+    installation = user_model.installation_by_cookie(cookie)
+    user = user_model.user_by_installation(installation)
     # if a region for user wasn't really set yet (only region was set), we have to use a region 
     # from config file (to insert to database)
     if request and request.region:
@@ -132,7 +134,7 @@ def user_update(request):
         if regionlist:
             request.region = regionlist.possible_region
     user.set_properties(request)
-    return user.to_message()
+    return user.to_message(installation)
 
 def region_list(region_id, latitude, longitude):
     import ConfigParser

@@ -84,7 +84,7 @@ class AuthHandlerTestCase(MyTestCase):
         self.assertNotEqual(login, None, 
                             "Auth should return a login (got: %s)" % response_dict)
     
-# the test is returning a stringe error:
+# the test is returning a strange error:
 # Content-Length is different from actual app_iter length (512!=63)
 # Need return to it later
 # http://stackoverflow.com/questions/24219654/content-length-error-in-google-cloud-endpoints-testing
@@ -131,6 +131,17 @@ class AuthHandlerTestCase(MyTestCase):
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                          "Requested login differs from response")
             
+    def test_auth_no_pass_same_device_ok(self):
+        logger.info("test_auth_with_pass_ok")
+        login_info = login_info_no_pass()
+        user_model.create_user_from_login_info(login_info)
+           
+        msg = login_info.login_json()
+        response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
+        response_dict = json.loads(response.body)
+        self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
+                         "Requested login differs from response")
+        
     def test_logout(self):
         logger.info("test_logout")
         login_info = login_info_pass()
@@ -179,6 +190,8 @@ class UserHandlerTestCase(MyTestCase):
         region = response_dict.get(constants.region_key)
         self.assertNotEqual(region, None)
         self.assertEqual(region.get(constants.id_key), constants.default_region)
+        self.assertNotEqual(response_dict.get(constants.session_key), None)
+        
   
 # No way to test mail sending from testbed((
 #     def test_request_password(self):

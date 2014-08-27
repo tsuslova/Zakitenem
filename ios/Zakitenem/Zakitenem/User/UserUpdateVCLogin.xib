@@ -8,10 +8,11 @@
             <connections>
                 <outlet property="backgroundImage" destination="fRA-t2-X2C" id="Bq8-1o-mpe"/>
                 <outlet property="btnUserpic" destination="idN-UY-dJ9" id="IP5-S5-aZA"/>
-                <outlet property="emailTextField" destination="PTS-Dd-e7k" id="zgR-FV-NMf"/>
-                <outlet property="passwordTextField" destination="qzr-as-dpV" id="gey-1A-3JR"/>
-                <outlet property="phoneTextField" destination="trM-MS-nbB" id="xg2-pw-tp4"/>
-                <outlet property="regionTextField" destination="lrO-g0-8eu" id="cW7-U6-qKR"/>
+                <outlet property="tfBirthday" destination="85E-wD-tRh" id="sma-2T-6Xi"/>
+                <outlet property="tfEmail" destination="PTS-Dd-e7k" id="RWc-kn-L22"/>
+                <outlet property="tfPassword" destination="qzr-as-dpV" id="NVE-PT-Mxj"/>
+                <outlet property="tfPhone" destination="trM-MS-nbB" id="YEG-UW-Qy9"/>
+                <outlet property="tfRegion" destination="lrO-g0-8eu" id="Iud-dE-YAb"/>
                 <outlet property="view" destination="jAT-vl-IF0" id="ccg-mD-v1h"/>
                 <outletCollection property="genderButtons" destination="c0X-bN-ktn" id="afQ-RV-5da"/>
                 <outletCollection property="genderButtons" destination="GDs-1A-oOB" id="yxY-eW-TAM"/>
@@ -138,7 +139,6 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="save:" destination="-1" eventType="touchUpInside" id="8QJ-as-7Qz"/>
                         <action selector="savePressed:" destination="-1" eventType="touchUpInside" id="b0k-OG-cl9"/>
                     </connections>
                 </button>
@@ -159,6 +159,9 @@
                         <color key="titleColor" red="0.2901960784" green="0.50196078430000002" blue="0.27058823529999998" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="titleShadowColor" red="0.2901960784" green="0.50196078430000002" blue="0.27058823529999998" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
+                    <connections>
+                        <action selector="showFriends:" destination="-1" eventType="touchUpInside" id="Da7-EM-XMP"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

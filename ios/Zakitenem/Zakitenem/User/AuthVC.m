@@ -70,6 +70,7 @@ static NSString *const kToken = @"token";
     loginInfo.login = login;
     loginInfo.password = @"";
     loginInfo.deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    DLOG(@"%@",loginInfo.deviceId);
     loginInfo.deviceToken = [APNSManager sharedManager].token;
     [self lock];
     

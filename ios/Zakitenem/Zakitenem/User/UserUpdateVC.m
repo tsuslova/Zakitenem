@@ -32,6 +32,8 @@ static CGFloat const KEYBOARD_HELPER_HEIGHT = 30;
 static int const kMaleKiterTag = 1;
 static int const kFemaleKiterTag = 2;
 
+static NSString *const kPasswordDefaultText = @"**********";
+
 @interface UserUpdateVC ()
 //    <UINavigationControllerDelegate,
 //     UIImagePickerControllerDelegate,
@@ -48,10 +50,13 @@ static int const kFemaleKiterTag = 2;
 @property (strong, nonatomic) GKImagePicker *imagePicker;
 @property (strong, nonatomic) UIView *keyboardHelper;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
-@property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
-@property (weak, nonatomic) IBOutlet UITextField *emailTextField;
-@property (weak, nonatomic) IBOutlet UITextField *regionTextField;
-@property (weak, nonatomic) IBOutlet UITextField *phoneTextField;
+
+@property (weak, nonatomic) IBOutlet UITextField *tfPassword;
+@property (weak, nonatomic) IBOutlet UITextField *tfEmail;
+@property (weak, nonatomic) IBOutlet UITextField *tfRegion;
+@property (weak, nonatomic) IBOutlet UITextField *tfPhone;
+@property (weak, nonatomic) IBOutlet UITextField *tfBirthday;
+
 @property (weak, nonatomic) IBOutlet UIButton *btnUserpic;
 @property (weak, nonatomic) IBOutlet UIButton *friendsOnlyCheckBox;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *genderButtons;
@@ -84,15 +89,13 @@ static int const kFemaleKiterTag = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if ([self.user userpicImage]) {
-        [self.btnUserpic.imageView setImage:self.user.userpicImage];
-    }
+    
     [self.btnUserpic.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [self loadRegions];
 
     [self makeRegionPicker];
     [self makeKeyboardHelper];
-    
+    [self showUserData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -126,6 +129,22 @@ static int const kFemaleKiterTag = 2;
 }
 
 #pragma mark - Utility methods
+- (void)showUserData
+{
+    if (!self.user){
+        return;
+    }
+    self.tfEmail.text = self.user.email;
+    self.tfPhone.text = self.user.phone;
+    //Show default text in password field to show that the password was already set
+    if (self.user.password){
+        self.tfPassword.text = kPasswordDefaultText;
+    }
+    self.tfRegion.text = self.user.region.name;
+    if ([self.user userpicImage]) {
+        [self.btnUserpic.imageView setImage:self.user.userpicImage];
+    }
+}
 
 - (void)keyboardWillShow:(NSNotification *)keyboardNotification
 {
@@ -195,7 +214,7 @@ static int const kFemaleKiterTag = 2;
     regionPicker.delegate = self;
     regionPicker.dataSource = self;
     
-    self.regionTextField.inputView = regionPicker;
+    self.tfRegion.inputView = regionPicker;
 }
 
 - (void)makeKeyboardHelper
@@ -290,8 +309,9 @@ static int const kFemaleKiterTag = 2;
             [textFields addObject:view];
         }
     }
-    return [textFields copy];
+    return textFields;
 }
+
 
 #pragma mark - Data loading
 
@@ -324,7 +344,7 @@ static int const kFemaleKiterTag = 2;
             DLOG(@"%@", list.possibleRegion);
             //If user region wasn't set yet - use "default" one (possibleRegion)
             if (!self.user.region && list.possibleRegion.name) {
-                [wself.regionTextField setText:list.possibleRegion.name];
+                [wself.tfRegion setText:list.possibleRegion.name];
                 [wself.user setRegion:list.possibleRegion];
             }
         }];
@@ -341,7 +361,7 @@ static int const kFemaleKiterTag = 2;
     service.retryEnabled = YES;
     
     GTLQueryApi *query = [GTLQueryApi queryForUserUpdateWithObject:self.user];
-    
+    DLOG(@"Save %@", query);
     [service executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
                                                     GTLApiUserMessageUser *obj, NSError *error){
         if (showActivity){
@@ -420,6 +440,12 @@ static int const kFemaleKiterTag = 2;
     [self.delegate userUpdated:self.user];
 }
 
+- (IBAction)showFriends:(id)sender
+{
+    DLOG(@"TODO");
+}
+
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     for (UIView *view in [self.view subviews]) {
@@ -431,6 +457,15 @@ static int const kFemaleKiterTag = 2;
 
 #pragma mark - UITextFieldDelegate
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if ([textField isEqual:self.tfPassword]) {
+        DLOG(@"Empty password field before start editing");
+        self.tfPassword.text = @"";
+    }
+    return YES;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
@@ -439,18 +474,20 @@ static int const kFemaleKiterTag = 2;
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if ([textField isEqual:self.passwordTextField]) {
-        self.user.password = self.passwordTextField.text;
-    } else if ([textField isEqual:self.emailTextField]) {
-        self.user.email = self.emailTextField.text;
-    } else if ([textField isEqual:self.regionTextField]) {
+    if ([textField isEqual:self.tfPassword]) {
+        DLOG(@"TODO: validate password? if previous password was set - should we check anything??");
+        self.user.password = self.tfPassword.text;
+    } else if ([textField isEqual:self.tfEmail]) {
+        DLOG(@"TODO: validate email");
+        self.user.email = self.tfEmail.text;
+    } else if ([textField isEqual:self.tfRegion]) {
         for (GTLApiUserMessageRegion *region in [self.regionList regions]) {
-            if ([region.name isEqualToString:self.regionTextField.text]) {
+            if ([region.name isEqualToString:self.tfRegion.text]) {
                 self.user.region = region;
             }
         }
-    } else if ([textField isEqual:self.phoneTextField]) {
-        self.user.phone = self.phoneTextField.text;
+    } else if ([textField isEqual:self.tfPhone]) {
+        self.user.phone = self.tfPhone.text;
     }
     [self textFieldShouldReturn:textField];
 }
@@ -471,7 +508,7 @@ static int const kFemaleKiterTag = 2;
        inComponent:(NSInteger)component
 {
     NSString *regionName = [self pickerView:pickerView titleForRow:row forComponent:component];
-    [self.regionTextField setText:regionName];
+    [self.tfRegion setText:regionName];
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row
@@ -486,7 +523,7 @@ static int const kFemaleKiterTag = 2;
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.user.userpicImage = image;
-    [self.btnUserpic setImage:[[self.user userpicImage] copy] forState:UIControlStateNormal];
+    [self.btnUserpic setImage:[self.user userpicImage] forState:UIControlStateNormal];
 }
 
 - (void)imagePickerDidCancel:(GKImagePicker *)imagePicker

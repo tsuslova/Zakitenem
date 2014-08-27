@@ -105,7 +105,7 @@ class UserItem(ndb.Model):
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region", "birthday", 
                             "friend_list_ids"]
     
-    def to_message(self, app_installation = None):
+    def to_message(self, app_installation):
         session = message.Session(cookie = app_installation.cookie, 
                   expires = str(app_installation.expires)) if app_installation else None
         region = self.region.to_message() if self.region else None
@@ -203,6 +203,7 @@ def user_installation(user, device_id):
     logger.info("TODO: is it possible not to fetch all the installations?")
     if len(user_app_installs) > 0:
         for each in user_app_installs:
+            logger.info("%s"%each.device_id)
             if each.device_id == device_id:
                 app_install = each
                 return app_install
@@ -236,18 +237,25 @@ def user_by_login(login):
     logger.info("user %s for login %s" % (user, login))
     return user 
 
-def user_by_cookie(cookie):
+def installation_by_cookie(cookie):
     installation_by_cookie = AppInstallationItem.get_by_id(id=cookie)
     if not installation_by_cookie:
         logger.error("User not found")
         return None
-    if installation_by_cookie.expires < datetime.date.today():
-        logger.error("Cookie expired %s %s"%(str(installation_by_cookie.expires),
+    return installation_by_cookie
+
+def user_by_installation(installation):
+    if installation.expires < datetime.date.today():
+        logger.error("Cookie expired %s %s"%(str(installation.expires),
                                              str(datetime.date.today())))
         return None
-    user = installation_by_cookie.user.get()
-    logger.info("user %s for cookie %s" % (user, cookie))
+    user = installation.user.get()
+    logger.info("user %s for installation %s" % (user, installation))
     return user
+    
+def user_by_cookie(cookie):
+    installation = installation_by_cookie(cookie)
+    return user_by_installation(installation)
 
 def create_user_from_login_info(login_info):
     pass_not_empty = login_info.password != None and len(login_info.password) > 0

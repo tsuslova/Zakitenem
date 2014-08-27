@@ -19,7 +19,7 @@ class UserRequestsHandler(webapp2.RequestHandler):
                 update_json = json.loads(self.request.body)
                 
                 cookie = self.request.cookies.get(constants.cookie_key)
-                user = user_model.user_by_cookie(cookie)
+                user, = user_model.user_by_cookie(cookie)
                 user.set_properties(update_json)
                 resp = user.resp()
             if api_method == "upload_userpic":
@@ -119,6 +119,8 @@ def password_request(request):
 
 def user_update(request):
     cookie = request.session.cookie
-    user = user_model.user_by_cookie(cookie)
+    installation = user_model.installation_by_cookie(cookie)
+    user = user_model.user_by_installation(installation)
+    
     user.set_properties(request)
-    return user.to_message()
+    return user.to_message(installation)

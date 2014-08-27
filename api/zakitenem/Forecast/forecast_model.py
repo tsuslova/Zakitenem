@@ -79,7 +79,7 @@ class UserItem(ndb.Model):
     
     updatable_properties = ["email","phone", "gender", "password", "userpic", "region"]
     
-    def to_message(self, app_installation = None):
+    def to_message(self, app_installation):
         session = None
         if app_installation:
             session = message.Session(cookie = app_installation.cookie,

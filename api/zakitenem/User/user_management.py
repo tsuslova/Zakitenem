@@ -122,9 +122,15 @@ def user_update(request):
     user = user_model.user_by_cookie(cookie)
     # if a region for user wasn't really set yet (only region was set), we have to use a region 
     # from config file (to insert to database)
-    if request and request.region and not request.region.name:
-        regionlist = region_list(request.region.id, None, None)
-        request.region = regionlist.possible_region
+    if request and request.region:
+        regionlist = None 
+        if not request.region.name:
+            regionlist = region_list(request.region.id, None, None)
+        if not request.region.id:
+            logger.info("Strange situation: request.region.id is None, but request.region!=None")
+            regionlist = region_list(constants.default_region, None, None)
+        if regionlist:
+            request.region = regionlist.possible_region
     user.set_properties(request)
     return user.to_message()
 

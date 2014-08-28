@@ -13,7 +13,7 @@
 // Description:
 //   Zakitenem API
 // Classes:
-//   GTLApiUserMessageUser (0 custom class methods, 11 custom properties)
+//   GTLApiUserMessageUser (0 custom class methods, 12 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -36,6 +36,7 @@
 @property (retain) NSNumber *gender;  // boolValue
 @property (copy) NSString *login;
 @property (copy) NSString *password;
+@property (retain) NSNumber *passwordSet;  // boolValue
 @property (copy) NSString *phone;
 @property (retain) GTLApiUserMessageRegion *region;
 @property (retain) GTLApiUserMessageSession *session;

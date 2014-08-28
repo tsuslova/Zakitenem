@@ -102,8 +102,8 @@ class UserItem(ndb.Model):
 
     #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
-    updatable_properties = ["email","phone", "gender", "password", "userpic", "region", "birthday", 
-                            "friend_list_ids"]
+    updatable_properties = ["email","phone", "gender", "password", "password_set", "userpic", 
+                            "region", "birthday", "friend_list_ids"]
     
     def to_message(self, app_installation):
         session = message.Session(cookie = app_installation.cookie, 
@@ -113,6 +113,7 @@ class UserItem(ndb.Model):
                            email = self.email,
                            phone = self.phone,
                            gender = self.gender,
+                           password_set = self.password_set,
                            userpic = self.userpic,
                            birthday = self.birthday,
                            region = region,

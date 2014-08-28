@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/qKoUbgZgW4E5HV9xp9bEzutLt1E\"",
+ "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/bSnVTZHAIfrF_n4s9s3ifzuugP8\"",
  "discoveryVersion": "v1",
  "id": "api:v1",
  "name": "api",
@@ -231,6 +231,9 @@
     },
     "password": {
      "type": "string"
+    },
+    "password_set": {
+     "type": "boolean"
     },
     "phone": {
      "type": "string"

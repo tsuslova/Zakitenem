@@ -95,7 +95,7 @@ class Api(remote.Service):
 
 application = endpoints.api_server([Api], restricted=False)
 
-from Test import test_api
-import unittest
-suite = unittest.TestLoader().loadTestsFromModule(test_api)
-unittest.TextTestRunner(verbosity=2).run(suite)
+# from Test import test_api
+# import unittest
+# suite = unittest.TestLoader().loadTestsFromModule(test_api)
+# unittest.TextTestRunner(verbosity=2).run(suite)

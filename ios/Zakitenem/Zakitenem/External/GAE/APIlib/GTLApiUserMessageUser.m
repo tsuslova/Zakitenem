@@ -13,7 +13,7 @@
 // Description:
 //   Zakitenem API
 // Classes:
-//   GTLApiUserMessageUser (0 custom class methods, 11 custom properties)
+//   GTLApiUserMessageUser (0 custom class methods, 12 custom properties)
 
 #import "GTLApiUserMessageUser.h"
 
@@ -26,13 +26,14 @@
 //
 
 @implementation GTLApiUserMessageUser
-@dynamic birthday, email, friendListIds, gender, login, password, phone, region,
-         session, subscriptionEndDate, userpic;
+@dynamic birthday, email, friendListIds, gender, login, password, passwordSet,
+         phone, region, session, subscriptionEndDate, userpic;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map =
     [NSDictionary dictionaryWithObjectsAndKeys:
       @"friend_list_ids", @"friendListIds",
+      @"password_set", @"passwordSet",
       @"subscription_end_date", @"subscriptionEndDate",
       nil];
   return map;

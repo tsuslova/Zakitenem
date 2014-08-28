@@ -547,7 +547,7 @@ static NSString *const kPasswordDefaultText = @"**********";
 
 - (void)validatePassword
 {
-    BOOL passwordIsChanging = self.user.password &&
+    BOOL passwordIsChanging = [self.user.passwordSet boolValue] &&
         (self.tfPassword.text && ![self.tfPassword.text isEqualToString:@""]);
     
     if (passwordIsChanging) {

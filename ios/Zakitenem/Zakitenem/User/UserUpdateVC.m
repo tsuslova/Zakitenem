@@ -64,6 +64,9 @@ static NSString *const kPasswordDefaultText = @"**********";
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *genderButtons;
 @property (nonatomic) CGFloat shift;
 
+@property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (strong, nonatomic) NSMutableArray *signals;
+
 @end
 
 @implementation UserUpdateVC
@@ -84,6 +87,7 @@ static NSString *const kPasswordDefaultText = @"**********";
         _user = user;
         _notChangedUserJSON = [user.JSON copy];
         _delegate = delegate;
+        _signals = [NSMutableArray array];
     }
     return self;
 }
@@ -97,6 +101,7 @@ static NSString *const kPasswordDefaultText = @"**********";
 
     [self makeRegionPicker];
     [self makeKeyboardHelper];
+    [self setupDateField];
     [self showUserData];
 }
 
@@ -127,6 +132,16 @@ static NSString *const kPasswordDefaultText = @"**********";
 }
 
 #pragma mark - Utility methods
+- (void)setupDateField
+{
+    UIControlEvents changeEvents = UIControlEventValueChanged|UIControlEventEditingDidEnd;
+    self.tfBirthday.inputView = self.datePicker;
+    [self.signals addObject:
+     [[self.datePicker rac_signalForControlEvents:changeEvents] subscribeNext:^(id x) {
+        [self updateBirthdayField];
+    }]];
+}
+
 - (void)showUserData
 {
     if (!self.user){
@@ -134,6 +149,8 @@ static NSString *const kPasswordDefaultText = @"**********";
     }
     self.tfEmail.text = self.user.email;
     self.tfPhone.text = self.user.phone;
+    self.datePicker.date = self.user.birthday.date;
+    [self fillBirthdayField:self.user.birthday.date];
     //Show default text in password field to show that the password was already set
     if (self.user.password){
         self.tfPassword.text = kPasswordDefaultText;
@@ -142,6 +159,20 @@ static NSString *const kPasswordDefaultText = @"**********";
     if ([self.user userpicImage]) {
         [self.btnUserpic.imageView setImage:self.user.userpicImage];
     }
+}
+
+- (void)updateBirthdayField
+{
+    self.user.birthday = [GTLDateTime dateTimeWithDate:self.datePicker.date timeZone:
+                          [NSTimeZone defaultTimeZone]];
+    [self fillBirthdayField:self.datePicker.date];
+}
+
+- (void)fillBirthdayField:(NSDate*)date
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"dd.MM.yyyy"];
+    self.tfBirthday.text = [df stringFromDate:date];
 }
 
 - (void)keyboardWillShow:(NSNotification *)keyboardNotification
@@ -367,8 +398,9 @@ static NSString *const kPasswordDefaultText = @"**********";
         }
         if (error){
             DLOG(@"TODO store userdata locally! %@", [error localizedDescription]);
+        } else {
+            self.user = (GTLApiUserMessageUser *)obj;
         }
-        self.user = (GTLApiUserMessageUser *)obj;
         if (self.delegate){
             [self.delegate userUpdated:self.user];
         } else {

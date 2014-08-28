@@ -161,7 +161,7 @@
     <resources>
         <image name="bg_btn_userpic" width="99" height="117"/>
         <image name="bg_text_field" width="235" height="27"/>
-        <image name="bg_user_update" width="320" height="568"/>
+        <image name="bg_user_update" width="319" height="431"/>
         <image name="btn_save" width="234" height="42"/>
         <image name="radio_button" width="11" height="12"/>
         <image name="radio_button_selected" width="11" height="11"/>

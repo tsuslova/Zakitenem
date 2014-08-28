@@ -22,8 +22,8 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg_user_update" id="fRA-t2-X2C">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                <imageView userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg_user_update_at_login" id="fRA-t2-X2C">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Пароль" textAlignment="center" minimumFontSize="17" background="bg_text_field" id="qzr-as-dpV">
@@ -132,7 +132,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fh4-Rt-V5W">
-                    <rect key="frame" x="48" y="432" width="234" height="42"/>
+                    <rect key="frame" x="44" y="398" width="234" height="42"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" title="Сохранить" backgroundImage="btn_save">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -172,7 +172,7 @@
     <resources>
         <image name="bg_btn_userpic" width="99" height="117"/>
         <image name="bg_text_field" width="235" height="27"/>
-        <image name="bg_user_update" width="320" height="568"/>
+        <image name="bg_user_update_at_login" width="320" height="480"/>
         <image name="btn_save" width="234" height="42"/>
         <image name="btn_skip" width="234" height="42"/>
         <image name="radio_button" width="11" height="12"/>

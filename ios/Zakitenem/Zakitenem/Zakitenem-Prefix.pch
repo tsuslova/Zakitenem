@@ -17,4 +17,5 @@
     #import "def_utils.h"
     #import "Utils.h"
     #import "GUIUtils.h"
+    #import "NSString+Helpers.h"
 #endif

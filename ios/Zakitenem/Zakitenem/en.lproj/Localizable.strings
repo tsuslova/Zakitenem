@@ -26,3 +26,6 @@
 "GKImoveAndScale" = "Move and Scale";
 "GKIcancel" = "Cancel";
 "GKIuse" = "Choose";
+
+"EmailError" = "E-mail looks suspicious... Are you sure?";
+"Close" = "Close";

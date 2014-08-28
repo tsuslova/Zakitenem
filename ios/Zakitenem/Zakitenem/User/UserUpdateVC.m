@@ -15,6 +15,8 @@
 
 #import "GKImagePicker.h"
 
+#import <UIAlertView-Blocks/UIAlertView+Blocks.h>
+
 //GAE
 #import "GTLServiceApi.h"
 #import "GTLQueryApi.h"
@@ -478,7 +480,7 @@ static NSString *const kPasswordDefaultText = @"**********";
         DLOG(@"TODO: validate password? if previous password was set - should we check anything??");
         self.user.password = self.tfPassword.text;
     } else if ([textField isEqual:self.tfEmail]) {
-        DLOG(@"TODO: validate email");
+        [self validateEmail];
         self.user.email = self.tfEmail.text;
     } else if ([textField isEqual:self.tfRegion]) {
         for (GTLApiUserMessageRegion *region in [self.regionList regions]) {
@@ -529,6 +531,21 @@ static NSString *const kPasswordDefaultText = @"**********";
 - (void)imagePickerDidCancel:(GKImagePicker *)imagePicker
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (BOOL)validateEmail
+{
+    BOOL valid = !self.tfEmail.text || [self.tfEmail.text isEqualToString:@""] ||
+        [self.tfEmail.text isValidEmail];
+    
+    if (!valid) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
+          message:NSLocalizedString(@"EmailError", nil)
+          cancelButtonItem:[RIButtonItem itemWithLabel:NSLocalizedString(@"Close", nil)]
+          otherButtonItems:nil] show];
+    }
+    
+    return valid;
 }
 
 @end

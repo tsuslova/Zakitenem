@@ -21,8 +21,11 @@
 "UserUpdate_Region" = "Регион";
 "UserUpdate_Phone" = "Телефон";
 
-"GKIchoosePhoto" = "Choose Photo";
-"GKIuse" = "Use";
-"GKImoveAndScale" = "Move and Scale";
-"GKIcancel" = "Cancel";
-"GKIuse" = "Choose";
+"GKIchoosePhoto" = "Выбери фото";
+"GKIuse" = "Использовать";
+"GKImoveAndScale" = "Сдвинуть и ";
+"GKIcancel" = "Отмена";
+"GKIuse" = "Выбрать";
+
+"EmailError" = "E-mail выглядит подозрительно... Точно все ок?";
+"Close" = "Закрыть";

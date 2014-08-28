@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TabbedVCProto.h"
+
 @class GTLApiUserMessageUser;
 
 @protocol UserUpdateDelegate
@@ -14,7 +16,7 @@
 @end
 
 
-@interface UserUpdateVC : UIViewController
+@interface UserUpdateVC : UIViewController <TabbedVCProto>
 
 - (id)initWithNibName:(NSString*)nibName user:(GTLApiUserMessageUser *)user
              delegate:(id<UserUpdateDelegate>)delegate;

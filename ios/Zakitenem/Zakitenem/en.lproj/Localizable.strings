@@ -29,3 +29,8 @@
 
 "EmailError" = "E-mail looks suspicious... Are you sure?";
 "Close" = "Close";
+
+"Attention" = "Attention";
+"ChangePasswordConfirmation" = "Password was set before. Do you want to change it to new one?";
+"Yes" = "Yes";
+"No" = "No";

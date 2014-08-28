@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TabbedVCProto.h"
 
-@interface ForecastsVC : UIViewController
+@interface ForecastsVC : UIViewController <TabbedVCProto>
 
 @end

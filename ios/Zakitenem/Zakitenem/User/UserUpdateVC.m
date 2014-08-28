@@ -124,10 +124,6 @@ static NSString *const kPasswordDefaultText = @"**********";
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
-    
-    if ([self checkNeedSaveUser]){
-        [self save:NO];
-    }
 }
 
 #pragma mark - Utility methods
@@ -477,8 +473,7 @@ static NSString *const kPasswordDefaultText = @"**********";
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     if ([textField isEqual:self.tfPassword]) {
-        DLOG(@"TODO: validate password? if previous password was set - should we check anything??");
-        self.user.password = self.tfPassword.text;
+        [self validatePassword];
     } else if ([textField isEqual:self.tfEmail]) {
         [self validateEmail];
         self.user.email = self.tfEmail.text;
@@ -533,6 +528,8 @@ static NSString *const kPasswordDefaultText = @"**********";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - validators
+
 - (BOOL)validateEmail
 {
     BOOL valid = !self.tfEmail.text || [self.tfEmail.text isEqualToString:@""] ||
@@ -547,5 +544,41 @@ static NSString *const kPasswordDefaultText = @"**********";
     
     return valid;
 }
+
+- (void)validatePassword
+{
+    BOOL passwordIsChanging = self.user.password &&
+        (self.tfPassword.text && ![self.tfPassword.text isEqualToString:@""]);
+    
+    if (passwordIsChanging) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                            initWithTitle:NSLocalizedString(@"Attention", )
+                                  message:NSLocalizedString(@"ChangePasswordConfirmation", nil)
+                                  cancelButtonItem:nil
+                                  otherButtonItems:nil];
+        
+        [alertView addButtonItem:[RIButtonItem itemWithLabel:NSLocalizedString(@"Yes",) action:^{
+            self.user.password = self.tfPassword.text;
+        }]];
+        
+        [alertView addButtonItem:[RIButtonItem itemWithLabel:NSLocalizedString(@"No",) action:^{
+            self.tfPassword.text = kPasswordDefaultText;
+        }]];
+        
+        [alertView show];
+    } else {
+        self.user.password = self.tfPassword.text;
+    }
+}
+
+#pragma mark - TabbedVCProto
+
+- (void)leaveTab
+{
+    if ([self checkNeedSaveUser]){
+        [self save:NO];
+    }
+}
+
 
 @end

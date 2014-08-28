@@ -17,8 +17,9 @@
 
 #import "RNCachingURLProtocol.h"
 
+#import "TabbedVCProto.h"
 
-@interface AppDelegate() 
+@interface AppDelegate() <UITabBarControllerDelegate>
 @property (strong, nonatomic) AuthVC *authVC;
 @property (strong, nonatomic) UIViewController *rootVC;
 @property (strong, nonatomic) UITabBarController *tabbarController;
@@ -111,6 +112,8 @@ static NSString *const kCurrentUserProperty = @"currentUser";
     [self setTabbarItem:userUpdateVC.tabBarItem image:@"btn_user"];
     
     self.tabbarController = [[UITabBarController alloc] init];
+    self.tabbarController.delegate = self;
+
     UIImage *bgTabbar = [UIImage imageNamed:@"bg_tab_bar"];
     self.tabbarController.tabBar.backgroundImage = bgTabbar;
     self.tabbarController.viewControllers = @[forecastsVC, secondVC, thirdVC, userUpdateVC];
@@ -150,5 +153,17 @@ static NSString *const kCurrentUserProperty = @"currentUser";
     }
 }
 
+#pragma mark - UITabBarControllerDelegate
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController NS_AVAILABLE_IOS(3_0)
+{
+    NSObject <TabbedVCProto> *tabbedVC =
+        (NSObject <TabbedVCProto>*)tabBarController.selectedViewController;
+    if ([tabbedVC respondsToSelector:@selector(leaveTab)]){
+        [tabbedVC leaveTab];
+    }
+    
+    return YES;
+}
 
 @end

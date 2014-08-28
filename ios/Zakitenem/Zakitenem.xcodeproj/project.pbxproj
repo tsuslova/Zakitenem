@@ -166,6 +166,7 @@
 		991104E419A6024100D2C12E /* GTLApiForecastMessageSpotList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiForecastMessageSpotList.h; sourceTree = "<group>"; };
 		991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiForecastMessageSpotList.m; sourceTree = "<group>"; };
 		991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserUpdateVCLogin.xib; sourceTree = "<group>"; };
+		991104F619AF363400D2C12E /* TabbedVCProto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabbedVCProto.h; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -379,6 +380,7 @@
 			children = (
 				9911049619A5D9F600D2C12E /* AppDelegate.h */,
 				9911049719A5D9F600D2C12E /* AppDelegate.m */,
+				991104F619AF363400D2C12E /* TabbedVCProto.h */,
 			);
 			path = MainStack;
 			sourceTree = "<group>";

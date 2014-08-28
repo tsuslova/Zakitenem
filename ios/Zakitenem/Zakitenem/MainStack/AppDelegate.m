@@ -135,11 +135,15 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 {
     if ([keyPath isEqualToString:kCurrentUserProperty]){
         if ([[UserManager sharedManager] currentUser]){
-            UINavigationController *authNC = (UINavigationController *)self.rootVC;
-            [authNC popToRootViewControllerAnimated:NO];
-            authNC.viewControllers = @[];
-            [self initStack];
-            self.window.rootViewController = self.rootVC;
+            //If we have auth stack as self.rootVC - replace it with tabbar
+            if (self.authVC){
+                UINavigationController *authNC = (UINavigationController *)self.rootVC;
+                [authNC popToRootViewControllerAnimated:NO];
+                authNC.viewControllers = @[];
+                [self initStack];
+                self.window.rootViewController = self.rootVC;
+                self.authVC = nil;
+            }
         } else {
             [self showAuth];
         }

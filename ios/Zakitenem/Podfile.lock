@@ -28,15 +28,21 @@ PODS:
   - ReactiveCocoa/UI (2.3.1):
     - ReactiveCocoa/Core
   - SHSPhoneComponent (2.11)
+  - SSKeychain (1.2.2)
+  - UIAlertView-Blocks (1.0)
 
 DEPENDENCIES:
   - AFNetworking
   - ReactiveCocoa
   - SHSPhoneComponent
+  - SSKeychain
+  - UIAlertView-Blocks
 
 SPEC CHECKSUMS:
   AFNetworking: 6d7b76aa5d04c8c37daad3eef4b7e3f2a7620da3
   ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462
   SHSPhoneComponent: 728c61d5dfe23314273c9e7ee9d05b314489425b
+  SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9
+  UIAlertView-Blocks: f3271e84372beb97aea115cd1fb26ae66457f12f
 
 COCOAPODS: 0.33.1

@@ -23,6 +23,8 @@
 #import "GTLQueryApi.h"
 #import "GTLErrorObject.h"
 
+#import <SSKeychain/SSKeychain.h>
+
 @interface AuthVC () <UITextFieldDelegate, UserUpdateDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *tfLogin;
@@ -61,6 +63,27 @@ static NSString *const kToken = @"token";
     }
 }
 
+- (NSString*)deviceId
+{
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSError *error;
+    NSString *kUDIDKey = @"deviceID";
+    NSString *uuid = [SSKeychain passwordForService:bundleIdentifier account:kUDIDKey error:&error];
+    if (error){
+        DLOG(@"error %@",[error localizedDescription]);
+    }
+    if (uuid == nil) { // if this is the first time app launching , create key for device
+        uuid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        error = nil;
+        
+        [SSKeychain setPassword:uuid forService:bundleIdentifier account:kUDIDKey error:&error];
+        if (error){
+            DLOG(@"error %@",[error localizedDescription]);
+        }
+    }
+    return uuid;
+}
+
 - (void)loginQuery:(NSString*)login
 {
     GTLServiceApi *service = [[GTLServiceApi alloc] init];
@@ -69,7 +92,7 @@ static NSString *const kToken = @"token";
     GTLApiUserMessageLoginInfo *loginInfo = [[GTLApiUserMessageLoginInfo alloc] init];
     loginInfo.login = login;
     loginInfo.password = @"";
-    loginInfo.deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    loginInfo.deviceId = [self deviceId];
     DLOG(@"%@",loginInfo.deviceId);
     loginInfo.deviceToken = [APNSManager sharedManager].token;
     [self lock];

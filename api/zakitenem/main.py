@@ -18,6 +18,9 @@ import logging
     
 from constants import error_definitions
 
+#TODO it is necessary only for unit tests:
+test_notraise = True
+
 logger = logging.getLogger()
 
 @endpoints.api(name='api', version='v1',
@@ -29,8 +32,11 @@ class Api(remote.Service):
     def safe_execute(self, func):
         try:
             return func()
-        except endpoints.ServiceException:
-            raise
+        except endpoints.ServiceException, err:
+            if test_notraise:
+                return err
+            else :
+                raise
         except Exception, err:
             logger.error(err)
             raise endpoints.BadRequestException(error_definitions.msg_server_error)
@@ -89,7 +95,7 @@ class Api(remote.Service):
 
 application = endpoints.api_server([Api], restricted=False)
 
-# from Test import test_api
-# import unittest
-# suite = unittest.TestLoader().loadTestsFromModule(test_api)
-# unittest.TextTestRunner(verbosity=2).run(suite)
+from Test import test_api
+import unittest
+suite = unittest.TestLoader().loadTestsFromModule(test_api)
+unittest.TextTestRunner(verbosity=2).run(suite)

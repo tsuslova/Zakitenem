@@ -20,7 +20,6 @@ class UserRequestsHandler(webapp2.RequestHandler):
                 
                 cookie = self.request.cookies.get(constants.cookie_key)
                 user = user_model.user_by_cookie(cookie)
-                user.set_properties(update_json)
                 resp = user.resp()
             if api_method == "upload_userpic":
                 logger.info("upload_userpic")
@@ -75,7 +74,7 @@ def auth(request):
         else:
             logger.info("user with the login&device_id was already logged in - it is normal to \
                 login without password from the same device (%s)"%app_install)
-             
+        
         if error_text:
             raise endpoints.BadRequestException(error_text)
         else:

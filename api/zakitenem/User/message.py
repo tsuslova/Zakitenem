@@ -48,18 +48,19 @@ class User(messages.Message):
     phone = messages.StringField(3)
     gender = messages.BooleanField(4)
     password = messages.StringField(5)
-    userpic = messages.BytesField(6)
-    birthday = message_types.DateTimeField(7)
+    password_set = messages.BooleanField(6)
+    userpic = messages.BytesField(7)
+    birthday = message_types.DateTimeField(8)
     
-    region = messages.MessageField(Region, 8)
+    region = messages.MessageField(Region, 9)
     
-    subscription_end_date = message_types.DateTimeField(9) 
+    subscription_end_date = message_types.DateTimeField(10) 
 
     # Store here newly created installation to pass client a cookie.
     # May be I should find a better way...
     # In request it is used for passing session info 
-    session = messages.MessageField(Session, 10)
+    session = messages.MessageField(Session, 11)
     
     #list of login's of my friends
-    friend_list_ids = messages.StringField(11, repeated = True)
+    friend_list_ids = messages.StringField(12, repeated = True)
     

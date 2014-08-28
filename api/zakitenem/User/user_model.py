@@ -149,6 +149,7 @@ class UserItem(ndb.Model):
             
             logger.info("save its hash to db %s %s"%(password,self.some_data))
             self.password = ssshh(password, self.some_data)
+            self.password_set = True
             self.put()
             return self.email
         if constants.option_push == tool:
@@ -158,6 +159,7 @@ class UserItem(ndb.Model):
                     pushed_to.append(inst.device_token)
                     self.push_password(password, self, inst.device_token)
             self.password = ssshh(password, self.some_data)
+            self.password_set = True
             self.put()
             return pushed_to
 
@@ -179,8 +181,13 @@ class UserItem(ndb.Model):
                     self.region = RegionItem.from_message(val)
                 elif key == "gender":
                     self.gender = True if val > 0 else False
+                elif key == "password":
+                    pass_not_empty = val != None and len(val) > 0
+                    self.password = ssshh(val, self.some_data) if pass_not_empty else ""
+                    self.password_set = pass_not_empty
                 else: 
                     setattr(self, key, val)
+                    
         self.put() 
         
 
@@ -269,6 +276,7 @@ def create_user_from_login_info(login_info):
     logger.info("Create user")
     user.login = login_info.login
     user.password = password_hash
+    user.password_set = pass_not_empty
     user.some_data = login_info.device_id
     logger.info("create_installation")
     app_install = create_installation(user, login_info.device_id, login_info.device_token)

@@ -44,10 +44,23 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
                                      [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
         GTLApiForecastMessageSpotList *savedSpotList =
         [GTLApiForecastMessageSpotList objectWithJSON:json];
-        self.spotList = savedSpotList;
-        [self.tableView reloadData];
-        return;
+        NSDate *date = [NSDate date];
+        
+        NSTimeInterval localTimeZoneOffset = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+        date = [date dateByAddingTimeInterval:(localTimeZoneOffset * -1)];
+        DLOG(@"%@",savedSpotList.nextUpdateTime.date);
+        if (savedSpotList.nextUpdateTime &&
+             NSOrderedDescending == [savedSpotList.nextUpdateTime.date compare:date]){
+            self.spotList = savedSpotList;
+            [self.tableView reloadData];
+            return;
+        }
     }
+    [self reloadForecasts];
+}
+
+- (void)reloadForecasts
+{
     [self lock];
     
     GTLServiceApi *service = [[GTLServiceApi alloc] init];

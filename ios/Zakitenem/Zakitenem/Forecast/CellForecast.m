@@ -18,6 +18,8 @@
 
 @implementation CellForecast
 
+const int kActivityHidingDelay = 2;
+
 - (void)setSpot:(GTLApiForecastMessageSpot *)spot
 {
     [self.webView stopLoading];
@@ -44,7 +46,7 @@
 {
     DLOG(@"%@",[error localizedDescription]);
 //    [self unlock];
-    [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
+    [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:kActivityHidingDelay];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
@@ -55,7 +57,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     DLOG(@"");
-    [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
+    [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:kActivityHidingDelay];
     self.svContent.contentSize = CGSizeMake(self.webView.width, self.svContent.height);
 }
 

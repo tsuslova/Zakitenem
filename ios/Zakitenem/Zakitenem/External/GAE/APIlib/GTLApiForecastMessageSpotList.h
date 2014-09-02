@@ -13,7 +13,7 @@
 // Description:
 //   Zakitenem API
 // Classes:
-//   GTLApiForecastMessageSpotList (0 custom class methods, 1 custom properties)
+//   GTLApiForecastMessageSpotList (0 custom class methods, 2 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -29,5 +29,6 @@
 //
 
 @interface GTLApiForecastMessageSpotList : GTLObject
+@property (retain) GTLDateTime *nextUpdateTime;
 @property (retain) NSArray *spots;  // of GTLApiForecastMessageSpot
 @end

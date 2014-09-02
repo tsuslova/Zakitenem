@@ -13,7 +13,7 @@
 // Description:
 //   Zakitenem API
 // Classes:
-//   GTLApiForecastMessageSpotList (0 custom class methods, 1 custom properties)
+//   GTLApiForecastMessageSpotList (0 custom class methods, 2 custom properties)
 
 #import "GTLApiForecastMessageSpotList.h"
 
@@ -25,7 +25,14 @@
 //
 
 @implementation GTLApiForecastMessageSpotList
-@dynamic spots;
+@dynamic nextUpdateTime, spots;
+
++ (NSDictionary *)propertyToJSONKeyMap {
+  NSDictionary *map =
+    [NSDictionary dictionaryWithObject:@"next_update_time"
+                                forKey:@"nextUpdateTime"];
+  return map;
+}
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map =

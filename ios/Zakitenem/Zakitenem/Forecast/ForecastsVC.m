@@ -8,20 +8,23 @@
 
 #import "ForecastsVC.h"
 #import "UserManager.h"
+#import "CellForecast.h"
+#import "UIView+NibLoading.h"
 
 //GAE
 #import "GTLServiceApi.h"
 #import "GTLQueryApi.h"
 #import "GTLErrorObject.h"
 #import "GTLApiUserMessageUser.h"
-#import "GTLApiForecastMessageSpot.h"
 #import "GTLApiForecastMessageSpotList.h"
 
 NSString *const kSavedForecasts = @"kSavedForecasts";
 
-@interface ForecastsVC () <UIWebViewDelegate>
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@interface ForecastsVC () <UITableViewDataSource, UITableViewDelegate>
+@property (strong, nonatomic) GTLApiForecastMessageSpotList *spotList;
+@property (strong, nonatomic) NSMutableDictionary *cellList;
 
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @end
 
 @implementation ForecastsVC
@@ -36,6 +39,15 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 
 - (void)loadForecasts
 {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]){
+        NSMutableDictionary *json = [NSMutableDictionary dictionaryWithDictionary:
+                                     [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
+        GTLApiForecastMessageSpotList *savedSpotList =
+        [GTLApiForecastMessageSpotList objectWithJSON:json];
+        self.spotList = savedSpotList;
+        [self.tableView reloadData];
+        return;
+    }
     [self lock];
     
     GTLServiceApi *service = [[GTLServiceApi alloc] init];
@@ -47,7 +59,7 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
         GTLApiForecastMessageSpotList *obj, NSError *error){
         [self unlock];
         DLOG(@"%@", obj.spots);
-        NSArray *spots = obj.spots;
+        self.spotList = obj;
         if (error){
             DLOG(@"%@", [error localizedDescription]);
             if ([[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]){
@@ -55,31 +67,21 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
                  [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
                 GTLApiForecastMessageSpotList *savedSpotList =
                     [GTLApiForecastMessageSpotList objectWithJSON:json];
-                spots = savedSpotList.spots;
+                self.spotList = savedSpotList;
             }
         } else {
             
             [[NSUserDefaults standardUserDefaults] setObject:obj.JSON forKey:kSavedForecasts];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        if (spots){
-            [self showSpotsForecast:spots];
+        if (self.spotList){
+            [self.tableView reloadData];
         } else {
             showErrorAlertView(error, NSLocalizedString(@"NoInternetErrorMessage", ));
         }
     }];
 }
 
-- (void)showSpotsForecast:(NSArray*)spotsList
-{
-    NSString *html = @"<html>";
-    for (GTLApiForecastMessageSpot *spot in spotsList){
-        html = [html stringByAppendingString:spot.forecast];
-    }
-    html = [html stringByAppendingString:@"</html>"];
-    [self lock];
-    [self.webView loadHTMLString:html baseURL:nil];
-}
 
 #pragma mark - IBActions
 - (IBAction)logout:(id)sender
@@ -89,34 +91,44 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 
 - (IBAction)reload:(id)sender
 {
-    DLOG(@"%@",self.webView.request);
-    [self.webView stopLoading];
-    [self.webView reload];
+    DLOG(@"TODO");
+    self.cellList = nil;
+//    [self.webView stopLoading];
+//    [self.webView reload];
 }
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - Getters
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (NSMutableDictionary*)cellList
 {
-    DLOG(@"%@",request.URL.absoluteString);
-    return YES;
+    if (!_cellList){
+        _cellList = [NSMutableDictionary dictionary];
+    }
+    return _cellList;
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    DLOG(@"%@",[error localizedDescription]);
-    [self unlock];
+    return [self.spotList.spots count];
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DLOG(@"");
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    DLOG(@"");
-    [self unlock];
+    if (self.cellList[indexPath]){
+        return self.cellList[indexPath];
+    }
+    CellForecast *cell = [CellForecast loadFromNib];
+    cell.spot = self.spotList.spots[indexPath.row];
+    
+    cell.backgroundView = nil;
+    cell.selectedBackgroundView = nil;
+    cell.backgroundColor = [UIColor clearColor];
+    
+    self.cellList[indexPath] = cell;
+    return cell;
 }
 
 @end

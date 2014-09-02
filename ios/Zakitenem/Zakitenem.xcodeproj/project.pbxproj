@@ -17,6 +17,8 @@
 		991104E619A6024100D2C12E /* GTLApiForecastMessageSpot.m in Sources */ = {isa = PBXBuildFile; fileRef = 991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */; };
 		991104E719A6024100D2C12E /* GTLApiForecastMessageSpotList.m in Sources */ = {isa = PBXBuildFile; fileRef = 991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */; };
 		991104E919AB170F00D2C12E /* UserUpdateVCLogin.xib in Resources */ = {isa = PBXBuildFile; fileRef = 991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */; };
+		9911050619B5BD3800D2C12E /* CellForecast.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911050419B5BD3800D2C12E /* CellForecast.m */; };
+		9911050719B5BD3800D2C12E /* CellForecast.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9911050519B5BD3800D2C12E /* CellForecast.xib */; };
 		9912EEC01987ABED00E61777 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEBF1987ABED00E61777 /* Foundation.framework */; };
 		9912EEC21987ABED00E61777 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC11987ABED00E61777 /* CoreGraphics.framework */; };
 		9912EEC41987ABED00E61777 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC31987ABED00E61777 /* UIKit.framework */; };
@@ -167,6 +169,9 @@
 		991104E519A6024100D2C12E /* GTLApiForecastMessageSpotList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiForecastMessageSpotList.m; sourceTree = "<group>"; };
 		991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserUpdateVCLogin.xib; sourceTree = "<group>"; };
 		991104F619AF363400D2C12E /* TabbedVCProto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabbedVCProto.h; sourceTree = "<group>"; };
+		9911050319B5BD3800D2C12E /* CellForecast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CellForecast.h; sourceTree = "<group>"; };
+		9911050419B5BD3800D2C12E /* CellForecast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CellForecast.m; sourceTree = "<group>"; };
+		9911050519B5BD3800D2C12E /* CellForecast.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CellForecast.xib; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -786,6 +791,9 @@
 				99E872DF1990D3590099C3BC /* ForecastsVC.h */,
 				99E872E01990D3590099C3BC /* ForecastsVC.m */,
 				99E872E11990D3590099C3BC /* ForecastsVC.xib */,
+				9911050319B5BD3800D2C12E /* CellForecast.h */,
+				9911050419B5BD3800D2C12E /* CellForecast.m */,
+				9911050519B5BD3800D2C12E /* CellForecast.xib */,
 			);
 			path = Forecast;
 			sourceTree = "<group>";
@@ -912,6 +920,7 @@
 				99E872E31990D3590099C3BC /* ForecastsVC.xib in Resources */,
 				999F30C51998D8AB008CB0AD /* UserUpdateVC.xib in Resources */,
 				999F309D1990EEB4008CB0AD /* Krasnyi_Yar.html in Resources */,
+				9911050719B5BD3800D2C12E /* CellForecast.xib in Resources */,
 				999F309F1990EEB4008CB0AD /* Neokom.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1002,6 +1011,7 @@
 				9912EF6A1987AFB600E61777 /* GTLBatchResult.m in Sources */,
 				991104E619A6024100D2C12E /* GTLApiForecastMessageSpot.m in Sources */,
 				9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */,
+				9911050619B5BD3800D2C12E /* CellForecast.m in Sources */,
 				9912EF731987AFB600E61777 /* GTLFramework.m in Sources */,
 				9912EF641987AFB600E61777 /* GTMOAuth2Authentication.m in Sources */,
 				9911049319A5D7A100D2C12E /* GKImagePicker.m in Sources */,

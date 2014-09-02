@@ -20,6 +20,7 @@ phone_key = "phone"
 gender_key = "gender"
 userpic_key = "userpic"
 region_key = "region"
+birthday_key = "birthday"
 
 tools_key = "tools"
 tool_key = "tool"

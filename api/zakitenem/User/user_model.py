@@ -90,16 +90,20 @@ class UserItem(ndb.Model):
     
     gender = ndb.BooleanProperty()
     password = ndb.StringProperty(indexed=False)
+    password_set = ndb.BooleanProperty()
+    
     some_data = ndb.StringProperty(indexed=False)
     
     userpic = ndb.BlobProperty(indexed=False)
-    birthday = ndb.DateProperty()
+    birthday = ndb.DateTimeProperty()
     
     region = ndb.StructuredProperty(RegionItem, indexed=False)
-    subscription_end_date = ndb.DateProperty()
+    subscription_end_date = ndb.DateTimeProperty()
     
     friend_list_ids = ndb.StringProperty(repeated=True)
 
+    forecast_get_time = ndb.DateTimeProperty()
+    
     #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
     updatable_properties = ["email","phone", "gender", "password", "password_set", "userpic", 
@@ -174,6 +178,7 @@ class UserItem(ndb.Model):
             logging.info(fail_time)
     
     def set_properties(self, user_message):
+        logger.info(user_message)
         for key in self.updatable_properties:
             val = getattr(user_message, key)
             if val:
@@ -186,6 +191,10 @@ class UserItem(ndb.Model):
                     pass_not_empty = val != None and len(val) > 0
                     self.password = ssshh(val, self.some_data) if pass_not_empty else ""
                     self.password_set = pass_not_empty
+                elif isinstance(val, datetime.date):
+                    logging.info("val %s"%str(val))
+                    val = val.astimezone(val.tzutc()).replace(tzinfo=None)
+                    setattr(self, key, val)
                 else: 
                     setattr(self, key, val)
                     

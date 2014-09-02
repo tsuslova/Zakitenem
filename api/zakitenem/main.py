@@ -18,8 +18,9 @@ import logging
     
 from constants import error_definitions
 
-#TODO it is necessary only for unit tests:
-test_notraise = True
+#TODO unit tests mode, must be False on deployments:
+test_mode = False
+test_mode_unit = False
 
 logger = logging.getLogger()
 
@@ -33,7 +34,7 @@ class Api(remote.Service):
         try:
             return func()
         except endpoints.ServiceException, err:
-            if test_notraise:
+            if test_mode:
                 return err
             else :
                 raise
@@ -95,7 +96,15 @@ class Api(remote.Service):
 
 application = endpoints.api_server([Api], restricted=False)
 
-# from Test import test_api
-# import unittest
-# suite = unittest.TestLoader().loadTestsFromModule(test_api)
-# unittest.TextTestRunner(verbosity=2).run(suite)
+if test_mode:
+    from Test import test_api
+    import unittest
+    suite = unittest.TestLoader().loadTestsFromModule(test_api)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+    
+
+if test_mode_unit:
+    from Test import test_unit
+    import unittest
+    suite = unittest.TestLoader().loadTestsFromModule(test_unit)
+    unittest.TextTestRunner(verbosity=2).run(suite)

@@ -1,9 +1,12 @@
+# -*- coding: cp1251 -*-
 import webapp2
 import logging
 from request_handlers import request_utils
 import user_model
 from constants import error_definitions, constants
 import json
+import ConfigParser
+import datetime
 
 #TODO remove global loggers?
 logger = logging.getLogger()
@@ -136,7 +139,6 @@ def user_update(request):
     return user.to_message(installation)
 
 def region_list(region_id, latitude, longitude):
-    import ConfigParser
     import math
     config_file='./resources/regions_config.cfg'
     parser = ConfigParser.RawConfigParser()
@@ -170,14 +172,68 @@ def request_region_list(request):
 
 from Forecast import message as ForecastMessage
 
+def utc_today():
+    today = datetime.date.today()
+    today_time = datetime.datetime(today.year, today.month, today.day)
+    logger.info("today_time = %s"%str(today_time))
+    return today_time
+
+def calculate_next_update_time(current_time = datetime.datetime.utcnow()):
+    config_file='./resources/forecast_settings.cfg'
+    parser = ConfigParser.RawConfigParser()
+    parser.read(config_file)
+    today_time = utc_today()
+    logger.info("current_time %s"%str(current_time))
+    for section in parser.sections():
+        startHour = int(parser.get(section, "startHour"))
+        startMinute = int(parser.get(section, "startMinute"))
+        refreshPeriod = int(parser.get(section, "refreshPeriod"))
+        
+        next_period_start = today_time + datetime.timedelta(hours=startHour, minutes=startMinute)
+        logger.info("check period %s"%next_period_start)
+        if current_time < next_period_start:
+            logger.info("period found %s"%str(next_period_start))
+            return next_period_start
+        elif current_time < next_period_start + datetime.timedelta(minutes=refreshPeriod):
+            logger.info("in refreshPeriod, forecast updates are possible, check a minute later")
+            logger.info("%s"%str(current_time + datetime.timedelta(minutes=1)))
+            return current_time + datetime.timedelta(minutes=1)
+    logger.info("the last period in current day is checked, use first period of next day")
+    startHour = int(parser.get("UpdateTime0", "startHour"))
+    startMinute = int(parser.get("UpdateTime0", "startMinute"))
+    return today_time+datetime.timedelta(days=1, hours=startHour, minutes=startMinute)
+
+def test_calculate_next_update_time():
+    logger.info("forecasts")
+    today_time = utc_today()
+    logger.info("UTC 00:00")
+    calculate_next_update_time(today_time)
+    logger.info("UTC 04:00")
+    calculate_next_update_time(today_time+datetime.timedelta(hours=4))
+    logger.info("UTC 04:50")
+    calculate_next_update_time(today_time+datetime.timedelta(hours=4, minutes=50))
+    logger.info("UTC 12:00")
+    calculate_next_update_time(today_time+datetime.timedelta(hours=12))
+    logger.info("UTC 24:00")
+    calculate_next_update_time(today_time+datetime.timedelta(hours=24))
+    
+    logger.info("Current time %s (%s)"%(datetime.datetime.now(), datetime.datetime.utcnow()))
+    calculate_next_update_time(datetime.datetime.utcnow())
+    
 def forecasts(request):
     logger.info("forecasts")
     cookie = request.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
+    
+    next_update_time = calculate_next_update_time()
+      
     region = constants.default_region 
     if user and user.region:
         region = user.region.id 
     else:
         logger.info("No user region found - use default one")
-    return ForecastMessage.region_spots(region)
+        
+    user.forecast_get_time = datetime.datetime.now()
+    user.put()
+    return ForecastMessage.region_spots(region, next_update_time)

@@ -17,6 +17,7 @@
 #import "GTLApiForecastMessageSpot.h"
 #import "GTLApiForecastMessageSpotList.h"
 
+NSString *const kSavedForecasts = @"kSavedForecasts";
 
 @interface ForecastsVC () <UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -46,7 +47,26 @@
         GTLApiForecastMessageSpotList *obj, NSError *error){
         [self unlock];
         DLOG(@"%@", obj.spots);
-        [self showSpotsForecast:obj.spots];
+        NSArray *spots = obj.spots;
+        if (error){
+            DLOG(@"%@", [error localizedDescription]);
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]){
+                NSMutableDictionary *json = [NSMutableDictionary dictionaryWithDictionary:
+                 [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
+                GTLApiForecastMessageSpotList *savedSpotList =
+                    [GTLApiForecastMessageSpotList objectWithJSON:json];
+                spots = savedSpotList.spots;
+            }
+        } else {
+            
+            [[NSUserDefaults standardUserDefaults] setObject:obj.JSON forKey:kSavedForecasts];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        if (spots){
+            [self showSpotsForecast:spots];
+        } else {
+            showErrorAlertView(error, NSLocalizedString(@"NoInternetErrorMessage", ));
+        }
     }];
 }
 

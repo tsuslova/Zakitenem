@@ -149,8 +149,10 @@ static NSString *const kPasswordDefaultText = @"**********";
     }
     self.tfEmail.text = self.user.email;
     self.tfPhone.text = self.user.phone;
-    self.datePicker.date = self.user.birthday.date;
-    [self fillBirthdayField:self.user.birthday.date];
+    if (self.user.birthday){
+        self.datePicker.date = self.user.birthday.date;
+        [self fillBirthdayField:self.user.birthday.date];
+    }
     //Show default text in password field to show that the password was already set
     if (self.user.password){
         self.tfPassword.text = kPasswordDefaultText;
@@ -170,6 +172,8 @@ static NSString *const kPasswordDefaultText = @"**********";
 
 - (void)fillBirthdayField:(NSDate*)date
 {
+    DLOG(@"HERE");
+    DLOG(@"%@", date);
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"dd.MM.yyyy"];
     self.tfBirthday.text = [df stringFromDate:date];

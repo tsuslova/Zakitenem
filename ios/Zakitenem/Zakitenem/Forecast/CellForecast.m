@@ -7,6 +7,7 @@
 //
 
 #import "CellForecast.h"
+@import CoreImage;
 
 @interface CellForecast () <UIWebViewDelegate, UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -23,7 +24,7 @@ const int kActivityHidingDelay = 2;
 - (void)setSpot:(GTLApiForecastMessageSpot *)spot
 {
     [self.webView stopLoading];
-    
+    self.webView.hidden = NO;
     _spot = spot;
     
     NSString *html = @"<html>";
@@ -59,6 +60,60 @@ const int kActivityHidingDelay = 2;
     DLOG(@"");
     [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:kActivityHidingDelay];
     self.svContent.contentSize = CGSizeMake(self.webView.width, self.svContent.height);
+    
+    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
+}
+
+- (void)takeWebViewScreenshot:(UIWebView *)webView
+{
+    UIGraphicsBeginImageContext(webView.scrollView.bounds.size);
+    [webView.scrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    if (![self checkIfImage:viewImage]){
+        DLOG(@"no underlying data");
+        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
+    } else {
+        self.ivForecast.image = viewImage;
+    }
+    
+}
+
+- (BOOL)checkIfImage:(UIImage *)someImage
+{
+    CGImageRef image = someImage.CGImage;
+    int width = (int)CGImageGetWidth(image);
+    size_t height = CGImageGetHeight(image);
+    GLubyte * imageData = malloc(width * height * 4);
+    int bytesPerPixel = 4;
+    int bytesPerRow = bytesPerPixel * width;
+    int bitsPerComponent = 8;
+    CGContextRef imageContext =
+    CGBitmapContextCreate(
+                          imageData, width, height, bitsPerComponent, bytesPerRow, CGImageGetColorSpace(image),
+                          kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big
+                          );
+    
+    CGContextSetBlendMode(imageContext, kCGBlendModeCopy);
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), image);
+    CGContextRelease(imageContext);
+    
+    int byteIndex = 0;
+    
+    BOOL imageExist = NO;
+    for ( ; byteIndex < width*height*4; byteIndex += 4) {
+        CGFloat red = ((GLubyte *)imageData)[byteIndex]/255.0f;
+        CGFloat green = ((GLubyte *)imageData)[byteIndex + 1]/255.0f;
+        CGFloat blue = ((GLubyte *)imageData)[byteIndex + 2]/255.0f;
+        CGFloat alpha = ((GLubyte *)imageData)[byteIndex + 3]/255.0f;
+        if (red != 0 || green != 0 || blue != 0 || alpha != 0){
+            imageExist = YES;
+            break;
+        }
+    }
+    
+    return imageExist;
 }
 
 

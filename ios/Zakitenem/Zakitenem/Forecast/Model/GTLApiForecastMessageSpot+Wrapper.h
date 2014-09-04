@@ -10,6 +10,8 @@
 
 @interface GTLApiForecastMessageSpot (Wrapper)
 
+- (void)removeCache;
+
 - (void)setForecastImage:(UIImage*)image;
 - (UIImage*)forecastImage;
 

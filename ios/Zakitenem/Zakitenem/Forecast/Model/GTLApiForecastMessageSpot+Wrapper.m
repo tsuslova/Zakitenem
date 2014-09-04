@@ -10,11 +10,23 @@
 
 @implementation GTLApiForecastMessageSpot (Wrapper)
 
+- (void)removeCache
+{
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[self forecastPath]]){
+        NSError *error;
+        if (![[NSFileManager defaultManager] removeItemAtPath:[self forecastPath] error:&error]){
+            NSLog(@"Error: fail to remove cache!");
+        }
+        
+    }
+}
+
 - (void)setForecastImage:(UIImage*)image
 {
     NSData* data = UIImagePNGRepresentation(image);
     if (![data writeToFile:[self forecastPath] atomically:YES]){
-        DLOG(@"Error while writing image: %@",[self forecastPath]);
+        NSLog(@"Error while writing image: %@",[self forecastPath]);
+        NSAssert(NO, @"Error while writing image");
     }
 }
 
@@ -35,7 +47,6 @@
             attributes:nil error:&error];
     }
     path = [path stringByAppendingPathComponent:self.identifier];
-    DLOG(@"%@", path);
     return path;
 }
 @end

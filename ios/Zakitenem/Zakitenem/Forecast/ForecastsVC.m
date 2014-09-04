@@ -18,6 +18,8 @@
 #import "GTLApiUserMessageUser.h"
 #import "GTLApiForecastMessageSpotList.h"
 
+#import "GTLApiForecastMessageSpot+Wrapper.h"
+
 NSString *const kSavedForecasts = @"kSavedForecasts";
 
 @interface ForecastsVC () <UITableViewDataSource, UITableViewDelegate>
@@ -51,19 +53,27 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
                                      [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
         GTLApiForecastMessageSpotList *savedSpotList =
         [GTLApiForecastMessageSpotList objectWithJSON:json];
-        NSDate *date = [NSDate date];
-        
-        NSTimeInterval localTimeZoneOffset = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-        date = [date dateByAddingTimeInterval:(localTimeZoneOffset * -1)];
+
         DLOG(@"%@",savedSpotList.nextUpdateTime.date);
-        if (savedSpotList.nextUpdateTime &&
-             NSOrderedDescending == [savedSpotList.nextUpdateTime.date compare:date]){
-            self.spotList = savedSpotList;
-            [self.tableView reloadData];
+        self.spotList = savedSpotList;
+        [self.tableView reloadData];
+        if ([self checkMayUseCache]){
+            DLOG(@"Update time didn't exceed - no need to reload displayed forecast");
             return;
         }
     }
     [self reloadForecasts];
+}
+
+- (BOOL)checkMayUseCache
+{
+    NSDate *date = [NSDate date];
+    
+    NSTimeInterval localTimeZoneOffset = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    date = [date dateByAddingTimeInterval:(localTimeZoneOffset * -1)];
+
+    return self.spotList.nextUpdateTime &&
+        NSOrderedDescending == [self.spotList.nextUpdateTime.date compare:date];
 }
 
 - (void)reloadForecasts
@@ -79,7 +89,6 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
         GTLApiForecastMessageSpotList *obj, NSError *error){
         [self unlock];
         DLOG(@"%@", obj.spots);
-        self.spotList = obj;
         if (error){
             DLOG(@"%@", [error localizedDescription]);
             if ([[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]){
@@ -90,7 +99,8 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
                 self.spotList = savedSpotList;
             }
         } else {
-            
+            [self removeCache];
+            self.spotList = obj;
             [[NSUserDefaults standardUserDefaults] setObject:obj.JSON forKey:kSavedForecasts];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
@@ -102,6 +112,12 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
     }];
 }
 
+- (void)removeCache
+{
+    for (GTLApiForecastMessageSpot *spot in self.spotList.spots){
+        [spot removeCache];
+    }
+}
 
 #pragma mark - IBActions
 - (IBAction)logout:(id)sender
@@ -141,7 +157,8 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
         return self.cellList[indexPath];
     }
     CellForecast *cell = [CellForecast loadFromNib];
-    cell.spot = self.spotList.spots[indexPath.row];
+    BOOL cache = [self checkMayUseCache];
+    [cell showSpot:self.spotList.spots[indexPath.row] cached:cache];
     
     cell.backgroundView = nil;
     cell.selectedBackgroundView = nil;

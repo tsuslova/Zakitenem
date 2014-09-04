@@ -15,22 +15,27 @@
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIImageView *ivForecast;
 @property (weak, nonatomic) IBOutlet UIScrollView *svContent;
-
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
+@property (strong, nonatomic) GTLApiForecastMessageSpot *spot;
+
 @end
 
 @implementation CellForecast
 
 const int kActivityHidingDelay = 2;
 
-- (void)setSpot:(GTLApiForecastMessageSpot *)spot
+- (void)showSpot:(GTLApiForecastMessageSpot *)spot cached:(BOOL)cached
 {
-    _spot = spot;
+    self.spot = spot;
     UIImage *image = [spot forecastImage];
     if (image){
         DLOG(@"Show cache image");
         self.ivForecast.image = image;
-    } else {
+        self.svContent.contentSize = CGSizeMake(self.ivForecast.width, self.ivForecast.height);
+    }
+    //If we don't have cache yet or if we should reload cache - load the forecast
+    if (!cached || !image){
         [self loadForecastHTML];
     }
 }

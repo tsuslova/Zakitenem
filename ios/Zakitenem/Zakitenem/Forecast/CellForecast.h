@@ -10,6 +10,6 @@
 #import "GTLApiForecastMessageSpot.h"
 
 @interface CellForecast : UITableViewCell
-@property (strong, nonatomic) GTLApiForecastMessageSpot *spot;
 
+- (void)showSpot:(GTLApiForecastMessageSpot *)spot cached:(BOOL)cached;
 @end

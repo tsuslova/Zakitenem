@@ -7,6 +7,8 @@
 //
 
 #import "CellForecast.h"
+#import "GTLApiForecastMessageSpot+Wrapper.h"
+
 @import CoreImage;
 
 @interface CellForecast () <UIWebViewDelegate, UIScrollViewDelegate>
@@ -23,12 +25,24 @@ const int kActivityHidingDelay = 2;
 
 - (void)setSpot:(GTLApiForecastMessageSpot *)spot
 {
+    _spot = spot;
+    UIImage *image = [spot forecastImage];
+    if (image){
+        DLOG(@"Show cache image");
+        self.ivForecast.image = image;
+    } else {
+        [self loadForecastHTML];
+    }
+}
+
+- (void)loadForecastHTML
+{
+    DLOG(@"");
     [self.webView stopLoading];
     self.webView.hidden = NO;
-    _spot = spot;
     
     NSString *html = @"<html>";
-    html = [html stringByAppendingString:spot.forecast];
+    html = [html stringByAppendingString:self.spot.forecast];
     html = [html stringByAppendingString:@"</html>"];
     
     [self.activityIndicator startAnimating];
@@ -61,39 +75,47 @@ const int kActivityHidingDelay = 2;
     [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:kActivityHidingDelay];
     self.svContent.contentSize = CGSizeMake(self.webView.width, self.svContent.height);
     
-    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
+    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:0.5];
 }
 
 - (void)takeWebViewScreenshot:(UIWebView *)webView
 {
-    UIGraphicsBeginImageContext(webView.scrollView.bounds.size);
+    UIGraphicsBeginImageContextWithOptions(webView.scrollView.bounds.size, NO, 0.0f);
     [webView.scrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     if (![self checkIfImage:viewImage]){
         DLOG(@"no underlying data");
-        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
+        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:0.5];
     } else {
+        [self.spot setForecastImage:viewImage];
         self.ivForecast.image = viewImage;
+        self.ivForecast.hidden = NO;
+        self.webView.hidden = YES;
     }
+    
+    //TODO: may be it's more optimal to create a one-pixel image before?
+//    CIImage *image = viewImage.CIImage;
+//    CGRect imageRect = (CGRect){CGPointZero,viewImage.size};
+//    image = [CIFilter filterWithName:@"CIAreaMaximumAlpha" keysAndValues:kCIInputImageKey, image, @"inputExtent", [NSValue valueWithCGRect:imageRect], nil].outputImage;
+//    CGImageRef img = [myContext createCGImage:image fromRect:[image extent]];
+//    [self checkIfImage:image];
     
 }
 
 - (BOOL)checkIfImage:(UIImage *)someImage
 {
     CGImageRef image = someImage.CGImage;
-    int width = (int)CGImageGetWidth(image);
+    size_t width = CGImageGetWidth(image);
     size_t height = CGImageGetHeight(image);
     GLubyte * imageData = malloc(width * height * 4);
     int bytesPerPixel = 4;
-    int bytesPerRow = bytesPerPixel * width;
+    size_t bytesPerRow = bytesPerPixel * width;
     int bitsPerComponent = 8;
-    CGContextRef imageContext =
-    CGBitmapContextCreate(
-                          imageData, width, height, bitsPerComponent, bytesPerRow, CGImageGetColorSpace(image),
-                          kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big
-                          );
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, bitsPerComponent,
+        bytesPerRow, CGImageGetColorSpace(image),
+        kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
     
     CGContextSetBlendMode(imageContext, kCGBlendModeCopy);
     CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), image);

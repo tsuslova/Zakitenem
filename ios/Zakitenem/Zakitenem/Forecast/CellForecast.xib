@@ -26,7 +26,7 @@
                                 </connections>
                             </webView>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kUH-Jo-Zwe">
-                                <rect key="frame" x="50" y="50" width="740" height="232"/>
+                                <rect key="frame" x="0.0" y="0.0" width="740" height="232"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.2901960784" green="0.50196078430000002" blue="0.27058823529999998" alpha="0.070000000000000007" colorSpace="calibratedRGB"/>
                             </imageView>

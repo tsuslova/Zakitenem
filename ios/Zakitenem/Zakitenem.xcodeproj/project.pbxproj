@@ -19,6 +19,7 @@
 		991104E919AB170F00D2C12E /* UserUpdateVCLogin.xib in Resources */ = {isa = PBXBuildFile; fileRef = 991104E819AB170F00D2C12E /* UserUpdateVCLogin.xib */; };
 		9911050619B5BD3800D2C12E /* CellForecast.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911050419B5BD3800D2C12E /* CellForecast.m */; };
 		9911050719B5BD3800D2C12E /* CellForecast.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9911050519B5BD3800D2C12E /* CellForecast.xib */; };
+		9911051119B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9911051019B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.m */; };
 		9912EEC01987ABED00E61777 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEBF1987ABED00E61777 /* Foundation.framework */; };
 		9912EEC21987ABED00E61777 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC11987ABED00E61777 /* CoreGraphics.framework */; };
 		9912EEC41987ABED00E61777 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9912EEC31987ABED00E61777 /* UIKit.framework */; };
@@ -172,6 +173,8 @@
 		9911050319B5BD3800D2C12E /* CellForecast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CellForecast.h; sourceTree = "<group>"; };
 		9911050419B5BD3800D2C12E /* CellForecast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CellForecast.m; sourceTree = "<group>"; };
 		9911050519B5BD3800D2C12E /* CellForecast.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CellForecast.xib; sourceTree = "<group>"; };
+		9911050F19B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTLApiForecastMessageSpot+Wrapper.h"; sourceTree = "<group>"; };
+		9911051019B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTLApiForecastMessageSpot+Wrapper.m"; sourceTree = "<group>"; };
 		9912EEBC1987ABED00E61777 /* Zakitenem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zakitenem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9912EEBF1987ABED00E61777 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9912EEC11987ABED00E61777 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -388,6 +391,15 @@
 				991104F619AF363400D2C12E /* TabbedVCProto.h */,
 			);
 			path = MainStack;
+			sourceTree = "<group>";
+		};
+		9911050E19B8364700D2C12E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9911050F19B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.h */,
+				9911051019B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		9912EEB31987ABED00E61777 = {
@@ -788,6 +800,7 @@
 		99E872DE1990D33E0099C3BC /* Forecast */ = {
 			isa = PBXGroup;
 			children = (
+				9911050E19B8364700D2C12E /* Model */,
 				99E872DF1990D3590099C3BC /* ForecastsVC.h */,
 				99E872E01990D3590099C3BC /* ForecastsVC.m */,
 				99E872E11990D3590099C3BC /* ForecastsVC.xib */,
@@ -974,6 +987,7 @@
 				9912EFCF1987AFC500E61777 /* NSString+formattedText.m in Sources */,
 				999F30B31992251C008CB0AD /* RNCachingURLProtocol.m in Sources */,
 				9912EF6B1987AFB600E61777 /* GTLDateTime.m in Sources */,
+				9911051119B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.m in Sources */,
 				9912EF6E1987AFB600E61777 /* GTLQuery.m in Sources */,
 				9912EF6C1987AFB600E61777 /* GTLErrorObject.m in Sources */,
 				9912EF671987AFB600E61777 /* GTMOAuth2ViewControllerTouch.m in Sources */,

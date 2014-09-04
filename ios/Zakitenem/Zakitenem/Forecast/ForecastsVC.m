@@ -35,6 +35,13 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
     [self loadForecasts];
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    CGFloat tableHeight = self.view.height - self.tableView.origin.y;
+    self.tableView.frame = (CGRect){self.tableView.frame.origin, self.tableView.width, tableHeight};
+}
+
 #pragma mark - Data loading
 
 - (void)loadForecasts

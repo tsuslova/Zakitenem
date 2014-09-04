@@ -178,7 +178,7 @@ def utc_today():
     logger.info("today_time = %s"%str(today_time))
     return today_time
 
-def calculate_next_update_time(current_time = datetime.datetime.utcnow()):
+def calculate_next_update_time(current_time):
     config_file='./resources/forecast_settings.cfg'
     parser = ConfigParser.RawConfigParser()
     parser.read(config_file)
@@ -226,7 +226,7 @@ def forecasts(request):
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
     
-    next_update_time = calculate_next_update_time()
+    next_update_time = calculate_next_update_time(datetime.datetime.utcnow())
       
     region = constants.default_region 
     if user and user.region:

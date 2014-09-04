@@ -69,8 +69,8 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 {
     NSDate *date = [NSDate date];
     
-    NSTimeInterval localTimeZoneOffset = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-    date = [date dateByAddingTimeInterval:(localTimeZoneOffset * -1)];
+//    NSTimeInterval localTimeZoneOffset = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+//    date = [date dateByAddingTimeInterval:(localTimeZoneOffset * -1)];
 
     return self.spotList.nextUpdateTime &&
         NSOrderedDescending == [self.spotList.nextUpdateTime.date compare:date];

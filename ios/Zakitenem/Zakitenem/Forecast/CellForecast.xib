@@ -31,6 +31,9 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </imageView>
                         </subviews>
+                        <connections>
+                            <outlet property="delegate" destination="f55-yw-MzS" id="r9L-fc-wmg"/>
+                        </connections>
                     </scrollView>
                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" id="ZD7-ss-vvH">
                         <rect key="frame" x="283" y="4" width="37" height="37"/>

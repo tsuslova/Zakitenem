@@ -34,6 +34,7 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tableView.scrollsToTop = YES;
     [self loadForecasts];
 }
 
@@ -42,6 +43,13 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
     [super viewDidLayoutSubviews];
     CGFloat tableHeight = self.view.height - self.tableView.origin.y;
     self.tableView.frame = (CGRect){self.tableView.frame.origin, self.tableView.width, tableHeight};
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    //No need to leave cached cells after leaving the screen - they would be re-created easily
+    self.cellList = nil;
 }
 
 #pragma mark - Data loading
@@ -105,6 +113,7 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
         if (self.spotList){
+            self.cellList = nil;
             [self.tableView reloadData];
         } else {
             showErrorAlertView(error, NSLocalizedString(@"NoInternetErrorMessage", ));
@@ -128,9 +137,8 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 - (IBAction)reload:(id)sender
 {
     DLOG(@"TODO");
-    self.cellList = nil;
-//    [self.webView stopLoading];
-//    [self.webView reload];
+//    self.cellList = nil;
+    [self reloadForecasts];
 }
 
 #pragma mark - Getters
@@ -168,4 +176,14 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
     return cell;
 }
 
+#pragma mark - UIScrollViewDelegate
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView*) scrollView
+{
+    if (scrollView == self.tableView) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
 @end

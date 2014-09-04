@@ -27,6 +27,8 @@ const int kActivityHidingDelay = 2;
 
 - (void)showSpot:(GTLApiForecastMessageSpot *)spot cached:(BOOL)cached
 {
+    self.svContent.scrollsToTop = NO;
+    self.webView.scrollView.scrollsToTop = NO;
     self.spot = spot;
     UIImage *image = [spot forecastImage];
     if (image){
@@ -80,7 +82,7 @@ const int kActivityHidingDelay = 2;
     [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:kActivityHidingDelay];
     self.svContent.contentSize = CGSizeMake(self.webView.width, self.svContent.height);
     
-    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:0.5];
+    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
 }
 
 - (void)takeWebViewScreenshot:(UIWebView *)webView
@@ -92,7 +94,7 @@ const int kActivityHidingDelay = 2;
     
     if (![self checkIfImage:viewImage]){
         DLOG(@"no underlying data");
-        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:0.5];
+        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
     } else {
         [self.spot setForecastImage:viewImage];
         self.ivForecast.image = viewImage;
@@ -144,4 +146,10 @@ const int kActivityHidingDelay = 2;
 }
 
 
+#pragma mark - UIScrollViewDelegate
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView*)scrollView
+{
+    return NO;
+}
 @end

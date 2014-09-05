@@ -7,26 +7,26 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CellForecast"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell opaque="NO" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="f55-yw-MzS" customClass="CellForecast">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="229"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="226"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="f55-yw-MzS" id="qEG-5b-Nrj">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="228"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="225"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" showsVerticalScrollIndicator="NO" id="EqJ-mf-vpb">
-                        <rect key="frame" x="-4" y="-4" width="324" height="232"/>
+                        <rect key="frame" x="-8" y="-8" width="328" height="233"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
                             <webView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" id="2SM-wA-Cb3">
-                                <rect key="frame" x="0.0" y="0.0" width="740" height="232"/>
+                                <rect key="frame" x="0.0" y="0.0" width="732" height="233"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="delegate" destination="f55-yw-MzS" id="0eU-rj-vgn"/>
                                 </connections>
                             </webView>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kUH-Jo-Zwe">
-                                <rect key="frame" x="0.0" y="0.0" width="740" height="232"/>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kUH-Jo-Zwe">
+                                <rect key="frame" x="0.0" y="0.0" width="732" height="233"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </imageView>
@@ -35,6 +35,24 @@
                             <outlet property="delegate" destination="f55-yw-MzS" id="r9L-fc-wmg"/>
                         </connections>
                     </scrollView>
+                    <view contentMode="scaleToFill" id="ZH9-im-LlY">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg_forecast_normal" id="0Xj-NQ-tr5">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="21"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Новичиха" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="smb-rH-M2e">
+                                <rect key="frame" x="7" y="-2" width="313" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="15"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" id="ZD7-ss-vvH">
                         <rect key="frame" x="283" y="4" width="37" height="37"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -46,9 +64,14 @@
             <connections>
                 <outlet property="activityIndicator" destination="ZD7-ss-vvH" id="9hq-Cb-7r3"/>
                 <outlet property="ivForecast" destination="kUH-Jo-Zwe" id="ikh-bX-dSc"/>
+                <outlet property="ivTitleBG" destination="0Xj-NQ-tr5" id="vqE-ih-0A8"/>
+                <outlet property="lblTitle" destination="smb-rH-M2e" id="lHc-Go-Nga"/>
                 <outlet property="svContent" destination="EqJ-mf-vpb" id="Nn5-4e-wDW"/>
                 <outlet property="webView" destination="2SM-wA-Cb3" id="fLZ-rY-OEN"/>
             </connections>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="bg_forecast_normal" width="320" height="19"/>
+    </resources>
 </document>

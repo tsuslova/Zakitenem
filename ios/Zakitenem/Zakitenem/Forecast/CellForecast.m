@@ -17,6 +17,9 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *svContent;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
+@property (weak, nonatomic) IBOutlet UIImageView *ivTitleBG;
+@property (weak, nonatomic) IBOutlet UILabel *lblTitle;
+
 @property (strong, nonatomic) GTLApiForecastMessageSpot *spot;
 
 @end
@@ -30,6 +33,9 @@ const int kActivityHidingDelay = 2;
     self.svContent.scrollsToTop = NO;
     self.webView.scrollView.scrollsToTop = NO;
     self.spot = spot;
+    
+    self.lblTitle.text = spot.name;
+    
     UIImage *image = [spot forecastImage];
     if (image){
         DLOG(@"Show cache image");
@@ -82,7 +88,7 @@ const int kActivityHidingDelay = 2;
     [self.activityIndicator performSelector:@selector(stopAnimating) withObject:nil afterDelay:kActivityHidingDelay];
     self.svContent.contentSize = CGSizeMake(self.webView.width, self.svContent.height);
     
-    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
+    [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:2];
 }
 
 - (void)takeWebViewScreenshot:(UIWebView *)webView
@@ -94,7 +100,7 @@ const int kActivityHidingDelay = 2;
     
     if (![self checkIfImage:viewImage]){
         DLOG(@"no underlying data");
-        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:1];
+        [self performSelector:@selector(takeWebViewScreenshot:) withObject:webView afterDelay:2];
     } else {
         [self.spot setForecastImage:viewImage];
         self.ivForecast.image = viewImage;

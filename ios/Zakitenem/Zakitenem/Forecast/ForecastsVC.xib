@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ForecastsVC">
             <connections>
+                <outlet property="btnReload" destination="kQw-1x-Nqa" id="Uq3-GN-MLp"/>
                 <outlet property="tableView" destination="rPo-S6-4iv" id="9BJ-jh-emf"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -28,10 +29,10 @@
                         <outlet property="delegate" destination="-1" id="9vk-ud-jD7"/>
                     </connections>
                 </tableView>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kQw-1x-Nqa">
-                    <rect key="frame" x="239" y="20" width="81" height="75"/>
+                <button hidden="YES" opaque="NO" contentMode="center" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kQw-1x-Nqa">
+                    <rect key="frame" x="256" y="9" width="76" height="86"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal">
+                    <state key="normal" image="btn_refresh_bg">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -46,5 +47,6 @@
     </objects>
     <resources>
         <image name="bg_forecast" width="320" height="568"/>
+        <image name="btn_refresh_bg" width="43" height="45"/>
     </resources>
 </document>

@@ -1,4 +1,4 @@
-//
+	//
 //  ForecastsVC.m
 //  Zakitenem
 //
@@ -27,7 +27,12 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 @property (strong, nonatomic) NSMutableDictionary *cellList;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIButton *btnReload;
 @end
+
+int const kAutohideDelay = 1;
+int const kAutoshowAnimationDuration = 0.3;
+int const kAutohideAnimationDuration = 1;
 
 @implementation ForecastsVC
 
@@ -35,7 +40,10 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 {
     [super viewDidLoad];
     self.tableView.scrollsToTop = YES;
+    [self showControlsAnimated:YES];
+    
     [self loadForecasts];
+    [self configureControlsAutohiding];
 }
 
 - (void)viewDidLayoutSubviews
@@ -138,7 +146,51 @@ NSString *const kSavedForecasts = @"kSavedForecasts";
 {
     DLOG(@"TODO");
 //    self.cellList = nil;
+    [self hideControlsAnimated:YES];
     [self reloadForecasts];
+}
+
+#pragma mark - Controls Autohiding
+
+- (void)configureControlsAutohiding
+{
+    UITapGestureRecognizer *gr = [[UITapGestureRecognizer alloc] initWithTarget:self
+        action:@selector(showControlsAnimated:)];
+    [self.view addGestureRecognizer:gr];
+}
+
+- (void)showControlsAnimated:(BOOL)animated
+{
+    if (!self.btnReload.hidden){
+        return;
+    }
+    self.btnReload.alpha = 0;
+    self.btnReload.hidden = NO;
+    [UIView animateWithDuration:animated ? kAutoshowAnimationDuration : 0
+        animations:^{
+            self.btnReload.alpha = 1;
+        }
+        completion:^(BOOL finished)
+        {
+            [self performSelector:@selector(hideControlsAnimated:) withObject:@(YES) afterDelay:kAutohideDelay];
+        }
+     ];
+    //TODO: control list?
+}
+
+- (void)hideControlsAnimated:(BOOL)animated
+{
+    //TODO: control list?
+    [UIView animateWithDuration:animated ? kAutohideAnimationDuration : 0
+        animations:^{
+            self.btnReload.alpha = 0;
+        }
+        completion:^(BOOL finished)
+        {
+            self.btnReload.hidden = YES;
+            self.btnReload.alpha = 1;
+        }
+    ];
 }
 
 #pragma mark - Getters

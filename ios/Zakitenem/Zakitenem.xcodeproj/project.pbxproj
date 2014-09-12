@@ -90,6 +90,10 @@
 		9912EFED1987B0B600E61777 /* GTLApiUserMessageUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE31987B0B600E61777 /* GTLApiUserMessageUser.m */; };
 		9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE51987B0B600E61777 /* GTLQueryApi.m */; };
 		9912EFEF1987B0B600E61777 /* GTLServiceApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE71987B0B600E61777 /* GTLServiceApi.m */; };
+		999DF95119B9F27E000534F5 /* PlanVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 999DF94F19B9F27E000534F5 /* PlanVC.m */; };
+		999DF95219B9F27E000534F5 /* PlanVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999DF95019B9F27E000534F5 /* PlanVC.xib */; };
+		999DF95619B9F452000534F5 /* CellPlan.m in Sources */ = {isa = PBXBuildFile; fileRef = 999DF95419B9F452000534F5 /* CellPlan.m */; };
+		999DF95719B9F452000534F5 /* CellPlan.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999DF95519B9F452000534F5 /* CellPlan.xib */; };
 		999F30991990EEB4008CB0AD /* Barnaul_Aviator.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F308E1990EEB4008CB0AD /* Barnaul_Aviator.html */; };
 		999F309A1990EEB4008CB0AD /* Berdsk.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F308F1990EEB4008CB0AD /* Berdsk.html */; };
 		999F309B1990EEB4008CB0AD /* Bistrovka.html in Resources */ = {isa = PBXBuildFile; fileRef = 999F30901990EEB4008CB0AD /* Bistrovka.html */; };
@@ -313,6 +317,12 @@
 		9912EFE51987B0B600E61777 /* GTLQueryApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLQueryApi.m; sourceTree = "<group>"; };
 		9912EFE61987B0B600E61777 /* GTLServiceApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceApi.h; sourceTree = "<group>"; };
 		9912EFE71987B0B600E61777 /* GTLServiceApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLServiceApi.m; sourceTree = "<group>"; };
+		999DF94E19B9F27E000534F5 /* PlanVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlanVC.h; sourceTree = "<group>"; };
+		999DF94F19B9F27E000534F5 /* PlanVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlanVC.m; sourceTree = "<group>"; };
+		999DF95019B9F27E000534F5 /* PlanVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlanVC.xib; sourceTree = "<group>"; };
+		999DF95319B9F452000534F5 /* CellPlan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CellPlan.h; sourceTree = "<group>"; };
+		999DF95419B9F452000534F5 /* CellPlan.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CellPlan.m; sourceTree = "<group>"; };
+		999DF95519B9F452000534F5 /* CellPlan.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CellPlan.xib; sourceTree = "<group>"; };
 		999F308E1990EEB4008CB0AD /* Barnaul_Aviator.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Barnaul_Aviator.html; sourceTree = "<group>"; };
 		999F308F1990EEB4008CB0AD /* Berdsk.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Berdsk.html; sourceTree = "<group>"; };
 		999F30901990EEB4008CB0AD /* Bistrovka.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Bistrovka.html; sourceTree = "<group>"; };
@@ -439,6 +449,7 @@
 				99E872D51990A78F0099C3BC /* InternalUtils */,
 				9912EEF41987AFB600E61777 /* External */,
 				99E872DE1990D33E0099C3BC /* Forecast */,
+				999DF94D19B9F26A000534F5 /* Plan */,
 				999F30B41998D88E008CB0AD /* User */,
 				999F30861990EEA1008CB0AD /* Resources */,
 				9912EEEE1987AFA500E61777 /* InfoPlist.strings */,
@@ -725,6 +736,19 @@
 			path = APIlib;
 			sourceTree = "<group>";
 		};
+		999DF94D19B9F26A000534F5 /* Plan */ = {
+			isa = PBXGroup;
+			children = (
+				999DF94E19B9F27E000534F5 /* PlanVC.h */,
+				999DF94F19B9F27E000534F5 /* PlanVC.m */,
+				999DF95019B9F27E000534F5 /* PlanVC.xib */,
+				999DF95319B9F452000534F5 /* CellPlan.h */,
+				999DF95419B9F452000534F5 /* CellPlan.m */,
+				999DF95519B9F452000534F5 /* CellPlan.xib */,
+			);
+			path = Plan;
+			sourceTree = "<group>";
+		};
 		999F30861990EEA1008CB0AD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -910,6 +934,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				999DF95719B9F452000534F5 /* CellPlan.xib in Resources */,
 				999F309B1990EEB4008CB0AD /* Bistrovka.html in Resources */,
 				999F309C1990EEB4008CB0AD /* Gorkoe_Kamen.html in Resources */,
 				999F30A31990EEB4008CB0AD /* Topolnoe.html in Resources */,
@@ -923,6 +948,7 @@
 				991104E919AB170F00D2C12E /* UserUpdateVCLogin.xib in Resources */,
 				9912EF661987AFB600E61777 /* ReleaseNotes.txt in Resources */,
 				999F30991990EEB4008CB0AD /* Barnaul_Aviator.html in Resources */,
+				999DF95219B9F27E000534F5 /* PlanVC.xib in Resources */,
 				9912EF621987AFB600E61777 /* ReleaseNotes.txt in Resources */,
 				999F30A01990EEB4008CB0AD /* Novichiha.html in Resources */,
 				9912EEF21987AFA500E61777 /* InfoPlist.strings in Resources */,
@@ -1009,6 +1035,8 @@
 				9912EFC51987AFC500E61777 /* LoadingView.m in Sources */,
 				9912EF601987AFB600E61777 /* GTMMIMEDocument.m in Sources */,
 				999F30BD1998D88E008CB0AD /* AuthVC.m in Sources */,
+				999DF95119B9F27E000534F5 /* PlanVC.m in Sources */,
+				999DF95619B9F452000534F5 /* CellPlan.m in Sources */,
 				9911049019A5D7A100D2C12E /* GKImageCropOverlayView.m in Sources */,
 				9912EF5A1987AFB600E61777 /* GTMHTTPFetcher.m in Sources */,
 				9912EFCB1987AFC500E61777 /* UIView+maoDimensions.m in Sources */,

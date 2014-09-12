@@ -10,6 +10,7 @@
 #import "AuthVC.h"
 
 #import "ForecastsVC.h"
+#import "PlanVC.h"
 #import "UserUpdateVC.h"
 
 #import "APNSManager.h"
@@ -102,12 +103,12 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 - (void)initStack
 {
     ForecastsVC *forecastsVC = [[ForecastsVC alloc] initWithNibName:@"ForecastsVC" bundle:nil];
+    PlanVC *planVC = [[PlanVC alloc] initWithNibName:@"PlanVC" bundle:nil];
     GTLApiUserMessageUser *currentUser = [[UserManager sharedManager] currentUser];
-    UserUpdateVC *secondVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" user:currentUser delegate:nil];
     UserUpdateVC *thirdVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" user:currentUser delegate:nil];
     UserUpdateVC *userUpdateVC = [[UserUpdateVC alloc] initWithNibName:@"UserUpdateVC" user:currentUser delegate:nil];
     [self setTabbarItem:forecastsVC.tabBarItem image:@"btn_forecast"];
-    [self setTabbarItem:secondVC.tabBarItem image:@"btn_plan"];
+    [self setTabbarItem:planVC.tabBarItem image:@"btn_plan"];
     [self setTabbarItem:thirdVC.tabBarItem image:@"btn_news"];
     [self setTabbarItem:userUpdateVC.tabBarItem image:@"btn_user"];
     
@@ -116,7 +117,7 @@ static NSString *const kCurrentUserProperty = @"currentUser";
 
     UIImage *bgTabbar = [UIImage imageNamed:@"bg_tab_bar"];
     self.tabbarController.tabBar.backgroundImage = bgTabbar;
-    self.tabbarController.viewControllers = @[forecastsVC, secondVC, thirdVC, userUpdateVC];
+    self.tabbarController.viewControllers = @[forecastsVC, planVC, thirdVC, userUpdateVC];
     self.rootVC = self.tabbarController;
 }
 

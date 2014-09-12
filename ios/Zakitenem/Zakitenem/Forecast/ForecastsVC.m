@@ -66,7 +66,7 @@ int const kAutohideAnimationDuration = 1;
 {
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]){
         NSMutableDictionary *json = [NSMutableDictionary dictionaryWithDictionary:
-                                     [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
+                             [[NSUserDefaults standardUserDefaults] objectForKey:kSavedForecasts]];
         GTLApiForecastMessageSpotList *savedSpotList =
         [GTLApiForecastMessageSpotList objectWithJSON:json];
 

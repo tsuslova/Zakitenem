@@ -25,7 +25,7 @@
                                     <outlet property="delegate" destination="f55-yw-MzS" id="0eU-rj-vgn"/>
                                 </connections>
                             </webView>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kUH-Jo-Zwe">
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kUH-Jo-Zwe">
                                 <rect key="frame" x="0.0" y="0.0" width="732" height="233"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

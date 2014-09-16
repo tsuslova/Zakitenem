@@ -10,12 +10,13 @@
 	<string>104f8b8798002207eebbbee810c02306c5ce85c9</string>
 	<key>fonts</key>
 	<array>
+		<string>LucidaGrande</string>
 		<string>Noteworthy-Bold</string>
 		<string>AmericanTypewriter-Bold</string>
 		<string>Noteworthy-Light</string>
 	</array>
 	<key>length</key>
-	<integer>4731874</integer>
+	<integer>4830897</integer>
 	<key>version</key>
 	<integer>37</integer>
 </dict>

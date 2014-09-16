@@ -14,9 +14,10 @@
 		<string>Noteworthy-Light</string>
 		<string>AmericanTypewriter-Bold</string>
 		<string>LucidaGrande</string>
+		<string>Arial-BoldMT</string>
 	</array>
 	<key>length</key>
-	<integer>32884570</integer>
+	<integer>37848571</integer>
 	<key>version</key>
 	<integer>37</integer>
 </dict>

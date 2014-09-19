@@ -3,6 +3,7 @@ from google.appengine.api import mail
 
 import logging
 import datetime
+from dateutil import tz
 import json
 import hashlib
 
@@ -13,7 +14,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 
-#TODO : change before release: 
+# TODO : change before release: 
 use_sandbox = True
 
 # Helper class to load/dump login information for requests.
@@ -71,34 +72,34 @@ class RegionItem(ndb.Model):
     longitude = ndb.FloatProperty()
     
     def to_message(self):
-        return message.Region(id = self.id,
-                              name = self.name,
-                              latitude = self.latitude,
-                              longitude = self.longitude
+        return message.Region(id=self.id,
+                              name=self.name,
+                              latitude=self.latitude,
+                              longitude=self.longitude
                               )
     @classmethod
     def from_message(cls, message):
-        region = RegionItem.get_or_insert(message.id, id = message.id, name = message.name, 
-                                        latitude = message.latitude, longitude = message.longitude)
+        region = RegionItem.get_or_insert(message.id, id=message.id, name=message.name,
+                                        latitude=message.latitude, longitude=message.longitude)
         return region
     
 class UserStatusItem(ndb.Model):
     spot_id = ndb.StringProperty()
 
-    status = ndb.IntegerProperty() #kStatus...
+    status = ndb.IntegerProperty()  # kStatus...
     post_date = ndb.DateTimeProperty()
     go_date = ndb.DateTimeProperty()
     comment = ndb.StringProperty()
     wind_from = ndb.IntegerProperty()
     wind_to = ndb.IntegerProperty()
-    gps_on = ndb.BooleanProperty() #??? TODO
-    #TODO user key?? or add a status to user.statuses??
+    gps_on = ndb.BooleanProperty()  # ??? TODO
+    # TODO user key?? or add a status to user.statuses??
     
     @classmethod
     def from_message(cls, message):
-        #TODO : try find the status by spot_id, user with go_date > current
-        #if found update it
-        #else insert?
+        # TODO : try find the status by spot_id, user with go_date > current
+        # if found update it
+        # else insert?
         status_info = UserStatusItem(spot_id=message.spot_id, status=message.status,
                                post_date=message.post_date)
         return status_info
@@ -126,25 +127,25 @@ class UserItem(ndb.Model):
 
     forecast_get_time = ndb.DateTimeProperty()
     
-    #app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
+    # app_installations = ndb.StructuredProperty(AppInstallationItem, repeated=True)
     
-    updatable_properties = ["email","phone", "gender", "password", "password_set", "userpic", 
+    updatable_properties = ["email", "phone", "gender", "password", "password_set", "userpic",
                             "region", "birthday", "friend_list_ids"]
     
     def to_message(self, app_installation):
-        session = message.Session(cookie = app_installation.cookie, 
-                  expires = str(app_installation.expires)) if app_installation else None
+        session = message.Session(cookie=app_installation.cookie,
+                  expires=str(app_installation.expires)) if app_installation else None
         region = self.region.to_message() if self.region else None
-        return message.User(login = self.login,
-                           email = self.email,
-                           phone = self.phone,
-                           gender = self.gender,
-                           password_set = self.password_set,
-                           userpic = self.userpic,
-                           birthday = self.birthday,
-                           region = region,
-                           session = session,
-                           friend_list_ids = self.friend_list_ids 
+        return message.User(login=self.login,
+                           email=self.email,
+                           phone=self.phone,
+                           gender=self.gender,
+                           password_set=self.password_set,
+                           userpic=self.userpic,
+                           birthday=self.birthday,
+                           region=region,
+                           session=session,
+                           friend_list_ids=self.friend_list_ids 
                            )
     
     def validate_password(self, password):
@@ -164,17 +165,17 @@ class UserItem(ndb.Model):
         import os
         tool = request.tool
         password = os.urandom(8).encode("base-64")
-        logger.info("generate password: %s"%password)
+        logger.info("generate password: %s" % password)
         if constants.option_email == tool:
-            sender = "Support <%s>"%constants.zakitenem_email
-            to = "%s <%s>"%(self.login, self.email)
-            body = locale.resstore_pass_body%password
-            logger.info("send email from: %s to : %s"%(sender,to))
+            sender = "Support <%s>" % constants.zakitenem_email
+            to = "%s <%s>" % (self.login, self.email)
+            body = locale.resstore_pass_body % password
+            logger.info("send email from: %s to : %s" % (sender, to))
             mail.send_mail(sender=sender, to=to,
               subject=locale.resstore_pass_subject,
               body=body)
             
-            logger.info("save its hash to db %s %s"%(password,self.some_data))
+            logger.info("save its hash to db %s %s" % (password, self.some_data))
             self.password = ssshh(password, self.some_data)
             self.password_set = True
             self.put()
@@ -204,7 +205,7 @@ class UserItem(ndb.Model):
         for key in self.updatable_properties:
             val = getattr(user_message, key)
             if val:
-                #TODO check that val is Message field and iterate through fields instead?
+                # TODO check that val is Message field and iterate through fields instead?
                 if key == "region":
                     self.region = RegionItem.from_message(val)
                 elif key == "gender":
@@ -214,8 +215,8 @@ class UserItem(ndb.Model):
                     self.password = ssshh(val, self.some_data) if pass_not_empty else ""
                     self.password_set = pass_not_empty
                 elif isinstance(val, datetime.date):
-                    logging.info("val %s"%str(val))
-                    val = val.astimezone(val.tzutc()).replace(tzinfo=None)
+                    logging.info("val %s" % str(val))
+                    val = val.astimezone(tz.tzutc()).replace(tzinfo=None)
                     setattr(self, key, val)
                 else: 
                     setattr(self, key, val)
@@ -229,7 +230,7 @@ class AppInstallationItem(ndb.Model):
     
     cookie = ndb.StringProperty()
     expires = ndb.DateProperty()
-    #installation date
+    # installation date
     date = ndb.DateTimeProperty(auto_now_add=True)     
     
     user = ndb.KeyProperty(UserItem)
@@ -242,7 +243,7 @@ def user_installation(user, device_id):
     logger.info("TODO: is it possible not to fetch all the installations?")
     if len(user_app_installs) > 0:
         for each in user_app_installs:
-            logger.info("%s"%each.device_id)
+            logger.info("%s" % each.device_id)
             if each.device_id == device_id:
                 app_install = each
                 return app_install
@@ -258,7 +259,7 @@ def create_installation(user, device_id, device_token, app_install=None):
     
     logger.info("Create a new AppInstallation")
     app_install = AppInstallationItem(id=cookie, device_id=device_id, device_token=device_token,
-                          cookie=cookie, expires = expires, user=user.key)
+                          cookie=cookie, expires=expires, user=user.key)
     app_install.put()
     return app_install
         
@@ -285,7 +286,7 @@ def installation_by_cookie(cookie):
 
 def user_by_installation(installation):
     if installation.expires < datetime.date.today():
-        logger.error("Cookie expired %s %s"%(str(installation.expires),
+        logger.error("Cookie expired %s %s" % (str(installation.expires),
                                              str(datetime.date.today())))
         return None
     user = installation.user.get()
@@ -313,7 +314,7 @@ def create_user_from_login_info(login_info):
     logger.info("create_installation")
     app_install = create_installation(user, login_info.device_id, login_info.device_token)
     user.put()
-    logger.info("user %s created (app_install=%s)" % (user,app_install))
+    logger.info("user %s created (app_install=%s)" % (user, app_install))
     return user, app_install
 
 def new_cookie():
@@ -321,8 +322,8 @@ def new_cookie():
     logger.info("Generate cookie") 
     cookie = os.urandom(64).encode("base-64")
     cookie = cookie.replace("\n", "")
-    logger.info("%s"%cookie) 
-    expires = datetime.datetime.utcnow() + datetime.timedelta(days=6*30) # expires in 6 months
+    logger.info("%s" % cookie) 
+    expires = datetime.datetime.utcnow() + datetime.timedelta(days=6 * 30)  # expires in 6 months
     return cookie, expires
 
         

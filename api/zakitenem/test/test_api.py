@@ -171,11 +171,11 @@ class PasswordHandlerTestCase(MyTestCase):
 class UserHandlerTestCase(MyTestCase):
  
     def test_update_user(self):
-        import datetime
+        #import datetime
         session = self.authorized_session(login_info_device_token())
-        #birthday = str(datetime.date.today())
-        user_json = {constants.email_key:constants.zakitenem_email, "session":session}
-        #constants.birthday_key:birthday
+        birthday = "1990-07-30 23:29:24+08:00"
+        user_json = {constants.email_key:constants.zakitenem_email, "session":session,
+                     constants.birthday_key:birthday}
         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.email_key), constants.zakitenem_email)

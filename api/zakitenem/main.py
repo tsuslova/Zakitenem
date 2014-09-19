@@ -19,7 +19,7 @@ import logging
 from constants import error_definitions
 
 #TODO unit tests mode, must be False on deployments:
-test_mode = False
+test_mode = True
 test_mode_unit = False
 
 logger = logging.getLogger()

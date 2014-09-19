@@ -401,23 +401,29 @@ static NSString *const kPasswordDefaultText = @"**********";
             [self unlock];
         }
         if (error){
-            DLOG(@"TODO store userdata locally! %@", [error localizedDescription]);
+            DLOG(@"store userdata locally! %@", [error localizedDescription]);
+            if ([self.user.passwordSet boolValue]){
+                DLOG(@"TODO:Password is set, possible use on other device - need inform about error");
+            }
         } else {
             self.user = (GTLApiUserMessageUser *)obj;
         }
         if (self.delegate){
-            [self.delegate userUpdated:self.user];
+            [self.delegate userUpdated:self.user saved:!error];
         } else {
-            [[UserManager sharedManager] loggedIn:self.user];
+            [[UserManager sharedManager] userUpdated:self.user saved:!error];
         }
     }];
 }
 
 - (BOOL)checkNeedSaveUser
 {
-    DLOG(@"%@",self.notChangedUserJSON);
-    DLOG(@"%@",self.user.JSON);
-    return ![self.notChangedUserJSON isEqualToDictionary:self.user.JSON];
+//    DLOG(@"%@",self.notChangedUserJSON);
+//    DLOG(@"%@",self.user.JSON);
+    DLOG(@"[[UserManager sharedManager] needSaveUser] = %d",
+         [[UserManager sharedManager] needSaveUser]);
+    return [[UserManager sharedManager] needSaveUser] ||
+        ![self.notChangedUserJSON isEqualToDictionary:self.user.JSON];
 }
 
 #pragma mark - IBActions
@@ -471,7 +477,7 @@ static NSString *const kPasswordDefaultText = @"**********";
 
 - (IBAction)skip:(id)sender
 {
-    [self.delegate userUpdated:self.user];
+    [self.delegate userUpdated:self.user saved:YES];
 }
 
 - (IBAction)showFriends:(id)sender
@@ -612,6 +618,7 @@ static NSString *const kPasswordDefaultText = @"**********";
 - (void)leaveTab
 {
     if ([self checkNeedSaveUser]){
+        DLOG(@"Need save");
         [self save:NO];
     }
 }

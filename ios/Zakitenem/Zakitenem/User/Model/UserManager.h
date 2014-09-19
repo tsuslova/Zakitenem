@@ -18,7 +18,12 @@
 
 + (UserManager*)sharedManager;
 - (GTLApiUserMessageUser*)currentUser;
-- (void)loggedIn:(GTLApiUserMessageUser*)user;
+
+//If user wasn't successfully saved on server before, needSaveUser will return YES
+- (BOOL)needSaveUser;
+
+//If user wasn't successfully saved on server, isSaved must be NO to save it later
+- (void)userUpdated:(GTLApiUserMessageUser*)user saved:(BOOL)isSaved;
 
 - (void)logout;
 

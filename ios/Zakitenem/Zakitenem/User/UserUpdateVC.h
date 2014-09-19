@@ -12,7 +12,7 @@
 @class GTLApiUserMessageUser;
 
 @protocol UserUpdateDelegate
-- (void)userUpdated:(GTLApiUserMessageUser *)user;
+- (void)userUpdated:(GTLApiUserMessageUser *)user saved:(BOOL)isSaved;
 @end
 
 

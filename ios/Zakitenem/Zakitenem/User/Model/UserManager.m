@@ -18,6 +18,7 @@
 @implementation UserManager
 
 static NSString *const kUserKey = @"UserKey";
+static NSString *const kUserSavedKey = @"UserSavedKey";
 
 + (instancetype)sharedManager
 {
@@ -55,8 +56,20 @@ static NSString *const kUserKey = @"UserKey";
     return _currentUser;
 }
 
-- (void)loggedIn:(GTLApiUserMessageUser*)user
+//If user wasn't successfully saved on server before, needSaveUser will return YES
+- (BOOL)needSaveUser
 {
+    NSNumber *isSaved = [[NSUserDefaults standardUserDefaults] objectForKey:kUserSavedKey];
+    if (isSaved && ![isSaved boolValue]){
+        return YES;
+    }
+    return NO;
+}
+
+//If user wasn't successfully saved on server, isSaved must be NO to save it later
+- (void)userUpdated:(GTLApiUserMessageUser*)user saved:(BOOL)isSaved
+{
+    [[NSUserDefaults standardUserDefaults] setObject:@(isSaved) forKey:kUserSavedKey];
     [[NSUserDefaults standardUserDefaults] setObject:user.JSON forKey:kUserKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     self.currentUser = user;

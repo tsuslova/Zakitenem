@@ -142,9 +142,9 @@ static NSString *const kToken = @"token";
 }
 
 #pragma mark - UserUpdateDelegate
-- (void)userUpdated:(GTLApiUserMessageUser *)user
+- (void)userUpdated:(GTLApiUserMessageUser *)user saved:(BOOL)isSaved
 {
-    [[UserManager sharedManager] loggedIn:user];
+    [[UserManager sharedManager] userUpdated:user saved:isSaved];
 }
 
 

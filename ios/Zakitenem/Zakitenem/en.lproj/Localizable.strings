@@ -34,3 +34,6 @@
 "ChangePasswordConfirmation" = "Password was set before. Do you want to change it to new one?";
 "Yes" = "Yes";
 "No" = "No";
+
+"DataSaveError" = "Data error";
+"UserWillBeSavedLater" = "User data will be saved on next Profile screen leaving";

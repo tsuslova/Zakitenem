@@ -403,7 +403,9 @@ static NSString *const kPasswordDefaultText = @"**********";
         if (error){
             DLOG(@"store userdata locally! %@", [error localizedDescription]);
             if ([self.user.passwordSet boolValue]){
-                DLOG(@"TODO:Password is set, possible use on other device - need inform about error");
+                DLOG(@"Password is set, possible use on other device - inform about error");
+                showInfoAlertView(NSLocalizedString(@"DataSaveError", ),
+                                  NSLocalizedString(@"UserWillBeSavedLater", ), nil);
             }
         } else {
             self.user = (GTLApiUserMessageUser *)obj;

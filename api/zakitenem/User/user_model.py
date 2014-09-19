@@ -81,7 +81,29 @@ class RegionItem(ndb.Model):
         region = RegionItem.get_or_insert(message.id, id = message.id, name = message.name, 
                                         latitude = message.latitude, longitude = message.longitude)
         return region
-        
+    
+class UserStatusItem(ndb.Model):
+    spot_id = ndb.StringProperty()
+
+    status = ndb.IntegerProperty() #kStatus...
+    post_date = ndb.DateTimeProperty()
+    go_date = ndb.DateTimeProperty()
+    comment = ndb.StringProperty()
+    wind_from = ndb.IntegerProperty()
+    wind_to = ndb.IntegerProperty()
+    gps_on = ndb.BooleanProperty() #??? TODO
+    #TODO user key?? or add a status to user.statuses??
+    
+    @classmethod
+    def from_message(cls, message):
+        #TODO : try find the status by spot_id, user with go_date > current
+        #if found update it
+        #else insert?
+        status_info = UserStatusItem(spot_id=message.spot_id, status=message.status,
+                               post_date=message.post_date)
+        return status_info
+    
+    
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
     

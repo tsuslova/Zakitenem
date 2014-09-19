@@ -76,3 +76,24 @@ http://stackoverflow.com/questions/3963877/creating-an-api-for-mobile-applicatio
 
 http://security.stackexchange.com/questions/16126/securing-an-api-for-mobile-access
 
+
+
+
+
+
+
+
+
+
+
+def put(self):
+        q = Rate.all().filter('trade_unit = ', self.trade_unit.key())
+        q.order("-price")
+        previous_rate = q.get()
+        previous_price = previous_rate.price if previous_rate else 0
+        price = previous_price + self.trade_unit.increase_rate
+
+        if self.price < price:
+            self.price = price
+
+        super(Rate, self).put()

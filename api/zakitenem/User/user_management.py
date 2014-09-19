@@ -237,3 +237,20 @@ def forecasts(request):
     user.forecast_get_time = datetime.datetime.now()
     user.put()
     return ForecastMessage.region_spots(region, next_update_time)
+
+def add_status(request):
+    logger.info("user_status_list")
+    cookie = request.cookie
+    logger.info("cookie = %s"%cookie)
+    user = user_model.user_by_cookie(cookie)
+    
+    logger.info("TODO add new user status")
+
+def user_status_list(request):
+    logger.info("user_status_list")
+    cookie = request.cookie
+    logger.info("cookie = %s"%cookie)
+    user = user_model.user_by_cookie(cookie)
+    #TODO fill statuses
+    return message.UserStatusList()
+    

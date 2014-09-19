@@ -94,7 +94,23 @@ class Api(remote.Service):
     def region_list(self, request):
         return self.safe_execute(lambda:user_management.request_region_list(request))
 
+
+    @endpoints.method(UserMessage.UserStatus, 
+                      message_types.VoidMessage,
+                      path='add_status', http_method='POST',
+                      name='add_status')
+    def add_status(self, request):
+        return self.safe_execute(lambda:user_management.add_status(request))
+    
+    @endpoints.method(UserMessage.Session,
+                      UserMessage.UserStatusList,
+                      path='user_status_list', http_method='POST',
+                      name='user_status_list')
+    def user_status_list(self, request):
+        return self.safe_execute(lambda:user_management.user_status_list(request))
+    
 application = endpoints.api_server([Api], restricted=False)
+
 
 if test_mode:
     from Test import test_api

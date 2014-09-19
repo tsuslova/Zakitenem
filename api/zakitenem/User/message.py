@@ -4,6 +4,14 @@
 from protorpc import messages
 from protorpc import message_types
 
+from Forecast import message as ForecastMessage
+
+kStatusInterest = 1
+kStatusWant = 2
+kStatusGo = 3
+kStatusHere = 4
+kStatusBreak = 5
+ 
 class Session(messages.Message):
     cookie = messages.StringField(1)
     expires = messages.StringField(2)
@@ -42,6 +50,22 @@ class RegionList (messages.Message):
     possible_region = messages.MessageField(Region, 1) 
     regions = messages.MessageField(Region, 2, repeated = True)
     
+class UserStatus(messages.Message):
+    spot = messages.MessageField(ForecastMessage.Spot, 1)
+    status = messages.IntegerField(2) #kStatus...
+    post_date = message_types.DateTimeField(3)
+    go_date = message_types.DateTimeField(4)
+    comment = messages.StringField(5)
+    wind_from = messages.IntegerField(6)
+    wind_to = messages.IntegerField(7)
+    gps_on = messages.BooleanField(8)
+    
+    session = messages.MessageField(Session, 9)
+    
+class UserStatusList(messages.Message):
+    statuses = messages.MessageField(UserStatus, 1, repeated = True)
+    
+    
 class User(messages.Message):
     login = messages.StringField(1)
     email = messages.StringField(2)
@@ -63,4 +87,4 @@ class User(messages.Message):
     
     #list of login's of my friends
     friend_list_ids = messages.StringField(12, repeated = True)
-    
+

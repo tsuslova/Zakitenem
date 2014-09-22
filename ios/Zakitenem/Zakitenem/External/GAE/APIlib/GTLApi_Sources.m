@@ -27,6 +27,8 @@
 #import "GTLApiUserMessageSession.m"
 #import "GTLApiUserMessageTools.m"
 #import "GTLApiUserMessageUser.m"
+#import "GTLApiUserMessageUserStatus.m"
+#import "GTLApiUserMessageUserStatusList.m"
 
 #import "GTLQueryApi.m"
 #import "GTLServiceApi.m"

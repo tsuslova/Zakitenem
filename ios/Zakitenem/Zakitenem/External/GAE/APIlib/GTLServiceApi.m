@@ -34,6 +34,8 @@
                       [GTLApiUserMessageSession class],
                       [GTLApiUserMessageTools class],
                       [GTLApiUserMessageUser class],
+                      [GTLApiUserMessageUserStatus class],
+                      [GTLApiUserMessageUserStatusList class],
                       nil];
   return classes;
 }

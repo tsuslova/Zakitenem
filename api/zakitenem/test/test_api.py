@@ -171,9 +171,10 @@ class PasswordHandlerTestCase(MyTestCase):
 class UserHandlerTestCase(MyTestCase):
  
     def test_update_user(self):
-        #import datetime
+        import datetime
         session = self.authorized_session(login_info_device_token())
         birthday = "1990-07-30 23:29:24+08:00"
+        date_object = datetime.strptime('Jun 1 2005  1:33PM', '%Y-%m-%d %H:%M:%S')
         user_json = {constants.email_key:constants.zakitenem_email, "session":session,
                      constants.birthday_key:birthday}
         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)

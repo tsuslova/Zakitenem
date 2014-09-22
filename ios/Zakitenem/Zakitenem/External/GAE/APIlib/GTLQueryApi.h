@@ -13,7 +13,7 @@
 // Description:
 //   Zakitenem API
 // Classes:
-//   GTLQueryApi (7 custom class methods, 7 custom properties)
+//   GTLQueryApi (9 custom class methods, 7 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -25,6 +25,7 @@
 @class GTLApiUserMessagePasswordRequsest;
 @class GTLApiUserMessageSession;
 @class GTLApiUserMessageUser;
+@class GTLApiUserMessageUserStatus;
 
 @interface GTLQueryApi : GTLQuery
 
@@ -49,6 +50,11 @@
 #pragma mark -
 #pragma mark Service level methods
 // These create a GTLQueryApi object.
+
+// Method: api.add_status
+//  Authorization scope(s):
+//   kGTLAuthScopeApiUserinfoEmail
++ (id)queryForAddStatusWithObject:(GTLApiUserMessageUserStatus *)object;
 
 // Method: api.auth
 //  Authorization scope(s):
@@ -92,6 +98,12 @@
 //   kGTLAuthScopeApiUserinfoEmail
 // Fetches a GTLApiForecastMessageSpotList.
 + (id)queryForUserForecastsWithObject:(GTLApiUserMessageSession *)object;
+
+// Method: api.user_status_list
+//  Authorization scope(s):
+//   kGTLAuthScopeApiUserinfoEmail
+// Fetches a GTLApiUserMessageUserStatusList.
++ (id)queryForUserStatusListWithObject:(GTLApiUserMessageSession *)object;
 
 // Method: api.user_update
 //  Authorization scope(s):

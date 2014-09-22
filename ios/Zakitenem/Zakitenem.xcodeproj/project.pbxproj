@@ -90,6 +90,8 @@
 		9912EFED1987B0B600E61777 /* GTLApiUserMessageUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE31987B0B600E61777 /* GTLApiUserMessageUser.m */; };
 		9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE51987B0B600E61777 /* GTLQueryApi.m */; };
 		9912EFEF1987B0B600E61777 /* GTLServiceApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 9912EFE71987B0B600E61777 /* GTLServiceApi.m */; };
+		999BEE3D19D028E30000C11B /* GTLApiUserMessageUserStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 999BEE3A19D028E30000C11B /* GTLApiUserMessageUserStatus.m */; };
+		999BEE3E19D028E30000C11B /* GTLApiUserMessageUserStatusList.m in Sources */ = {isa = PBXBuildFile; fileRef = 999BEE3C19D028E30000C11B /* GTLApiUserMessageUserStatusList.m */; };
 		999DF95119B9F27E000534F5 /* PlanVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 999DF94F19B9F27E000534F5 /* PlanVC.m */; };
 		999DF95219B9F27E000534F5 /* PlanVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999DF95019B9F27E000534F5 /* PlanVC.xib */; };
 		999DF95619B9F452000534F5 /* CellPlan.m in Sources */ = {isa = PBXBuildFile; fileRef = 999DF95419B9F452000534F5 /* CellPlan.m */; };
@@ -317,6 +319,10 @@
 		9912EFE51987B0B600E61777 /* GTLQueryApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLQueryApi.m; sourceTree = "<group>"; };
 		9912EFE61987B0B600E61777 /* GTLServiceApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceApi.h; sourceTree = "<group>"; };
 		9912EFE71987B0B600E61777 /* GTLServiceApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLServiceApi.m; sourceTree = "<group>"; };
+		999BEE3919D028E30000C11B /* GTLApiUserMessageUserStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiUserMessageUserStatus.h; sourceTree = "<group>"; };
+		999BEE3A19D028E30000C11B /* GTLApiUserMessageUserStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiUserMessageUserStatus.m; sourceTree = "<group>"; };
+		999BEE3B19D028E30000C11B /* GTLApiUserMessageUserStatusList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLApiUserMessageUserStatusList.h; sourceTree = "<group>"; };
+		999BEE3C19D028E30000C11B /* GTLApiUserMessageUserStatusList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLApiUserMessageUserStatusList.m; sourceTree = "<group>"; };
 		999DF94E19B9F27E000534F5 /* PlanVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlanVC.h; sourceTree = "<group>"; };
 		999DF94F19B9F27E000534F5 /* PlanVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlanVC.m; sourceTree = "<group>"; };
 		999DF95019B9F27E000534F5 /* PlanVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlanVC.xib; sourceTree = "<group>"; };
@@ -707,6 +713,10 @@
 		9912EFD61987B0B600E61777 /* APIlib */ = {
 			isa = PBXGroup;
 			children = (
+				999BEE3919D028E30000C11B /* GTLApiUserMessageUserStatus.h */,
+				999BEE3A19D028E30000C11B /* GTLApiUserMessageUserStatus.m */,
+				999BEE3B19D028E30000C11B /* GTLApiUserMessageUserStatusList.h */,
+				999BEE3C19D028E30000C11B /* GTLApiUserMessageUserStatusList.m */,
 				991104E219A6024100D2C12E /* GTLApiForecastMessageSpot.h */,
 				991104E319A6024100D2C12E /* GTLApiForecastMessageSpot.m */,
 				991104E419A6024100D2C12E /* GTLApiForecastMessageSpotList.h */,
@@ -1016,6 +1026,7 @@
 				9911051119B8365900D2C12E /* GTLApiForecastMessageSpot+Wrapper.m in Sources */,
 				9912EF6E1987AFB600E61777 /* GTLQuery.m in Sources */,
 				9912EF6C1987AFB600E61777 /* GTLErrorObject.m in Sources */,
+				999BEE3D19D028E30000C11B /* GTLApiUserMessageUserStatus.m in Sources */,
 				9912EF671987AFB600E61777 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				9912EF6D1987AFB600E61777 /* GTLObject.m in Sources */,
 				9912EFD21987AFC500E61777 /* UIImage+Tools.m in Sources */,
@@ -1053,6 +1064,7 @@
 				9912EF6A1987AFB600E61777 /* GTLBatchResult.m in Sources */,
 				991104E619A6024100D2C12E /* GTLApiForecastMessageSpot.m in Sources */,
 				9912EFEE1987B0B600E61777 /* GTLQueryApi.m in Sources */,
+				999BEE3E19D028E30000C11B /* GTLApiUserMessageUserStatusList.m in Sources */,
 				9911050619B5BD3800D2C12E /* CellForecast.m in Sources */,
 				9912EF731987AFB600E61777 /* GTLFramework.m in Sources */,
 				9912EF641987AFB600E61777 /* GTMOAuth2Authentication.m in Sources */,

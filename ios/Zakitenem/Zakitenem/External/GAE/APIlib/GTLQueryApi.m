@@ -13,7 +13,7 @@
 // Description:
 //   Zakitenem API
 // Classes:
-//   GTLQueryApi (7 custom class methods, 7 custom properties)
+//   GTLQueryApi (9 custom class methods, 7 custom properties)
 
 #import "GTLQueryApi.h"
 
@@ -24,6 +24,8 @@
 #import "GTLApiUserMessageSession.h"
 #import "GTLApiUserMessageTools.h"
 #import "GTLApiUserMessageUser.h"
+#import "GTLApiUserMessageUserStatus.h"
+#import "GTLApiUserMessageUserStatusList.h"
 
 @implementation GTLQueryApi
 
@@ -39,6 +41,17 @@
 #pragma mark -
 #pragma mark Service level methods
 // These create a GTLQueryApi object.
+
++ (id)queryForAddStatusWithObject:(GTLApiUserMessageUserStatus *)object {
+  if (object == nil) {
+    GTL_DEBUG_ASSERT(object != nil, @"%@ got a nil object", NSStringFromSelector(_cmd));
+    return nil;
+  }
+  NSString *methodName = @"api.add_status";
+  GTLQueryApi *query = [self queryWithMethodName:methodName];
+  query.bodyObject = object;
+  return query;
+}
 
 + (id)queryForAuthWithObject:(GTLApiUserMessageLoginInfo *)object {
   if (object == nil) {
@@ -98,6 +111,18 @@
   GTLQueryApi *query = [self queryWithMethodName:methodName];
   query.bodyObject = object;
   query.expectedObjectClass = [GTLApiForecastMessageSpotList class];
+  return query;
+}
+
++ (id)queryForUserStatusListWithObject:(GTLApiUserMessageSession *)object {
+  if (object == nil) {
+    GTL_DEBUG_ASSERT(object != nil, @"%@ got a nil object", NSStringFromSelector(_cmd));
+    return nil;
+  }
+  NSString *methodName = @"api.user_status_list";
+  GTLQueryApi *query = [self queryWithMethodName:methodName];
+  query.bodyObject = object;
+  query.expectedObjectClass = [GTLApiUserMessageUserStatusList class];
   return query;
 }
 

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"MKGA2miAJpVGF7yQTQhsoDXpye8/KOu0boDERvOqg4Pl_7VjAPkVxD8\"",
+ "etag": "\"koCc_mmAOJe4d9CoedmJUnZeEcg/IKC4Vf1ua55IWEzM3A-Nu_M7qfw\"",
  "discoveryVersion": "v1",
  "id": "api:v1",
  "name": "api",
@@ -257,9 +257,73 @@
      "format": "byte"
     }
    }
+  },
+  "UserMessageUserStatus": {
+   "id": "UserMessageUserStatus",
+   "type": "object",
+   "properties": {
+    "comment": {
+     "type": "string"
+    },
+    "go_date": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "gps_on": {
+     "type": "boolean"
+    },
+    "post_date": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "session": {
+     "$ref": "UserMessageSession"
+    },
+    "spot": {
+     "$ref": "ForecastMessageSpot"
+    },
+    "status": {
+     "type": "string",
+     "format": "int64"
+    },
+    "wind_from": {
+     "type": "string",
+     "format": "int64"
+    },
+    "wind_to": {
+     "type": "string",
+     "format": "int64"
+    }
+   }
+  },
+  "UserMessageUserStatusList": {
+   "id": "UserMessageUserStatusList",
+   "type": "object",
+   "properties": {
+    "statuses": {
+     "type": "array",
+     "items": {
+      "$ref": "UserMessageUserStatus"
+     }
+    }
+   }
   }
  },
  "methods": {
+  "api.add_status": {
+   "id": "api.add_status",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessageUserStatus"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
   "api.auth": {
    "id": "api.auth",
    "parameters": {
@@ -364,6 +428,23 @@
    ],
    "returns": {
     "$ref": "ForecastMessageSpotList"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "api.user_status_list": {
+   "id": "api.user_status_list",
+   "parameters": {
+    "resource": {
+     "$ref": "UserMessageSession"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "UserMessageUserStatusList"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

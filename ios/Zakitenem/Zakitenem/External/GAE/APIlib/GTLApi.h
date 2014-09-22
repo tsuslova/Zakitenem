@@ -24,6 +24,8 @@
 #import "GTLApiUserMessageSession.h"
 #import "GTLApiUserMessageTools.h"
 #import "GTLApiUserMessageUser.h"
+#import "GTLApiUserMessageUserStatus.h"
+#import "GTLApiUserMessageUserStatusList.h"
 
 #import "GTLQueryApi.h"
 #import "GTLServiceApi.h"

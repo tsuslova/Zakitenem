@@ -409,6 +409,7 @@ static NSString *const kPasswordDefaultText = @"**********";
             }
         } else {
             self.user = (GTLApiUserMessageUser *)obj;
+            self.notChangedUserJSON = [self.user.JSON copy];
         }
         if (self.delegate){
             [self.delegate userUpdated:self.user saved:!error];

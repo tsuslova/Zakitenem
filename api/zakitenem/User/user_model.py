@@ -3,7 +3,7 @@ from google.appengine.api import mail
 
 import logging
 import datetime
-from dateutil import tz
+from lib.dateutil import tz, parser
 import json
 import hashlib
 
@@ -216,7 +216,9 @@ class UserItem(ndb.Model):
                     self.password_set = pass_not_empty
                 elif isinstance(val, datetime.date):
                     logging.info("val %s" % str(val))
-                    val = val.astimezone(tz.tzutc()).replace(tzinfo=None)
+                    if val.tzinfo is not None:
+                        val = val.astimezone(tz.tzutc()).replace(tzinfo=None)
+                    logging.info("val %s" % str(val))
                     setattr(self, key, val)
                 else: 
                     setattr(self, key, val)

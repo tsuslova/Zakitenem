@@ -28,7 +28,35 @@ tool_key = "tool"
 option_push = "push"
 option_email = "email"
 
+
 spots_key = "spots"
+
+#Spot
+spot_name_key = "name"
+spot_url_key = "url"
+spot_forecast_key = "forecast"
+spot_latitude_key = "latitude"
+spot_longitude_key = "longitude"    
+
+
+
+#Status
+#Possible statuses:
+kStatusInterest = 1 
+kStatusWant = 2 
+kStatusGo = 3 
+kStatusOnSpot = 4 
+kStatusFail = 5 
+
+status_spot_key = "spot"
+status_key = "status"
+post_date_key = "post_date"
+status_date_key = "status_date"
+status_comment_key = "comment"
+wind_from_key = "wind_from"
+wind_to_key = "wind_to" 
+gps_on_key = "gps_on"
+
 
 id_key = "id"
 

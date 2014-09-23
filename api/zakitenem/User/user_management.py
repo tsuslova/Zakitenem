@@ -124,8 +124,10 @@ def user_update(request):
     cookie = request.session.cookie
     installation = user_model.installation_by_cookie(cookie)
     user = user_model.user_by_installation(installation)
+    
     # if a region for user wasn't really set yet (only region was set), we have to use a region 
     # from config file (to insert to database)
+    
     if request and request.region:
         regionlist = None 
         if not request.region.name:
@@ -236,15 +238,14 @@ def forecasts(request):
         
     user.forecast_get_time = datetime.datetime.now()
     user.put()
-    return ForecastMessage.region_spots(region, next_update_time)
+    return ForecastMessage.get_region_spots(region, next_update_time)
 
 def add_status(request):
-    logger.info("user_status_list")
-    cookie = request.cookie
+    logger.info("add_user_status")
+    cookie = request.session.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
-    
-    logger.info("TODO add new user status")
+    status = user_model.UserStatusItem.from_message(request, user)
 
 def user_status_list(request):
     logger.info("user_status_list")

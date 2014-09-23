@@ -8,6 +8,7 @@ import main
 import json
 from constants import constants
 from User import user_model
+from Forecast import message as ForecastMessage
 
 import endpoints
 
@@ -174,7 +175,7 @@ class UserHandlerTestCase(MyTestCase):
         session = self.authorized_session(login_info_device_token())
         birthday = "1990-07-30T23:29:24"
         
-        user_json = {constants.email_key:constants.zakitenem_email, "session":session,
+        user_json = {constants.email_key:constants.zakitenem_email, constants.session_key:session,
                      constants.birthday_key:birthday}
         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
         response_dict = json.loads(response.body)
@@ -183,7 +184,7 @@ class UserHandlerTestCase(MyTestCase):
     def test_update_user_region(self):
         session = self.authorized_session(region_device_token())
         user_json = {constants.region_key:{constants.id_key:constants.default_region}, 
-                     "session":session}
+                     constants.session_key:session}
         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
         response_dict = json.loads(response.body)
         region = response_dict.get(constants.region_key)
@@ -194,7 +195,7 @@ class UserHandlerTestCase(MyTestCase):
     def test_update_user_password(self):
         session = self.authorized_session(login_info_pass())
         new_password = "2222"
-        user_json = {constants.password_key:new_password, "session":session}
+        user_json = {constants.password_key:new_password, constants.session_key:session}
         self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
         
         #Login with old password should fail:
@@ -208,6 +209,22 @@ class UserHandlerTestCase(MyTestCase):
         session = self.authorized_session(login_info_pass(new_password, "new_device_id"))
         self.assertNotEqual(session, None)
 
+
+    def test_add_user_status(self):
+        session = self.authorized_session(login_info_pass())
+        spot = ForecastMessage.spot_by_id("MuiNe")
+        
+        status_json = {constants.status_spot_key : {constants.id_key : spot.id,
+                                                    constants.spot_name_key : spot.name},
+                     constants.status_key : constants.kStatusOnSpot, 
+                     constants.session_key : session}
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        status_json[constants.status_key] = constants.kStatusFail
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        
+    
 # No way to test mail sending from testbed((
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())

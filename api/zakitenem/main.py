@@ -34,11 +34,14 @@ class Api(remote.Service):
         try:
             return func()
         except endpoints.ServiceException, err:
+            logger.error("Error:")
+            logger.error(err)
             if test_mode:
                 return err
             else :
                 raise
         except Exception, err:
+            logger.error("Error:")
             logger.error(err)
             raise endpoints.BadRequestException(error_definitions.msg_server_error)
 
@@ -54,7 +57,8 @@ class Api(remote.Service):
                       path='logout', http_method='POST',
                       name='logout')
     def logout(self, request):
-        return self.safe_execute(lambda:user_management.logout(request))
+        self.safe_execute(lambda:user_management.logout(request))
+        return message_types.VoidMessage()
         
     @endpoints.method(UserMessage.Session, 
                       UserMessage.Tools,
@@ -100,7 +104,8 @@ class Api(remote.Service):
                       path='add_status', http_method='POST',
                       name='add_status')
     def add_status(self, request):
-        return self.safe_execute(lambda:user_management.add_status(request))
+        self.safe_execute(lambda:user_management.add_status(request))
+        return message_types.VoidMessage()
     
     @endpoints.method(UserMessage.Session,
                       UserMessage.UserStatusList,

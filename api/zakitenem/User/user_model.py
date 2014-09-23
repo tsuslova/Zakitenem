@@ -3,12 +3,12 @@ from google.appengine.api import mail
 
 import logging
 import datetime
-from lib.dateutil import tz, parser
+from lib.dateutil import tz
 import json
 import hashlib
 
 import message
-from constants import constants, error_definitions, locale
+from constants import constants, error_definitions, ru_locale
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -33,9 +33,6 @@ class LoginInfoItem(ndb.Model):
                       constants.device_id_key:self.device_id,
                       constants.device_token_key:self.device_token}
         return login_info 
-    
-    def data(self): 
-        return json.dumps(self.login_json())
         
     @classmethod
     def from_message(cls, message):
@@ -79,8 +76,8 @@ class RegionItem(ndb.Model):
                               )
     @classmethod
     def from_message(cls, message):
-        region = RegionItem.get_or_insert(message.id, id=message.id, name=message.name,
-                                        latitude=message.latitude, longitude=message.longitude)
+        region = cls.get_or_insert(message.id, id=message.id, name=message.name,
+                                    latitude=message.latitude, longitude=message.longitude)
         return region
     
 class UserStatusItem(ndb.Model):
@@ -88,7 +85,7 @@ class UserStatusItem(ndb.Model):
 
     status = ndb.IntegerProperty()  # kStatus...
     post_date = ndb.DateTimeProperty()
-    go_date = ndb.DateTimeProperty()
+    status_date = ndb.DateTimeProperty()
     comment = ndb.StringProperty()
     wind_from = ndb.IntegerProperty()
     wind_to = ndb.IntegerProperty()
@@ -96,15 +93,48 @@ class UserStatusItem(ndb.Model):
     # TODO user key?? or add a status to user.statuses??
     
     @classmethod
-    def from_message(cls, message):
-        # TODO : try find the status by spot_id, user with go_date > current
-        # if found update it
-        # else insert?
-        status_info = UserStatusItem(spot_id=message.spot_id, status=message.status,
-                               post_date=message.post_date)
-        return status_info
+    def from_message(cls, message, user):
+        previous_statuses = cls.query(ancestor = user.key, filters=ndb.AND(
+                                       cls.spot_id == message.spot.id, 
+                                       cls.status_date == message.status_date
+                                       )).fetch(1)
+        status = None
+        if previous_statuses and len (previous_statuses) > 0:
+            status = previous_statuses[0]
+            status.status = message.status
+            status.post_date = message.post_date
+            status.comment = message.comment
+            status.wind_from = message.wind_from
+            status.wind_to = message.wind_to
+            status.gps_on = message.gps_on
+            logger.info(" user status updated %d", status.status)
+        else:
+            status = UserStatusItem(spot_id=message.spot.id, status=message.status,
+                                post_date=message.post_date,
+                                comment = message.comment,
+                                wind_from = message.wind_from,
+                                wind_to = message.wind_to,
+                                gps_on = message.gps_on,
+                                parent = user.key)
+            logger.info(" new user status added %d", status.status)
+        status.put()
+        return status
     
     
+    def to_message(self):
+        from Forecast import message as ForecastMessage
+        spot = ForecastMessage.spot_by_id(self.spot_id) 
+        
+        return message.UserStatus(spot = spot,
+                              status = self.status,
+                              post_date  = self.post_date,
+                              go_date = self.go_date,
+                              comment = self.comment,
+                              wind_from = self.wind_from,
+                              wind_to = self.wind_to,
+                              gps_on = self.gps_on,
+                              )
+
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
     
@@ -169,10 +199,10 @@ class UserItem(ndb.Model):
         if constants.option_email == tool:
             sender = "Support <%s>" % constants.zakitenem_email
             to = "%s <%s>" % (self.login, self.email)
-            body = locale.resstore_pass_body % password
+            body = ru_locale.resstore_pass_body % password
             logger.info("send email from: %s to : %s" % (sender, to))
             mail.send_mail(sender=sender, to=to,
-              subject=locale.resstore_pass_subject,
+              subject = ru_locale.resstore_pass_subject,
               body=body)
             
             logger.info("save its hash to db %s %s" % (password, self.some_data))

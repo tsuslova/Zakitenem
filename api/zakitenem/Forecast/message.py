@@ -24,21 +24,47 @@ class SpotList(messages.Message):
     spots = messages.MessageField(Spot, 1, repeated = True)
     next_update_time = message_types.DateTimeField(2)
     
-def region_spots(region_id, next_update_time=None):
+def get_all_spots_dict():
+    all_spots = dict()
+    all_spots_config_file='./resources/spots.cfg'
+    
+    parser = ConfigParser.RawConfigParser()
+    parser.read(all_spots_config_file)
+    for section in parser.sections():
+        spot = Spot()
+        spot.id = section
+        spot.name = parser.get(section, "name").decode('utf-8')
+        spot.url = parser.get(section, "url").decode('utf-8')
+        spot.default_rating = int(parser.get(section, "default_rating"))
+        #TODO do we need all spots forecast??
+#         with open('./resources/Forecasts/%s.html'%section, 'r') as forecast_file:
+#             spot.forecast = forecast_file.read() 
+        
+        if parser.has_option(section, "latitude"):
+            spot.latitude = float(parser.get(section, "latitude"))
+            spot.longitude = float(parser.get(section, "longitude"))
+        all_spots[section] = spot
+    return all_spots 
+   
+def spot_by_id(spot_id):
+    all_spots = get_all_spots_dict()
+    spot = all_spots[spot_id]
+    with open('./resources/Forecasts/%s.html'%spot_id, 'r') as forecast_file:
+        spot.forecast = forecast_file.read()
+    return spot
+
+def get_region_spots(region_id, next_update_time=None):
+    all_spots = get_all_spots_dict()
     config_file='./resources/%s.cfg'%region_id
     parser = ConfigParser.RawConfigParser()
     parser.read(config_file)
     spot_list = list()
     for section in parser.sections():
-        spot = Spot()
-        spot.id = section
+        spot = all_spots[section]
         spot.name = parser.get(section, "name").decode('utf-8')
+        
         with open('./resources/Forecasts/%s.html'%section, 'r') as forecast_file:
             spot.forecast = forecast_file.read() 
-             
-        if parser.has_option(section, "latitude"):
-            spot.latitude = float(parser.get(section, "latitude"))
-            spot.longitude = float(parser.get(section, "longitude"))
         
         spot.default_rating = int(parser.get(section, "default_rating"))
         spot_list.append(spot)

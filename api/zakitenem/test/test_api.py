@@ -232,9 +232,12 @@ class UserHandlerTestCase(MyTestCase):
         
         current_date = datetime.datetime.now().strftime(constants.common_date_format)
         
-        status_list = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
-        print current_date, status_list
-        #TODO check empty status list?
+        response = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
+        response_dict = json.loads(response.body)
+
+        #No statuses yet
+        self.assertEqual(response_dict, dict())
+        
         spot = ForecastMessage.spot_by_id("MuiNe")
         
         status_json = {constants.status_spot_key : {constants.id_key : spot.id,
@@ -246,8 +249,11 @@ class UserHandlerTestCase(MyTestCase):
         
         #TODO check not empty status list
         datetime.date.today()
-        status_list = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
-        print status_list
+        response = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
+        response_dict = json.loads(response.body)
+        
+        status_list = response_dict.get(constants.statuses_key)
+        self.assertEqual(len(status_list), 1)
     
 # No way to test mail sending from testbed((
 #     def test_request_password(self):

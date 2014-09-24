@@ -51,6 +51,7 @@ kStatusGo = 3
 kStatusOnSpot = 4 
 kStatusFail = 5 
 
+statuses_key = "statuses"
 status_spot_key = "spot"
 status_key = "status"
 post_date_key = "post_date"

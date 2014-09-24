@@ -20,3 +20,5 @@ msg_wrong_device_id = "Wrong device_id"
 
 code_no_tools = 100600
 msg_no_tools = "No tools"
+
+msg_wrong_parameters = "Wrong request parameters"

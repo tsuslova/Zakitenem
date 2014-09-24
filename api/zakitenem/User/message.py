@@ -54,7 +54,7 @@ class UserStatus(messages.Message):
     spot = messages.MessageField(ForecastMessage.Spot, 1)
     status = messages.IntegerField(2) #kStatus...
     post_date = message_types.DateTimeField(3)
-    status_date = message_types.DateTimeField(4)
+    status_date = messages.StringField(4)
     comment = messages.StringField(5)
     wind_from = messages.IntegerField(6)
     wind_to = messages.IntegerField(7)

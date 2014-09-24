@@ -85,18 +85,30 @@ class UserStatusItem(ndb.Model):
 
     status = ndb.IntegerProperty()  # kStatus...
     post_date = ndb.DateTimeProperty()
-    status_date = ndb.DateTimeProperty()
+    status_date = ndb.DateProperty()
     comment = ndb.StringProperty()
     wind_from = ndb.IntegerProperty()
     wind_to = ndb.IntegerProperty()
     gps_on = ndb.BooleanProperty()  # ??? TODO
     # TODO user key?? or add a status to user.statuses??
     
+    def status_date_string(self):
+        dt = datetime.datetime(self.status_date.year, self.status_date.month, self.status_date.day)
+        
+        dt.strftime(constants.common_date_format)
+    
+    @classmethod
+    def status_date_from_string(self, date_string):
+        return datetime.datetime.strptime(date_string, constants.common_date_format).date()
+        
     @classmethod
     def from_message(cls, message, user):
+        if not message.status_date or not message.status or not message.spot.id:
+            return None
+        status_date_final = cls.status_date_from_string(message.status_date)
         previous_statuses = cls.query(ancestor = user.key, filters=ndb.AND(
                                        cls.spot_id == message.spot.id, 
-                                       cls.status_date == message.status_date
+                                       cls.status_date == status_date_final
                                        )).fetch(1)
         status = None
         if previous_statuses and len (previous_statuses) > 0:
@@ -109,8 +121,12 @@ class UserStatusItem(ndb.Model):
             status.gps_on = message.gps_on
             logger.info(" user status updated %d", status.status)
         else:
+            message_post_date = message.post_date
+            if not message.post_date:
+                message_post_date = datetime.datetime.now()
             status = UserStatusItem(spot_id=message.spot.id, status=message.status,
-                                post_date=message.post_date,
+                                post_date=message_post_date,
+                                status_date = status_date_final,
                                 comment = message.comment,
                                 wind_from = message.wind_from,
                                 wind_to = message.wind_to,
@@ -128,13 +144,22 @@ class UserStatusItem(ndb.Model):
         return message.UserStatus(spot = spot,
                               status = self.status,
                               post_date  = self.post_date,
-                              go_date = self.go_date,
+                              status_date = self.status_date_string(),
                               comment = self.comment,
                               wind_from = self.wind_from,
                               wind_to = self.wind_to,
-                              gps_on = self.gps_on,
+                              gps_on = self.gps_on
                               )
 
+
+    @classmethod
+    def get_user_status_list(cls, user):
+        actual_statuses = cls.query(ancestor = user.key, filters=ndb.AND(
+                                       cls.status_date >= datetime.date.today())
+                                   ).fetch()
+        statuses_message = [status_item.to_message() for status_item in actual_statuses]
+        return message.UserStatusList(statuses = statuses_message)
+                                   
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
     
@@ -357,6 +382,5 @@ def new_cookie():
     logger.info("%s" % cookie) 
     expires = datetime.datetime.utcnow() + datetime.timedelta(days=6 * 30)  # expires in 6 months
     return cookie, expires
-
         
-        
+    

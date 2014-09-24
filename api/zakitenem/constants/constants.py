@@ -1,5 +1,8 @@
+
 zakitenem_email = "tamara.suslova@gmail.com"
 default_region = "Novosibirsk"
+
+common_date_format = "%d.%m.%Y"
 
 error_key = "error_message"
 error_code_key = "error_code"

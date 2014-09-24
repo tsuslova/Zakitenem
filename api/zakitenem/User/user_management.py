@@ -245,13 +245,18 @@ def add_status(request):
     cookie = request.session.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
-    status = user_model.UserStatusItem.from_message(request, user)
+    
+    if not user_model.UserStatusItem.from_message(request, user):
+        raise endpoints.BadRequestException(error_definitions.msg_wrong_parameters)
+    
 
-def user_status_list(request):
+def get_user_status_list(request):
     logger.info("user_status_list")
     cookie = request.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
-    #TODO fill statuses
-    return message.UserStatusList()
+    status_list = user_model.UserStatusItem.get_user_status_list(user)
+    return status_list
+
+
     

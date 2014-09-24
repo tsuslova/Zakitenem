@@ -11,6 +11,7 @@ from User import user_model
 from Forecast import message as ForecastMessage
 
 import endpoints
+import datetime
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -214,16 +215,39 @@ class UserHandlerTestCase(MyTestCase):
         session = self.authorized_session(login_info_pass())
         spot = ForecastMessage.spot_by_id("MuiNe")
         
+        current_date = datetime.datetime.now().strftime(constants.common_date_format)
+        
         status_json = {constants.status_spot_key : {constants.id_key : spot.id,
                                                     constants.spot_name_key : spot.name},
                      constants.status_key : constants.kStatusOnSpot, 
-                     constants.session_key : session}
+                     constants.session_key : session,
+                     constants.status_date_key : current_date}
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
         status_json[constants.status_key] = constants.kStatusFail
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
+    def test_user_status_list(self):
+        session = self.authorized_session(login_info_pass())
         
+        current_date = datetime.datetime.now().strftime(constants.common_date_format)
+        
+        status_list = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
+        print current_date, status_list
+        #TODO check empty status list?
+        spot = ForecastMessage.spot_by_id("MuiNe")
+        
+        status_json = {constants.status_spot_key : {constants.id_key : spot.id,
+                                                    constants.spot_name_key : spot.name},
+                     constants.status_key : constants.kStatusOnSpot, 
+                     constants.session_key : session,
+                     constants.status_date_key : current_date}
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        #TODO check not empty status list
+        datetime.date.today()
+        status_list = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
+        print status_list
     
 # No way to test mail sending from testbed((
 #     def test_request_password(self):

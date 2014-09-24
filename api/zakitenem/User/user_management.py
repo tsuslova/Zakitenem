@@ -258,5 +258,12 @@ def get_user_status_list(request):
     status_list = user_model.UserStatusItem.get_user_status_list(user)
     return status_list
 
+def get_spot_status_list(request):
+    logger.info("spot_status_list")
+    logger.info("spot_id = %s" % request)
+    status_list = user_model.UserStatusItem.get_spot_status_list(request)
+    return status_list
+
+
 
     

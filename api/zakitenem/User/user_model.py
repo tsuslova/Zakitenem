@@ -159,7 +159,20 @@ class UserStatusItem(ndb.Model):
                                    ).fetch()
         statuses_message = [status_item.to_message() for status_item in actual_statuses]
         return message.UserStatusList(statuses = statuses_message)
-                                   
+                          
+    @classmethod
+    def get_spot_status_list_by_id(cls, spot_id):
+        actual_statuses = cls.query(filters=ndb.AND(
+                                       cls.spot_id == spot_id, 
+                                       cls.status_date >= datetime.date.today())
+                                   ).fetch()
+        statuses_message = [status_item.to_message() for status_item in actual_statuses]
+        return message.UserStatusList(statuses = statuses_message)
+             
+    @classmethod
+    def get_spot_status_list(cls, spot):
+        return cls.get_spot_status_list_by_id(spot.id)
+    
 class UserItem(ndb.Model):
     login = ndb.StringProperty()
     

@@ -252,9 +252,38 @@ class UserHandlerTestCase(MyTestCase):
         response = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
         response_dict = json.loads(response.body)
         
+        #Check that the only user status we've added is returned
         status_list = response_dict.get(constants.statuses_key)
         self.assertEqual(len(status_list), 1)
     
+    
+    
+    def test_spot_status_list(self):
+        spot_id = "KrasnyiYar"
+        spot = ForecastMessage.spot_by_id(spot_id)
+        spot_json = {constants.id_key : spot.id, constants.spot_name_key : spot.name}
+        
+        response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
+        response_dict = json.loads(response.body)
+
+        #No statuses yet
+        self.assertEqual(response_dict, dict())
+        
+        session = self.authorized_session(login_info_pass())
+        current_date = datetime.datetime.now().strftime(constants.common_date_format)
+        status_json = {constants.status_spot_key : spot_json,
+                     constants.status_key : constants.kStatusOnSpot, 
+                     constants.session_key : session,
+                     constants.status_date_key : current_date}
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
+        response_dict = json.loads(response.body)
+        
+        #Check that the only user status we've added is returned 
+        status_list = response_dict.get(constants.statuses_key)
+        self.assertEqual(len(status_list), 1)
+        
 # No way to test mail sending from testbed((
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())

@@ -7,7 +7,7 @@ raise_unauthorized = True
 CLIENT_ID = '939540881750-5oq9op7ap76a0373m1q957e0pa5qu9qn.apps.googleusercontent.com'
 
 import endpoints
-from protorpc import remote, message_types 
+from protorpc import remote, message_types, messages
 
 from User import message as UserMessage
 from Forecast import message as ForecastMessage 
@@ -113,6 +113,14 @@ class Api(remote.Service):
                       name='user_status_list')
     def user_status_list(self, request):
         return self.safe_execute(lambda:user_management.get_user_status_list(request))
+    
+    
+    @endpoints.method(ForecastMessage.Spot,
+                      UserMessage.UserStatusList,
+                      path='spot_status_list', http_method='POST',
+                      name='spot_status_list')
+    def spot_status_list(self, request):
+        return self.safe_execute(lambda:user_management.get_spot_status_list(request))
     
 application = endpoints.api_server([Api], restricted=False)
 

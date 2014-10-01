@@ -53,6 +53,7 @@ kStatusFail = 5
 
 statuses_key = "statuses"
 status_spot_key = "spot"
+user_region_id_key = "user_region_id"
 status_key = "status"
 post_date_key = "post_date"
 status_date_key = "status_date"
@@ -61,6 +62,7 @@ wind_from_key = "wind_from"
 wind_to_key = "wind_to" 
 gps_on_key = "gps_on"
 
+ratings_key = "ratings"
 
 id_key = "id"
 

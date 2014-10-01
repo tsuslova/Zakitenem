@@ -82,13 +82,21 @@ class Api(remote.Service):
     def user_update(self, request):
         return self.safe_execute(lambda:user_management.user_update(request))
     
+    #Returns all forecasts in user region
     @endpoints.method(UserMessage.Session, 
                       ForecastMessage.SpotList,
                       path='user_forecasts', http_method='POST',
                       name='user_forecasts')
     def user_forecasts(self, request):
-        return self.safe_execute(lambda:user_management.forecasts(request))
+        return self.safe_execute(lambda:user_management.get_user_forecasts(request))
 
+    @endpoints.method(UserMessage.Session, 
+                      ForecastMessage.SpotRatingList,
+                      path='user_top_spots', http_method='POST',
+                      name='user_top_spots')
+    def user_top_spots(self, request):
+        return self.safe_execute(lambda:user_management.get_user_top_spots(request))
+    
     # Return list of regions. If request is filled and contains user coordinate, 
     # RegionList.possible_region object will contain possible user region
     @endpoints.method(UserMessage.Region, 

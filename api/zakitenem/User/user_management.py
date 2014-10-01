@@ -222,14 +222,12 @@ def test_calculate_next_update_time():
     logger.info("Current time %s (%s)"%(datetime.datetime.now(), datetime.datetime.utcnow()))
     calculate_next_update_time(datetime.datetime.utcnow())
     
-def forecasts(request):
-    logger.info("forecasts")
-    cookie = request.cookie
-    logger.info("cookie = %s"%cookie)
-    user = user_model.user_by_cookie(cookie)
+def get_user_forecasts(request):
+    logger.info("get_user_forecasts")
+    user = user_model.user_by_cookie(request.cookie)
     
     next_update_time = calculate_next_update_time(datetime.datetime.utcnow())
-      
+
     region = constants.default_region 
     if user and user.region:
         region = user.region.id 
@@ -240,15 +238,38 @@ def forecasts(request):
     user.put()
     return ForecastMessage.get_region_spots(region, next_update_time)
 
+    
+forecast_top_max_count = 10
+def get_user_top_spots(request):
+    
+    logger.info("get_user_top_spots")
+    user = user_model.user_by_cookie(request.cookie)
+    #TODO : plus here user spot ratings at the top:
+    user_ratings = []
+    rest_count = forecast_top_max_count - len(user_ratings)
+    
+    region_ratings = user_model.SpotRatingItem.get_top_ratings(user, rest_count) 
+
+    ratings = [rating.to_message() for rating in user_ratings+region_ratings]
+    
+    return ForecastMessage.SpotRatingList(ratings = ratings)
+
 def add_status(request):
     logger.info("add_user_status")
+    #print "add_user_status", request
     cookie = request.session.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
+    status_item = user_model.UserStatusItem.from_message(request, user)
     
-    if not user_model.UserStatusItem.from_message(request, user):
+    if not status_item:
         raise endpoints.BadRequestException(error_definitions.msg_wrong_parameters)
     
+    user_model.SpotRatingItem.update_rating(status_item)
+    status_item.put()
+    
+    
+
 
 def get_user_status_list(request):
     logger.info("user_status_list")
@@ -263,6 +284,7 @@ def get_spot_status_list(request):
     logger.info("spot_id = %s" % request)
     status_list = user_model.UserStatusItem.get_spot_status_list(request)
     return status_list
+
 
 
 

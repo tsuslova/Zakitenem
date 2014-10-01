@@ -5,8 +5,7 @@ from protorpc import messages, message_types
 import ConfigParser
 import datetime
 
-#It is a fundamental limitation: never more then 10 forecasts according to windguru rules
-forecast_max_count = 10
+forecast_max_count = 100
 
 class Spot(messages.Message):
     id = messages.StringField(1)
@@ -22,6 +21,16 @@ class Spot(messages.Message):
     
 class SpotList(messages.Message):
     spots = messages.MessageField(Spot, 1, repeated = True)
+    next_update_time = message_types.DateTimeField(2)
+    
+class SpotRating(messages.Message):
+    region_id = messages.StringField(1)
+    spot_id = messages.StringField(2)
+    summary = messages.StringField(3)
+    
+    
+class SpotRatingList(messages.Message):
+    ratings = messages.MessageField(SpotRating, 1, repeated = True)
     next_update_time = message_types.DateTimeField(2)
     
 def get_all_spots_dict():
@@ -53,6 +62,8 @@ def spot_by_id(spot_id):
         spot.forecast = forecast_file.read()
     return spot
 
+#TODO find a way to pass next_update_time separately
+# no need to reload forecasts on each access 
 def get_region_spots(region_id, next_update_time=None):
     all_spots = get_all_spots_dict()
     config_file='./resources/%s.cfg'%region_id
@@ -65,7 +76,7 @@ def get_region_spots(region_id, next_update_time=None):
         
         with open('./resources/Forecasts/%s.html'%section, 'r') as forecast_file:
             spot.forecast = forecast_file.read() 
-        
+
         spot.default_rating = int(parser.get(section, "default_rating"))
         spot_list.append(spot)
 

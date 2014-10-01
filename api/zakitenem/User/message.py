@@ -52,15 +52,16 @@ class RegionList (messages.Message):
     
 class UserStatus(messages.Message):
     spot = messages.MessageField(ForecastMessage.Spot, 1)
-    status = messages.IntegerField(2) #kStatus...
-    post_date = message_types.DateTimeField(3)
-    status_date = messages.StringField(4)
-    comment = messages.StringField(5)
-    wind_from = messages.IntegerField(6)
-    wind_to = messages.IntegerField(7)
-    gps_on = messages.BooleanField(8)
+    user_region_id = messages.StringField(2) 
+    status = messages.IntegerField(3) #kStatus...
+    post_date = message_types.DateTimeField(4)
+    status_date = messages.StringField(5)
+    comment = messages.StringField(6)
+    wind_from = messages.IntegerField(7)
+    wind_to = messages.IntegerField(8)
+    gps_on = messages.BooleanField(9)
     
-    session = messages.MessageField(Session, 9)
+    session = messages.MessageField(Session, 10)
     
 class UserStatusList(messages.Message):
     statuses = messages.MessageField(UserStatus, 1, repeated = True)

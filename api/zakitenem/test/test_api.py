@@ -41,6 +41,25 @@ def login_info_no_pass(device_id = "dsfbg4i"):
     login = "Toto4"
     return user_model.create_login_info(login, device_id, "", "")
 
+def login_info_barnaul(device_id = "2dsfbg4i"):
+    login = "TotoBarnaul"
+    return user_model.create_login_info(login, device_id, "", "")
+
+def gen_spot_json(spot_id):
+    spot = ForecastMessage.spot_by_id(spot_id)
+    spot_json = {constants.id_key : spot.id, constants.spot_name_key : spot.name}
+    return spot_json
+
+def gen_status_json(session, spot_json, status):
+    current_date = datetime.datetime.now().strftime(constants.common_date_format)
+    user = user_model.user_by_cookie(session.get(constants.cookie_key))
+    status_json = {constants.status_spot_key : spot_json,
+                   constants.user_region_id_key : user.get_region_id(),
+                   constants.status_key : status, 
+                   constants.session_key : session,
+                   constants.status_date_key : current_date}
+    return status_json
+
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -213,15 +232,10 @@ class UserHandlerTestCase(MyTestCase):
 
     def test_add_user_status(self):
         session = self.authorized_session(login_info_pass())
-        spot = ForecastMessage.spot_by_id("MuiNe")
         
-        current_date = datetime.datetime.now().strftime(constants.common_date_format)
+        spot_json = gen_spot_json("MuiNe")
+        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
         
-        status_json = {constants.status_spot_key : {constants.id_key : spot.id,
-                                                    constants.spot_name_key : spot.name},
-                     constants.status_key : constants.kStatusOnSpot, 
-                     constants.session_key : session,
-                     constants.status_date_key : current_date}
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
         status_json[constants.status_key] = constants.kStatusFail
@@ -238,13 +252,8 @@ class UserHandlerTestCase(MyTestCase):
         #No statuses yet
         self.assertEqual(response_dict, dict())
         
-        spot = ForecastMessage.spot_by_id("MuiNe")
-        
-        status_json = {constants.status_spot_key : {constants.id_key : spot.id,
-                                                    constants.spot_name_key : spot.name},
-                     constants.status_key : constants.kStatusOnSpot, 
-                     constants.session_key : session,
-                     constants.status_date_key : current_date}
+        spot_json = gen_spot_json("MuiNe")
+        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
         #TODO check not empty status list
@@ -257,33 +266,27 @@ class UserHandlerTestCase(MyTestCase):
         self.assertEqual(len(status_list), 1)
     
     
+#     def test_spot_status_list(self):
+#         spot_json = gen_spot_json("KrasnyiYar")
+#         response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
+#         response_dict = json.loads(response.body)
+# 
+#         #No statuses yet
+#         self.assertEqual(response_dict, dict())
+#         
+#         session = self.authorized_session(login_info_pass())
+#         status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
+#         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+#         
+#         response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
+#         response_dict = json.loads(response.body)
+#         
+#         #Check that the only user status we've added is returned 
+#         status_list = response_dict.get(constants.statuses_key)
+#         self.assertEqual(len(status_list), 1)
+        
+        
     
-    def test_spot_status_list(self):
-        spot_id = "KrasnyiYar"
-        spot = ForecastMessage.spot_by_id(spot_id)
-        spot_json = {constants.id_key : spot.id, constants.spot_name_key : spot.name}
-        
-        response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
-        response_dict = json.loads(response.body)
-
-        #No statuses yet
-        self.assertEqual(response_dict, dict())
-        
-        session = self.authorized_session(login_info_pass())
-        current_date = datetime.datetime.now().strftime(constants.common_date_format)
-        status_json = {constants.status_spot_key : spot_json,
-                     constants.status_key : constants.kStatusOnSpot, 
-                     constants.session_key : session,
-                     constants.status_date_key : current_date}
-        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-        
-        response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
-        response_dict = json.loads(response.body)
-        
-        #Check that the only user status we've added is returned 
-        status_list = response_dict.get(constants.statuses_key)
-        self.assertEqual(len(status_list), 1)
-        
 # No way to test mail sending from testbed((
 #     def test_request_password(self):
 #         cookie = authorized_cookie(login_info_device_token())
@@ -306,3 +309,53 @@ class ForecastHandlerTestCase(MyTestCase):
         response = self.testapp.post_json('/_ah/spi/Api.user_forecasts', session)
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.spots_key), None)
+
+    def test_get_top_forecast(self):
+        session = self.authorized_session(login_info_device_token())
+        response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
+        response_dict = json.loads(response.body)
+        self.assertEqual(response_dict.get(constants.ratings_key), None)
+        
+        #add user status "on KrasnyiYar spot" - so we should have "KrasnyiYar" on the top of list 
+        spot_json = gen_spot_json("KrasnyiYar")
+        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict.get(constants.ratings_key), None)
+        print response_dict
+        
+        #1. set user status "KrasnyiYar fail" 
+        #2. add for a different non Nsk user status "on Topolnoe spot"
+        # - so we should have "Topolnoe" on the top of list, second? - KrasnyiYar? or 1<->2
+        status_json = gen_status_json(session, spot_json, constants.kStatusFail) 
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        non_nsk_session = self.authorized_session(login_info_barnaul())
+        user_json = {constants.region_key:{constants.id_key:"Barnaul"}, 
+                     constants.session_key:non_nsk_session}
+        response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
+        response_dict = json.loads(response.body)
+        print 'ok', response_dict 
+        
+        spot_json = gen_spot_json("Topolnoe")
+        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
+        print "2dw", status_json
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        print "2d"
+        response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
+        response_dict = json.loads(response.body)
+        self.assertNotEqual(response_dict.get(constants.ratings_key), None)
+        print response_dict 
+        
+        #TODO
+        #1. set user status "KrasnyiYar fail" 
+        #2. add for a different Nsk user status "on Novichiha spot"
+        # - so we should have "Novichiha" on the top of list, second? - KrasnyiYar?, after it 
+        #"Topolnoe"
+        
+        
+        
+         
+        

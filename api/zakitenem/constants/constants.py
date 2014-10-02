@@ -49,7 +49,9 @@ kStatusInterest = 1
 kStatusWant = 2 
 kStatusGo = 3 
 kStatusOnSpot = 4 
-kStatusFail = 5 
+kStatusFail = 5
+#Status None for user messages without any status  
+kStatusNone = 0
 
 statuses_key = "statuses"
 status_spot_key = "spot"

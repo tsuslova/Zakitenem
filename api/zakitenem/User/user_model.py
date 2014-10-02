@@ -102,47 +102,37 @@ class UserStatusItem(ndb.Model):
     @classmethod
     def status_date_from_string(self, date_string):
         return datetime.datetime.strptime(date_string, constants.common_date_format).date()
-        
+    
     @classmethod
-    def from_message(cls, message, user):
-        msg = str([message.status_date, message.status, message.spot.id, message.user_region_id])
-        logger.info("debug data %s"%msg)
-        
-        if (not message.status_date or not message.status or not message.spot.id or  
-           not message.user_region_id):
-            return None
+    def get_last_user_spot_status(cls, message, user):
         status_date_final = cls.status_date_from_string(message.status_date)
         previous_statuses = cls.query(ancestor = user.key, filters=ndb.AND(
                                        cls.spot_id == message.spot.id, 
                                        cls.status_date == status_date_final
-                                       )).fetch(1)
-        status = None
+                                       )).order(-cls.post_date).fetch(1)
         if previous_statuses and len (previous_statuses) > 0:
-            status = previous_statuses[0]
-            status.status = message.status
-            status.post_date = message.post_date
-            status.comment = message.comment
-            status.wind_from = message.wind_from
-            status.wind_to = message.wind_to
-            status.gps_on = message.gps_on
-            logger.info(" user status updated %d", status.status)
-        else:
-            message_post_date = message.post_date
-            if not message.post_date:
-                message_post_date = datetime.datetime.now()
-            status = UserStatusItem(spot_id=message.spot.id,
-                                    user_region_id = message.user_region_id, 
-                                    status=message.status,
-                                    post_date=message_post_date,
-                                    status_date = status_date_final,
-                                    comment = message.comment,
-                                    wind_from = message.wind_from,
-                                    wind_to = message.wind_to,
-                                    gps_on = message.gps_on,
-                                    parent = user.key)
-            logger.info(" new user status added %d", status.status)
+            #Return the last status user set for the spot 
+            return previous_statuses[0] 
+        return None
+        
+    @classmethod
+    def from_message(cls, message, user):
+        status_date_final = cls.status_date_from_string(message.status_date)
+        message_post_date = message.post_date
+        if not message.post_date:
+            message_post_date = datetime.datetime.now()
+        status = UserStatusItem(spot_id=message.spot.id,
+                                user_region_id = message.user_region_id, 
+                                status=message.status,
+                                post_date=message_post_date,
+                                status_date = status_date_final,
+                                comment = message.comment,
+                                wind_from = message.wind_from,
+                                wind_to = message.wind_to,
+                                gps_on = message.gps_on,
+                                parent = user.key)
+        logger.info(" new user status added %d", status.status)
         return status
-    
     
     def to_message(self):
         spot = ForecastMessage.spot_by_id(self.spot_id) 
@@ -167,18 +157,23 @@ class UserStatusItem(ndb.Model):
         return message.UserStatusList(statuses = statuses_message)
                           
     @classmethod
-    def get_spot_status_list_by_id(cls, spot_id, region_id):
+    def get_actual_spot_statuses(cls, spot_id, region_id):
+        logger.info("get_actual_spot_statuses %s (%s)"%(spot_id, region_id))
         actual_statuses = cls.query(filters=ndb.AND(
                                        cls.user_region_id == region_id,
                                        cls.spot_id == spot_id, 
                                        cls.status_date >= datetime.date.today())
                                    ).fetch()
-        statuses_message = [status_item.to_message() for status_item in actual_statuses]
+        print actual_statuses
+        statuses_message = []
+        for status_item in actual_statuses:
+            if status_item.status != constants.kStatusNone:
+                statuses_message.append(status_item.to_message())
         return message.UserStatusList(statuses = statuses_message)
              
     @classmethod
     def get_spot_status_list(cls, spot):
-        return cls.get_spot_status_list_by_id(spot.id, None)
+        return cls.get_actual_spot_statuses(spot.id, None)
     
     @classmethod
     def get_actual_status_list(cls):
@@ -425,7 +420,8 @@ def get_status_coefficient(status):
      constants.kStatusWant : 1.5,
      constants.kStatusGo : 2,
      constants.kStatusOnSpot : 2.5,
-     constants.kStatusFail : 0.5}
+     constants.kStatusFail : 0.5,
+     constants.kStatusNone : 0}
     return coefficients[status]
     
 def get_day_status_coefficient(status_date):
@@ -457,7 +453,7 @@ class SpotRatingItem(ndb.Model):
                                           summary = self.summary())
         
     @classmethod
-    def calculate_rating_for_status(cls, rating, status, spot):
+    def calculate_rating_for_status(cls, rating, status, spot, last_status_item = None):
         valid_date = datetime.datetime.today()
         if not rating:
             rating = SpotRatingItem(spot_id = status.spot_id,
@@ -469,7 +465,10 @@ class SpotRatingItem(ndb.Model):
             logger.info ("update spot rating %s"%status.spot_id)
         status_coef = get_status_coefficient(status.status)
         day_coef = get_day_status_coefficient(status.status_date)
-        status_rating_add = day_coef*status_coef
+        # if last_status_item - minus it
+        previous_coef = get_status_coefficient(last_status_item.status) if last_status_item else 0
+        
+        status_rating_add = day_coef*(status_coef-previous_coef)
         
         rating.rating = rating.rating + status_rating_add
         logger.info ("new rating %f"%rating.rating)
@@ -477,38 +476,50 @@ class SpotRatingItem(ndb.Model):
     
     #TODO may be it's better to make this call async:
     #when actual rating is not found - old rating is returned and new calculations are started?
+    
+    #requested_spot - optional parameter for case when rating calculation is started while status 
+    #is added, it is more comfortable not to select requested rating for status twice  
     @classmethod
-    def calculate_ratings(cls):
+    def calculate_ratings(cls, requested_spot=None):
         rating_dict = dict()
         
         all_spots = ForecastMessage.get_all_spots_dict()
 
         for status in UserStatusItem.get_actual_status_list():
-            spot = all_spots.get(status.spot_id)
-            logger.info("status %d found for spot %s"%(status.status, status.spot_id))
-            rating_key = "%s_%s"%(status.spot_id, status.user_region_id)
-            rating = rating_dict.get(rating_key)
-            rating = cls.calculate_rating_for_status(rating, status, spot)
-            
-            rating_dict[status.spot_id] = rating
+            if status.status != constants.kStatusNone:
+                spot = all_spots.get(status.spot_id)
+                logger.info("status %d found for spot %s"%(status.status, status.spot_id))
+                rating_key = "%s_%s"%(status.spot_id, status.user_region_id)
+                rating = rating_dict.get(rating_key)
+                rating = cls.calculate_rating_for_status(rating, status, spot)
+                
+                rating_dict[status.spot_id] = rating
         ndb.put_multi(rating_dict.itervalues())
+        if requested_spot:
+            return rating_dict[requested_spot.id]
+        return None
         
     @classmethod  
-    def update_rating (cls, status):
-        spot_rating = SpotRatingItem.query(
-                         ndb.GenericProperty("region_id") == status.user_region_id and
-                         ndb.GenericProperty("spot_id") == status.spot_id and
-                         ndb.GenericProperty("valid_date") == datetime.datetime.today()).fetch(1)
+    def update_rating_with_status(cls, status, last_status_item):
+        spot_ratings = SpotRatingItem.query(filters=ndb.AND(cls.region_id == status.user_region_id,
+                                  cls.spot_id == status.spot_id,
+                                  cls.valid_date == datetime.date.today()
+                                  )).fetch(1)
+                                          
         #if actual rating for spot not found it might be because 
         # 1. No statuses for the spot yet
-        # 2. Ratings were not calculated today yet 
-        if not spot_rating:
-            statuses = UserStatusItem.get_spot_status_list_by_id(status.spot_id, status.user_region_id)
-            if len(statuses.statuses) > 0:
-                cls.calculate_ratings()
+        # 2. Ratings were not calculated today yet
+        # If there are statuses, but no ratings are calculated - need have calculate 
+        statuses = UserStatusItem.get_actual_spot_statuses(status.spot_id, status.user_region_id)
+        spot_rating = None
+        if len(statuses.statuses) > 0 and len(spot_ratings) == 0:
+            spot_rating = cls.calculate_ratings()
+        else:
+            if len(spot_ratings) > 0:
+                spot_rating = spot_ratings[0]
         all_spots = ForecastMessage.get_all_spots_dict()
         spot = all_spots.get(status.spot_id)
-        rating = cls.calculate_rating_for_status(spot_rating, status, spot)
+        rating = cls.calculate_rating_for_status(spot_rating, status, spot, last_status_item)
         rating.put()
         #TODO: add rating for different region too?
         

@@ -260,13 +260,21 @@ def add_status(request):
     cookie = request.session.cookie
     logger.info("cookie = %s"%cookie)
     user = user_model.user_by_cookie(cookie)
-    status_item = user_model.UserStatusItem.from_message(request, user)
     
-    if not status_item:
+    msg = str([request.status_date, request.status, request.spot.id, request.user_region_id])
+    logger.info("debug data %s"%msg)
+        
+    if (not request.status_date or not request.status or not request.spot.id or  
+            not request.user_region_id):
         raise endpoints.BadRequestException(error_definitions.msg_wrong_parameters)
     
-    user_model.SpotRatingItem.update_rating(status_item)
-    status_item.put()
+    last_status_item = user_model.UserStatusItem.get_last_user_spot_status(request, user)
+    
+    new_status_item = user_model.UserStatusItem.from_message(request, user)
+    
+    if new_status_item.status != constants.kStatusNone: #No need to calculate rating for messages
+        user_model.SpotRatingItem.update_rating_with_status(new_status_item, last_status_item)
+    new_status_item.put()
     
     
 

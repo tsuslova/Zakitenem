@@ -65,7 +65,8 @@ wind_to_key = "wind_to"
 gps_on_key = "gps_on"
 
 ratings_key = "ratings"
-
+spot_id_key = "spot_id"
+rating_summary_key = "summary"
 id_key = "id"
 
 SECS_BETWEEN_REQUESTS = 2.0

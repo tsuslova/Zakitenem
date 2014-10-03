@@ -1,4 +1,8 @@
-# -*- coding: cp1251 -*-
+# -*- coding: utf-8 -*-
 
-resstore_pass_subject = u'Восстановление пароля'
-resstore_pass_body = u'Ваш новый пароль %s'
+resstore_pass_subject = u'Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїР°СЂРѕР»СЏ'
+resstore_pass_body = u'Р’Р°С€ РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ %s'
+
+go_format = "РµРґСѓС‚: %d"
+onspot_format = "РЅР° СЃРїРѕС‚Рµ: %d"
+interest_format = "СЂР°Р·РјС‹С€Р»СЏСЋС‚: %d"

@@ -164,7 +164,6 @@ class UserStatusItem(ndb.Model):
                                        cls.spot_id == spot_id, 
                                        cls.status_date >= datetime.date.today())
                                    ).fetch()
-        print actual_statuses
         statuses_message = []
         for status_item in actual_statuses:
             if status_item.status != constants.kStatusNone:
@@ -435,23 +434,51 @@ class SpotRatingItem(ndb.Model):
     rating = ndb.FloatProperty()
     valid_date = ndb.DateProperty()
     
-    go_count = ndb.IntegerProperty()
-    on_spot_count = ndb.IntegerProperty()
-    others_count = ndb.IntegerProperty()
+    go_count = ndb.IntegerProperty(default=0)
+    on_spot_count = ndb.IntegerProperty(default=0)
+    others_count = ndb.IntegerProperty(default=0)
     #Here it is float as it might be mean from several values
     #TODO fill them:
     wind_from = ndb.FloatProperty()
     wind_to = ndb.FloatProperty()
     
+    
     def summary(self):
-        #TODO
-        return ""
+        def append_str(base_string, suffix_string):
+            if not suffix_string or len(suffix_string) == 0:
+                return base_string
+            if len(base_string) > 0:
+                base_string = base_string + ", "
+            return base_string + suffix_string
+            
+        summary_string = ""
+        if self.go_count > 0:
+            summary_string = append_str(summary_string, ru_locale.go_format%self.go_count)
+        if self.on_spot_count > 0:
+            summary_string = append_str(summary_string, ru_locale.onspot_format%self.on_spot_count)
+        if self.others_count > 0:
+            summary_string = append_str(summary_string, ru_locale.interest_format%self.others_count)
+#         print "summary_string",summary_string
+        return summary_string
     
     def to_message(self):
         return ForecastMessage.SpotRating(region_id = self.region_id,
                                           spot_id = self.spot_id,
-                                          summary = self.summary())
+                                          summary = self.summary().decode('utf-8'))
         
+    #If status is new (shoul be added to counters) step should be = 1.
+    #If it's old - pass -1 to decrement counters 
+    def adjust_rating_for_status(self, status, step):
+        if status:
+            if status.status == constants.kStatusGo:
+                self.go_count += step
+            if status.status == constants.kStatusOnSpot:
+                self.on_spot_count += step
+            if (status.status == constants.kStatusInterest or 
+                status.status == constants.kStatusWant or
+                status.status == constants.kStatusFail):
+                self.others_count += step
+                
     @classmethod
     def calculate_rating_for_status(cls, rating, status, spot, last_status_item = None):
         valid_date = datetime.datetime.today()
@@ -464,14 +491,20 @@ class SpotRatingItem(ndb.Model):
         else:
             logger.info ("update spot rating %s"%status.spot_id)
         status_coef = get_status_coefficient(status.status)
+        logger.info ("status_coef %f"%status_coef)
         day_coef = get_day_status_coefficient(status.status_date)
+        logger.info ("day_coef %f"%day_coef)
         # if last_status_item - minus it
         previous_coef = get_status_coefficient(last_status_item.status) if last_status_item else 0
-        
+        logger.info ("previous_coef %f"%previous_coef)
         status_rating_add = day_coef*(status_coef-previous_coef)
         
         rating.rating = rating.rating + status_rating_add
         logger.info ("new rating %f"%rating.rating)
+        
+        rating.adjust_rating_for_status(last_status_item, -1)
+        rating.adjust_rating_for_status(status, 1)
+        
         return rating
     
     #TODO may be it's better to make this call async:

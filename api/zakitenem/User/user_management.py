@@ -1,4 +1,4 @@
-# -*- coding: cp1251 -*-
+# -*- coding: utf-8 -*-
 import webapp2
 import logging
 from request_handlers import request_utils

@@ -6,7 +6,7 @@ from google.appengine.ext import testbed
 import webtest
 import main
 import json
-from constants import constants
+from constants import constants, ru_locale
 from User import user_model
 from Forecast import message as ForecastMessage
 
@@ -89,9 +89,9 @@ class MyTestCase(unittest.TestCase):
     
      
 class AuthHandlerTestCase(MyTestCase):
-   
+    
     # Tests:
-            
+             
     def test_new_user_auth_ok(self):
         logger.info("test_new_user_auth_ok")
         login_info = login_info_no_pass()
@@ -101,7 +101,7 @@ class AuthHandlerTestCase(MyTestCase):
         login = response_dict.get(constants.login_key)
         self.assertNotEqual(login, None, 
                             "Auth should return a login (got: %s)" % response_dict)
-     
+      
 # the test is returning a strange error:
 # Content-Length is different from actual app_iter length (512!=63)
 # Need return to it later
@@ -110,97 +110,97 @@ class AuthHandlerTestCase(MyTestCase):
         logger.info("test_auth_existing_no_pass_nok")
         login_info = login_info_no_pass()
         user_model.create_user_from_login_info(login_info)
-          
+           
         login_info = login_info_no_pass(device_id="new id")
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg, expect_errors=True)
         #user_model.debug_print_users()
         response_dict = json.loads(response.body)
-              
+               
         self.assertNotEqual(response_dict.get(constants.error_key), None, 
             "Auth with existing account without password(with new device_id) should return an error")
-         
+          
     def test_auth_existing_with_pass_ok(self):
         logger.info("test_auth_existing_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-   
+    
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-    
+     
         response_dict = json.loads(response.body)
-              
+               
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth with existing account with correct password should not return an error")
-            
+             
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                         "Requested login differs from response")
         # TODO: check that a new AppInstallation was created for the account
-   
+    
     def test_auth_with_pass_ok(self):
         logger.info("test_auth_with_pass_ok")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-            
+             
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
         response_dict = json.loads(response.body)
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                          "Requested login differs from response")
-             
+              
     def test_auth_no_pass_same_device_ok(self):
         logger.info("test_auth_with_pass_ok")
         login_info = login_info_no_pass()
         user_model.create_user_from_login_info(login_info)
-            
+             
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
         response_dict = json.loads(response.body)
         self.assertEqual(login_info.login, response_dict.get(constants.login_key), 
                          "Requested login differs from response")
-         
+          
     def test_logout(self):
         logger.info("test_logout")
         login_info = login_info_pass()
         user_model.create_user_from_login_info(login_info)
-            
+             
         msg = login_info.login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg)
-            
+             
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.error_key), None, 
             "Auth request (with password) after logout should not return an error")
             
    
 class PasswordHandlerTestCase(MyTestCase):
-         
+          
     def test_no_password_tools(self):
         session = self.authorized_session(login_info_pass())
         response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
         #no tools - empty response
         self.assertEqual(response.body, "{}")
-   
+    
     def test_password_tools_after_2login(self):
         self.authorized_session(login_info_device_token())
         session = self.authorized_session(login_info_device_token())
         response = self.testapp.post_json('/_ah/spi/Api.password_tools', session)
-           
+            
         response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.option_push), None)
-           
-   
+            
+    
 class UserHandlerTestCase(MyTestCase):
- 
+  
     def test_update_user(self):
         session = self.authorized_session(login_info_device_token())
         birthday = "1990-07-30T23:29:24"
-        
+         
         user_json = {constants.email_key:constants.zakitenem_email, constants.session_key:session,
                      constants.birthday_key:birthday}
         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
         response_dict = json.loads(response.body)
         self.assertEqual(response_dict.get(constants.birthday_key), birthday)
-   
+    
     def test_update_user_region(self):
         session = self.authorized_session(region_device_token())
         user_json = {constants.region_key:{constants.id_key:constants.default_region}, 
@@ -211,76 +211,75 @@ class UserHandlerTestCase(MyTestCase):
         self.assertNotEqual(region, None)
         self.assertEqual(region.get(constants.id_key), constants.default_region)
         self.assertNotEqual(response_dict.get(constants.session_key), None)
-
+ 
     def test_update_user_password(self):
         session = self.authorized_session(login_info_pass())
         new_password = "2222"
         user_json = {constants.password_key:new_password, constants.session_key:session}
         self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
-        
+         
         #Login with old password should fail:
         msg = login_info_pass(device_id="new_device_id").login_json()
         response = self.testapp.post_json('/_ah/spi/Api.auth', msg, expect_errors=True)
         response_dict = json.loads(response.body)
         session = response_dict.get(constants.session_key)
         self.assertEqual(session, None)
-        
+         
         #After user update we should check that we can login with the new password
         session = self.authorized_session(login_info_pass(new_password, "new_device_id"))
         self.assertNotEqual(session, None)
-
-
+ 
+ 
     def test_add_user_status(self):
         session = self.authorized_session(login_info_pass())
-        
+         
         spot_json = gen_spot_json("MuiNe")
         status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
-        
+         
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-        
+         
         status_json[constants.status_key] = constants.kStatusFail
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-        
+         
     def test_user_status_list(self):
         session = self.authorized_session(login_info_pass())
-        
+         
         current_date = datetime.datetime.now().strftime(constants.common_date_format)
-        
+         
         response = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
         response_dict = json.loads(response.body)
-
+ 
         #No statuses yet
         self.assertEqual(response_dict, dict())
-        
+         
         spot_json = gen_spot_json("MuiNe")
         status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-        
+         
         #TODO check not empty status list
-        datetime.date.today()
         response = self.testapp.post_json('/_ah/spi/Api.user_status_list', session)
         response_dict = json.loads(response.body)
-        
+ 
         #Check that the only user status we've added is returned
         status_list = response_dict.get(constants.statuses_key)
         self.assertEqual(len(status_list), 1)
     
-    
+#     TODO region??
 #     def test_spot_status_list(self):
 #         spot_json = gen_spot_json("KrasnyiYar")
 #         response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
 #         response_dict = json.loads(response.body)
-# 
+#  
 #         #No statuses yet
 #         self.assertEqual(response_dict, dict())
-#         
+#          
 #         session = self.authorized_session(login_info_pass())
 #         status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
 #         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-#         
+#          
 #         response = self.testapp.post_json('/_ah/spi/Api.spot_status_list', spot_json)
 #         response_dict = json.loads(response.body)
-#         
+#          
 #         #Check that the only user status we've added is returned 
 #         status_list = response_dict.get(constants.statuses_key)
 #         self.assertEqual(len(status_list), 1)
@@ -314,48 +313,85 @@ class ForecastHandlerTestCase(MyTestCase):
         session = self.authorized_session(login_info_device_token())
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
         response_dict = json.loads(response.body)
+        #initially empty spot rating list
         self.assertEqual(response_dict.get(constants.ratings_key), None)
         
+        
+        #
+        #1
+        #
         #add user status "on KrasnyiYar spot" - so we should have "KrasnyiYar" on the top of list 
         spot_json = gen_spot_json("KrasnyiYar")
         status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
-        response_dict = json.loads(response.body)
-        self.assertNotEqual(response_dict.get(constants.ratings_key), None)
-        print response_dict
-        
+        self.check_spot_rating(response, "KrasnyiYar", 0)
+        #
+        #2
+        #
         #1. set user status "KrasnyiYar fail" 
         #2. add for a different non Nsk user status "on Topolnoe spot"
-        # - so we should have "Topolnoe" on the top of list, second? - KrasnyiYar? or 1<->2
+        # - so we should have "Topolnoe" on the top of list, second - KrasnyiYar 
         status_json = gen_status_json(session, spot_json, constants.kStatusFail) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
-        non_nsk_session = self.authorized_session(login_info_barnaul())
-        user_json = {constants.region_key:{constants.id_key:"Barnaul"}, 
-                     constants.session_key:non_nsk_session}
-        response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
-        response_dict = json.loads(response.body)
-        print 'ok', response_dict 
-        
         spot_json = gen_spot_json("Topolnoe")
         status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
-        print "2dw", status_json
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-        print "2d"
+        
+        response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
+        self.check_spot_rating(response, "Topolnoe", 0)
+        #
+        #3
+        #
+        #User changes mind: not go to Topolnoe - go to KrasnyiYar (KrasnyiYar should become first)
+        spot_json = gen_spot_json("Topolnoe")
+        status_json = gen_status_json(session, spot_json, constants.kStatusFail) 
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        spot_json = gen_spot_json("KrasnyiYar")
+        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
+        self.check_spot_rating(response, "KrasnyiYar", 0)
+
+        #
+        #4
+        #
+        #1. add for a different Nsk user status "on Novichiha spot" and interested in MuiNe
+        # - so we should have "KrasnyiYar", "Topolnoe", "Novichiha" (first to are interesting to me)
+        # The last one should be MuiNe 
+        session_other = self.authorized_session(login_info_pass())
+        spot_json = gen_spot_json("Novichiha")
+        status_json = gen_status_json(session_other, spot_json, constants.kStatusOnSpot) 
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
+        spot_json = gen_spot_json("MuiNe")
+        status_json = gen_status_json(session_other, spot_json, constants.kStatusInterest) 
+        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
+        
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
         response_dict = json.loads(response.body)
+        print "response_dict", response_dict
+        #TODO Not passed yet as user's spots are not taken into account
+#         self.check_spot_rating(response, "Novichiha", 2)
+        muine_summary = (ru_locale.interest_format%1).decode('utf-8')
+        self.check_spot_rating(response, "MuiNe", 3, muine_summary)
+        
+#         non_nsk_session = self.authorized_session(login_info_barnaul())
+#         user_json = {constants.region_key:{constants.id_key:"Barnaul"}, 
+#                      constants.session_key:non_nsk_session}
+#         response = self.testapp.post_json('/_ah/spi/Api.user_update', user_json)
+#         response_dict = json.loads(response.body)
+#         print 'response_dict', response_dict 
+        
+        
+    def check_spot_rating(self, response, spot_id, rating_order, summary=None):
+        response_dict = json.loads(response.body)
         self.assertNotEqual(response_dict.get(constants.ratings_key), None)
-        print response_dict 
-        
-        #TODO
-        #1. set user status "KrasnyiYar fail" 
-        #2. add for a different Nsk user status "on Novichiha spot"
-        # - so we should have "Novichiha" on the top of list, second? - KrasnyiYar?, after it 
-        #"Topolnoe"
-        
-        
-        
-         
-        
+        ratings = response_dict.get(constants.ratings_key)
+        first_spot_id = ratings[rating_order].get(constants.spot_id_key)
+        self.assertEqual(first_spot_id, spot_id)
+        if summary:
+            self.assertEqual(summary, ratings[rating_order].get(constants.rating_summary_key))

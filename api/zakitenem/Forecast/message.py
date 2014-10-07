@@ -34,6 +34,7 @@ class SpotRatingList(messages.Message):
     next_update_time = message_types.DateTimeField(2)
     
 def get_all_spots_dict():
+    #TODO memcache?
     all_spots = dict()
     all_spots_config_file='./resources/spots.cfg'
     

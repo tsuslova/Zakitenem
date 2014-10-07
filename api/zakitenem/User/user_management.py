@@ -240,19 +240,25 @@ def get_user_forecasts(request):
 
     
 forecast_top_max_count = 10
-def get_user_top_spots(request):
+def get_user_spots_rating(request):
     
     logger.info("get_user_top_spots")
     user = user_model.user_by_cookie(request.cookie)
-    #TODO : plus here user spot ratings at the top:
-    user_ratings = []
-    rest_count = forecast_top_max_count - len(user_ratings)
     
-    region_ratings = user_model.SpotRatingItem.get_top_ratings(user, rest_count) 
-
-    ratings = [rating.to_message() for rating in user_ratings+region_ratings]
+    user_ratings = user_model.SpotRatingItem.get_user_top_ratings(user)
     
-    return ForecastMessage.SpotRatingList(ratings = ratings)
+    region_ratings = user_model.SpotRatingItem.get_top_ratings(user, forecast_top_max_count)
+    
+    #Filter out duplicates: 
+    ratings_messages_by_spot = {}
+    for rating in user_ratings+region_ratings:
+        if not ratings_messages_by_spot.get(rating.spot_id):
+            ratings_messages_by_spot[rating.spot_id] = rating.to_message()
+    ratings_messages = ratings_messages_by_spot.values()
+    if len(ratings_messages) > 10:
+        ratings_messages = ratings_messages[:forecast_top_max_count]
+    
+    return ForecastMessage.SpotRatingList(ratings = ratings_messages)
 
 def add_status(request):
     logger.info("add_user_status")

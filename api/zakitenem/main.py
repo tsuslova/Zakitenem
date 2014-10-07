@@ -95,7 +95,7 @@ class Api(remote.Service):
                       path='user_top_spots', http_method='POST',
                       name='user_top_spots')
     def user_top_spots(self, request):
-        return self.safe_execute(lambda:user_management.get_user_top_spots(request))
+        return self.safe_execute(lambda:user_management.get_user_spots_rating(request))
     
     # Return list of regions. If request is filled and contains user coordinate, 
     # RegionList.possible_region object will contain possible user region

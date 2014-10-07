@@ -98,6 +98,14 @@ class UserStatusItem(ndb.Model):
         dt = datetime.datetime(self.status_date.year, self.status_date.month, self.status_date.day)
         
         dt.strftime(constants.common_date_format)
+        
+    @classmethod
+    def get_user_status_list(cls, user):
+        actual_statuses = cls.query(ancestor = user.key, filters=ndb.AND(
+                                       cls.status_date >= datetime.date.today())
+                                   ).fetch()
+        statuses_message = [status_item.to_message() for status_item in actual_statuses]
+        return message.UserStatusList(statuses = statuses_message)
     
     @classmethod
     def status_date_from_string(self, date_string):
@@ -146,15 +154,6 @@ class UserStatusItem(ndb.Model):
                               wind_to = self.wind_to,
                               gps_on = self.gps_on
                               )
-
-
-    @classmethod
-    def get_user_status_list(cls, user):
-        actual_statuses = cls.query(ancestor = user.key, filters=ndb.AND(
-                                       cls.status_date >= datetime.date.today())
-                                   ).fetch()
-        statuses_message = [status_item.to_message() for status_item in actual_statuses]
-        return message.UserStatusList(statuses = statuses_message)
                           
     @classmethod
     def get_actual_spot_statuses(cls, spot_id, region_id):
@@ -530,7 +529,7 @@ class SpotRatingItem(ndb.Model):
         ndb.put_multi(rating_dict.itervalues())
         if requested_spot:
             return rating_dict[requested_spot.id]
-        return None
+        return []
         
     @classmethod  
     def update_rating_with_status(cls, status, last_status_item):
@@ -555,8 +554,31 @@ class SpotRatingItem(ndb.Model):
         rating = cls.calculate_rating_for_status(spot_rating, status, spot, last_status_item)
         rating.put()
         #TODO: add rating for different region too?
-        
-        
+    
+    @classmethod  
+    def get_user_top_ratings(cls, user):
+        logger.info("get_user_top_ratings")
+        user_statuses = UserStatusItem.query(ancestor = user.key, filters=ndb.AND(
+                                       UserStatusItem.status_date >= datetime.date.today())
+                                   ).fetch()
+        all_spots = ForecastMessage.get_all_spots_dict()
+        rating_dict = {}
+        user_ratings = []
+        user_statuses.sort(key = lambda x : x.post_date)
+        for status in user_statuses:
+            if status.status != constants.kStatusNone:
+                rating_key = "%s"%(status.spot_id)
+                rating = rating_dict.get(rating_key)
+                if not rating:
+                    spot = all_spots.get(status.spot_id)
+                    rating = cls.calculate_rating_for_status(rating, status, spot)
+                    rating_dict[status.spot_id] = rating
+                    new_rating_index = 0
+                    for user_rating in user_ratings:
+                        if rating.rating < user_rating.rating:
+                            new_rating_index +=1
+                    user_ratings.insert(new_rating_index, rating)
+        return user_ratings   
         
     @classmethod  
     def get_top_ratings(cls, user, count):
@@ -565,14 +587,13 @@ class SpotRatingItem(ndb.Model):
             region_id = user.region.id 
         else:
             logger.info("No user region found - use default one")
-        #TODO First select user personal spots (current user statuses) - order them and show on top
-        #then add common top spots to have 10 in sum
-        #TODO: save the result to memcache?
+        
         ratings = cls.query(filters=ndb.AND(cls.region_id == region_id, 
                                   cls.valid_date == datetime.date.today()
                                   )).order(-cls.rating).fetch(count)
+        #TODO: save ratings to memcache?
         if len(ratings) == 0:
-            cls.calculate_ratings()
+            ratings = cls.calculate_ratings()
 
             logger.info("Looks like day just started - no new ratings yet. Do async cleanup.")                        
             #TODO: clean up yesterdays rating

@@ -318,7 +318,7 @@ class ForecastHandlerTestCase(MyTestCase):
         
         
         #
-        #1
+        logger.info("1")
         #
         #add user status "on KrasnyiYar spot" - so we should have "KrasnyiYar" on the top of list 
         spot_json = gen_spot_json("KrasnyiYar")
@@ -328,41 +328,43 @@ class ForecastHandlerTestCase(MyTestCase):
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
         self.check_spot_rating(response, "KrasnyiYar", 0)
         #
-        #2
+        logger.info("2")
         #
         #1. set user status "KrasnyiYar fail" 
-        #2. add for a different non Nsk user status "on Topolnoe spot"
-        # - so we should have "Topolnoe" on the top of list, second - KrasnyiYar 
+        #2. add for a different user status "on Topolnoe spot"
+        # - so we should still have "KrasnyiYar" on the top of list, second - Topolnoe (as "users"
+        # spots are always on top)  
         status_json = gen_status_json(session, spot_json, constants.kStatusFail) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
+        session_other = self.authorized_session(login_info_pass())
         spot_json = gen_spot_json("Topolnoe")
-        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
+        status_json = gen_status_json(session_other, spot_json, constants.kStatusOnSpot) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
-        self.check_spot_rating(response, "Topolnoe", 0)
+        self.check_spot_rating(response, "Topolnoe", 1)
         #
-        #3
+        logger.info("3")
         #
-        #User changes mind: not go to Topolnoe - go to KrasnyiYar (KrasnyiYar should become first)
+        #User changes mind: go to Topolnoe (Topolnoe should become first, KrasnyiYar second and the 
+        #last!)
         spot_json = gen_spot_json("Topolnoe")
-        status_json = gen_status_json(session, spot_json, constants.kStatusFail) 
-        self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
-        spot_json = gen_spot_json("KrasnyiYar")
-        status_json = gen_status_json(session, spot_json, constants.kStatusOnSpot) 
+        status_json = gen_status_json(session, spot_json, constants.kStatusGo) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
         
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
         self.check_spot_rating(response, "KrasnyiYar", 0)
-
+        self.check_spot_rating(response, "Topolnoe", 1)
+        self.check_rating_count(response, 2)
+        
         #
         #4
+        logger.info("4")
         #
         #1. add for a different Nsk user status "on Novichiha spot" and interested in MuiNe
         # - so we should have "KrasnyiYar", "Topolnoe", "Novichiha" (first to are interesting to me)
         # The last one should be MuiNe 
-        session_other = self.authorized_session(login_info_pass())
         spot_json = gen_spot_json("Novichiha")
         status_json = gen_status_json(session_other, spot_json, constants.kStatusOnSpot) 
         self.testapp.post_json('/_ah/spi/Api.add_status', status_json)
@@ -373,11 +375,11 @@ class ForecastHandlerTestCase(MyTestCase):
         
         response = self.testapp.post_json('/_ah/spi/Api.user_top_spots', session)
         response_dict = json.loads(response.body)
-        print "response_dict", response_dict
-        #TODO Not passed yet as user's spots are not taken into account
-#         self.check_spot_rating(response, "Novichiha", 2)
+        self.check_spot_rating(response, "Novichiha", 2)
         muine_summary = (ru_locale.interest_format%1).decode('utf-8')
         self.check_spot_rating(response, "MuiNe", 3, muine_summary)
+        
+        self.check_rating_count(response, 4)
         
 #         non_nsk_session = self.authorized_session(login_info_barnaul())
 #         user_json = {constants.region_key:{constants.id_key:"Barnaul"}, 
@@ -395,3 +397,11 @@ class ForecastHandlerTestCase(MyTestCase):
         self.assertEqual(first_spot_id, spot_id)
         if summary:
             self.assertEqual(summary, ratings[rating_order].get(constants.rating_summary_key))
+        
+    def check_rating_count(self, response, count):
+        response_dict = json.loads(response.body)
+        if (count != 0):
+            self.assertNotEqual(response_dict.get(constants.ratings_key), None)
+        ratings = response_dict.get(constants.ratings_key)
+        self.assertEqual(len(ratings), count)
+        
